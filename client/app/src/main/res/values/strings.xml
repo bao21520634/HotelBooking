@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">BHotel</string>
+    <string name="onboarding_screen">Onboarding</string>
+    <string name="homepage_screen">Trang chủ</string>
+    <string name="details_screen">Chi tiết</string>
+    <string name="favorite_screen">Yêu thích</string>
+    <string name="my_bookings_screen">Danh sách của bạn</string>
+    <string name="profile_screen">Thông tin cá nhân</string>
+    <string name="veryBadRating">Rất tệ</string>
+    <string name="badRating">Tệ</string>
+    <string name="okRating">Ổn</string>
+    <string name="goodRating">Tốt</string>
+    <string name="veryGoodRating">Rất tốt</string>
+</resources>
