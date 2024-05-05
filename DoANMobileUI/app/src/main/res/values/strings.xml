@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">DoANMobileUI</string>
+    <string name="veryBadRating">Rất tệ</string>
+    <string name="badRating">Tệ</string>
+    <string name="okRating">Ổn</string>
+    <string name="goodRating">Tốt</string>
+    <string name="veryGoodRating">Rất tốt</string>
+</resources>
