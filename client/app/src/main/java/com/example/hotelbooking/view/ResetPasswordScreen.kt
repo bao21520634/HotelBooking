@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hotelbooking.R
 import com.example.hotelbooking.ui.utility.ActionText
-import com.example.hotelbooking.ui.utility.ImportantButton
+import com.example.hotelbooking.ui.utility.ImportantButtonLogin
 import com.example.hotelbooking.ui.utility.InfoTextField
 
 @Composable
@@ -63,7 +63,7 @@ fun ResetPasswordScreen(modifier: Modifier = Modifier){
             promptText = "Xác nhận mật khẩu",
             modifier = Modifier.align(Alignment.CenterHorizontally)
         );
-        ImportantButton(text = "Xác nhận", onAction = {})
+        ImportantButtonLogin(text = "Xác nhận", onAction = {})
 
         Row(
             modifier = Modifier.align(Alignment.Start),

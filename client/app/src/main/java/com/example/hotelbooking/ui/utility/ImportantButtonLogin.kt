@@ -3,7 +3,6 @@ package com.example.hotelbooking.ui.utility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -19,7 +18,7 @@ import androidx.compose.ui.unit.sp
 import com.example.hotelbooking.R
 
 @Composable
-fun ImportantButton(text: String, onAction: ()->(Unit), modifier: Modifier = Modifier){
+fun ImportantButtonLogin(text: String, onAction: ()->(Unit), modifier: Modifier = Modifier){
     val gradient = Brush.linearGradient(listOf(Color(0xFF03045E), Color(0xFF0172B2)), start = Offset(0f, Float.POSITIVE_INFINITY), end = Offset(Float.POSITIVE_INFINITY, 0f))
 
 

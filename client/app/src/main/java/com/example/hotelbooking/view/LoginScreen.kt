@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hotelbooking.R
 import com.example.hotelbooking.ui.utility.ActionText
-import com.example.hotelbooking.ui.utility.ImportantButton
+import com.example.hotelbooking.ui.utility.ImportantButtonLogin
 import com.example.hotelbooking.ui.utility.InfoTextField
 
 @Composable
@@ -58,7 +58,7 @@ fun LoginScreen(modifier: Modifier = Modifier){
             action = {},
             modifier = Modifier.align(Alignment.End)
         )
-        ImportantButton(text = "Đăng nhập", onAction = {})
+        ImportantButtonLogin(text = "Đăng nhập", onAction = {})
 
         Row(
             modifier = Modifier.align(Alignment.Start),

@@ -19,7 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hotelbooking.R
-import com.example.hotelbooking.ui.utility.ImportantButton
+import com.example.hotelbooking.ui.utility.ImportantButtonLogin
 import com.example.hotelbooking.ui.utility.InfoTextField
 
 @Composable
@@ -47,7 +47,7 @@ fun ForgotPassWordScreen(modifier: Modifier = Modifier){
             promptText = "Email của bạn",
             modifier = Modifier.align(Alignment.CenterHorizontally)
         );
-        ImportantButton(text = "Gửi", onAction = {})
+        ImportantButtonLogin(text = "Gửi", onAction = {})
 
     }
 }
