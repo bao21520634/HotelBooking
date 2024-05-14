@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,39 +31,58 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hotelbooking.BottomNavigationBar
 import com.example.hotelbooking.R
 import com.example.hotelbooking.ui.model.Hotel
 import com.example.hotelbooking.ui.model.sampleData
+import com.example.hotelbooking.ui.utility.AppBar
 import com.example.hotelbooking.ui.utility.ImportantButtonLogin
 import com.example.hotelbooking.ui.utility.ImportantButtonMain
 import com.example.hotelbooking.ui.utility.InfoTextField
+import com.example.hotelbooking.navigation.Route
+
 
 @Composable
 fun HomePageScreen(hotelList: List<Hotel>, modifier: Modifier = Modifier){
-
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp,Alignment.CenterVertically),
-    ){
-        FilterBlock()
-        Text(
-            text = "Dành cho bạn",
-            style = MaterialTheme.typography.titleLarge,
-            color = colorResource(R.color.dark_blue),
-            fontWeight = FontWeight.Bold,
-        )
-        LazyColumn (
-            modifier = modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ){
-            items(hotelList) {
-                HotelCard(hotel = it)
-            }
+    Scaffold (
+        modifier = modifier,
+        topBar = {
+            AppBar(
+                currentScreen = Route.HomeScreen,
+                currentScreenName = "Trang chủ",
+                canNavigateBack = false,
+                navigateUp = { /*TODO*/ })
+        },
+        bottomBar = {
+            BottomNavigationBar();
         }
 
+    ){ innerPadding->
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(8.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp,Alignment.CenterVertically),
+        ) {
+            FilterBlock()
+            Text(
+                text = "Dành cho bạn",
+                style = MaterialTheme.typography.titleLarge,
+                color = colorResource(R.color.dark_blue),
+                fontWeight = FontWeight.Bold,
+            )
+            LazyColumn(
+                modifier = modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(hotelList) {
+                    HotelCard(hotel = it)
+                }
+            }
+        }
     }
+
 }
 @Composable
 fun FilterBlock(modifier: Modifier = Modifier){

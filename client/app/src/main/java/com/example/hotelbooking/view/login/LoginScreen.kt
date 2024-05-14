@@ -1,4 +1,4 @@
-package com.example.hotelbooking.view
+package com.example.hotelbooking.view.login
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

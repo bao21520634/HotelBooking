@@ -18,4 +18,6 @@ sealed class Route(
     object DetailsScreen : Route(route = "detailsScreen", R.string.details_screen)
 
     object ProfileScreen : Route(route = "profileScreen", R.string.profile_screen)
+
+    object PropertiesScreen : Route(route = "propertiesScreen", R.string.properties_screen)
 }

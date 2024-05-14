@@ -1,4 +1,4 @@
-package com.example.hotelbooking.view
+package com.example.hotelbooking.view.login
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,10 +27,11 @@ import com.example.hotelbooking.ui.utility.ImportantButtonLogin
 import com.example.hotelbooking.ui.utility.InfoTextField
 
 @Composable
-fun ResetPasswordScreen(modifier: Modifier = Modifier){
+fun SignUpScreen(modifier: Modifier = Modifier){
+    var email: String by remember{ mutableStateOf("") };
     var username: String by remember{ mutableStateOf("") };
     var password: String by remember{ mutableStateOf("") };
-    var passwordConfirm: String by remember{ mutableStateOf("") };
+    var password_Confirm: String by remember{ mutableStateOf("") };
 
     Column(
         modifier = modifier
@@ -39,7 +40,7 @@ fun ResetPasswordScreen(modifier: Modifier = Modifier){
         verticalArrangement = Arrangement.spacedBy(16.dp,Alignment.CenterVertically),
     ){
         Text(
-            text = "Đặt lại mật khẩu",
+            text = "Đăng ký",
             style = MaterialTheme.typography.titleLarge,
             color = colorResource(R.color.dark_blue),
             fontWeight = FontWeight.Bold,
@@ -47,6 +48,12 @@ fun ResetPasswordScreen(modifier: Modifier = Modifier){
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
 
+        InfoTextField(
+            value = email,
+            onValueChange = {email = it},
+            promptText = "Email của bạn",
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        );
         InfoTextField(
             value = username,
             onValueChange = {username = it},
@@ -58,12 +65,13 @@ fun ResetPasswordScreen(modifier: Modifier = Modifier){
             promptText = "Mật khẩu",
             modifier = Modifier.align(Alignment.CenterHorizontally)
         );
-        InfoTextField(value = passwordConfirm,
-            onValueChange = {passwordConfirm = it},
+        InfoTextField(value = password,
+            onValueChange = {password_Confirm = it},
             promptText = "Xác nhận mật khẩu",
             modifier = Modifier.align(Alignment.CenterHorizontally)
         );
-        ImportantButtonLogin(text = "Xác nhận", onAction = {})
+
+        ImportantButtonLogin(text = "Đăng nhập", onAction = {})
 
         Row(
             modifier = Modifier.align(Alignment.Start),
@@ -79,6 +87,6 @@ fun ResetPasswordScreen(modifier: Modifier = Modifier){
 }
 @Preview(showBackground = true)
 @Composable
-fun ResetPasswordScreenPreview(){
-    ResetPasswordScreen()
+fun SignUpScreenPreview(){
+    SignUpScreen()
 }

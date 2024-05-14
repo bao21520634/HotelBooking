@@ -41,10 +41,10 @@ fun ImportantButtonMain(text: String, onClick: ()->(Unit), modifier: Modifier = 
     {
         Text(
             text = text,
-            fontSize = 18.sp,
+            fontSize = 24.sp,
             color = Color.White,
             fontWeight = FontWeight.Bold,
-            modifier = modifier.padding(20.dp),
+            modifier = modifier.padding(12.dp),
         )
     }
 
