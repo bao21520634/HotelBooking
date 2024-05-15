@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 import myHotelRoutes from "./routes/my-hotels";
 import hotelsRoutes from "./routes/hotels";
 import { v2 as cloudinary } from "cloudinary";
+import bookingRoutes from "./routes/my-bookings";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -19,7 +20,8 @@ mongoose
   .connect(process.env.MONGODB_CONNECTION_STRING as string)
   .then(() =>
     console.log(
-      "MongoDB connected"
+      "Connected to database: ",
+      process.env.MONGODB_CONNECTION_STRING
     )
   );
 
@@ -40,7 +42,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/my-hotels", myHotelRoutes);
 app.use("/api/hotels", hotelsRoutes);
+app.use("/api/my-bookings", bookingRoutes);
 
-app.listen(8000, () => {
-  console.log("Server listening on port 8000");
+app.listen(7000, () => {
+  console.log("server listening on port 7000");
 });
