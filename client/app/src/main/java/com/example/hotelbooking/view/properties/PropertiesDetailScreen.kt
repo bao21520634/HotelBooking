@@ -1,10 +1,14 @@
 package com.example.hotelbooking.view.properties
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -12,9 +16,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.hotelbooking.navigation.Route
 import com.example.hotelbooking.ui.utility.AppBar
 import com.example.hotelbooking.ui.utility.CheckboxWithDescription
@@ -45,42 +52,54 @@ fun PropertiesDetailScreen(){
         }
     ) {paddingValues ->
         Column(
-            modifier = Modifier.padding(paddingValues)
+            modifier = Modifier
+                .padding(paddingValues).padding(12.dp)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Column {
-                CommonText(text = "Số lượng của loại hình này")
-                TextFieldWithIncrement(value = nofThisType, topBoundary = Int.MAX_VALUE, botBoundary = 0)
+                CommonHeaderText(text = "Số lượng của loại hình này")
+                Spacer(Modifier.height(4.dp))
+                TextFieldWithIncrement(value = nofThisType, topBoundary = Int.MAX_VALUE, botBoundary = 0, preDefindedWidth = 80.dp)
             }
             Column {
-                CommonText(text = "Số người có thể ở")
-                TextFieldWithIncrement(value = nofAllowedPeople, topBoundary = Int.MAX_VALUE, botBoundary = 0)
+                CommonHeaderText(text = "Số người có thể ở")
+                Spacer(Modifier.height(4.dp))
+                TextFieldWithIncrement(value = nofAllowedPeople, topBoundary = Int.MAX_VALUE, botBoundary = 0, preDefindedWidth = 80.dp)
             }
-            Row{
-                CommonText(text = "Phòng ngủ( 1 giường đơn)")
-                Spacer(Modifier.weight(1f))
-                TextFieldWithIncrement(value = nofSingleBedBedRoom, topBoundary = Int.MAX_VALUE, botBoundary = 0)
-            }
-            Row{
-                CommonText(text = "Phòng ngủ( 2 giường đơn)")
-                Spacer(Modifier.weight(1f))
-                TextFieldWithIncrement(value = nofDoubleSingleBedBedRoom, topBoundary = Int.MAX_VALUE, botBoundary = 0)
-            }
-            Row{
-                CommonText(text = "Phòng ngủ( 1 giường đôi)")
-                Spacer(Modifier.weight(1f))
-                TextFieldWithIncrement(value = nofDoubleBedBedRoom, topBoundary = Int.MAX_VALUE, botBoundary = 0)
-            }
-            Row{
-                CommonText(text = "Phòng khách")
-                Spacer(Modifier.weight(1f))
-                TextFieldWithIncrement(value = nofAllowedPeople, topBoundary = Int.MAX_VALUE, botBoundary = 0)
-            }
-            Row{
-                CommonText(text = "Nội thất")
-                Spacer(Modifier.weight(1f))
-                TextFieldWithIncrement(value = nofAllowedPeople, topBoundary = Int.MAX_VALUE, botBoundary = 0)
-            }
-            CommonText(text = "Nội thất")
+            CommonHeaderText(text = "Phòng")
+            CommonRowWithTextField(
+                description = "Phòng ngủ\n( 1 giường đơn) ",
+                value = nofSingleBedBedRoom,
+                topBoundary = Int.MAX_VALUE,
+                botBoundary = 0
+            )
+            CommonRowWithTextField(
+                description = "Phòng ngủ\n( 2 giường đơn) ",
+                value = nofDoubleSingleBedBedRoom,
+                topBoundary = Int.MAX_VALUE,
+                botBoundary = 0
+            )
+            CommonRowWithTextField(
+                description = "Phòng ngủ\n( 1 giường đôi) ",
+                value = nofDoubleBedBedRoom,
+                topBoundary = Int.MAX_VALUE,
+                botBoundary = 0
+            )
+            CommonRowWithTextField(
+                description = "Phòng khách",
+                value = nofAllowedPeople,
+                topBoundary = Int.MAX_VALUE,
+                botBoundary = 0
+            )
+            CommonRowWithTextField(
+                description = "Phòng tắm",
+                value = nofAllowedPeople,
+                topBoundary = Int.MAX_VALUE,
+                botBoundary = 0
+            )
+
+            CommonHeaderText(text = "Nội thất")
             Column(){
                 CheckboxWithDescription(
                     checked = airConditioner,
@@ -113,15 +132,39 @@ fun PropertiesDetailScreen(){
     }
 }
 @Composable
-fun CommonText(text: String, modifier: Modifier = Modifier){
+fun CommonBodyText(text: String, modifier: Modifier = Modifier){
     Text(
         text = text,
-        style = MaterialTheme.typography.bodyLarge,
-        fontWeight = FontWeight.Bold
+        fontSize = 16.sp,
+        fontWeight = FontWeight.Bold,
+        modifier = modifier
     )
+}
+@Composable
+fun CommonHeaderText(text: String, modifier: Modifier = Modifier){
+    Text(
+        text = text,
+        fontSize = 20.sp,
+        fontWeight = FontWeight.Bold,
+        modifier = modifier
+    )
+}
+@Composable
+fun CommonRowWithTextField(
+    description: String,
+    value: Int, topBoundary: Int, botBoundary: Int,
+    modifier: Modifier = Modifier){
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ){
+        CommonBodyText(text = description)
+        Spacer(Modifier.weight(1f))
+        TextFieldWithIncrement(value = value, topBoundary = topBoundary, botBoundary = botBoundary)
+    }
 }
 @Preview(showBackground = true)
 @Composable
 fun PropertiesDetailScreenPreview(){
-    PropertiesDetailScreen();
+    PropertiesDetailScreen()
 }

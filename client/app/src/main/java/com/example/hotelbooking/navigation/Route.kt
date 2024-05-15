@@ -10,6 +10,9 @@ sealed class Route(
     object OnBoardingScreen : Route(route = "onBoardingScreen", R.string.onboarding_screen)
 
     object HomeScreen : Route(route = "homeScreen", R.string.homepage_screen)
+    object HomeResultScreen : Route(route = "homeResultScreen", R.string.homepage_screen)
+    object HomeDateScreen : Route(route = "homeDateScreen", R.string.homepageDate_screen)
+    object HomeRoomScreen : Route(route = "homeRoomScreen", R.string.homepageRoom_screen)
 
     object FavoriteScreen : Route(route = "favoriteScreen", R.string.favorite_screen)
 
@@ -20,4 +23,9 @@ sealed class Route(
     object ProfileScreen : Route(route = "profileScreen", R.string.profile_screen)
 
     object PropertiesScreen : Route(route = "propertiesScreen", R.string.properties_screen)
+    object PropertiesInformationScreen : Route(route = "propertiesInformationScreen", R.string.propertiesInformation_screen)
+    object PropertiesDetailsScreen : Route(route = "propertiesDetailsScreen", R.string.propertiesDetails_screen)
+    object PropertiesPriceScreen : Route(route = "propertiesPriceScreen", R.string.propertiesPrice_screen)
+    object PropertiesSPhotoscreen : Route(route = "propertiesSPhotoscreen", R.string.propertiesPhotos_screen)
+
 }

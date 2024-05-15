@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="screenPadding">12dp</dimen>
+    <dimen name="itemInListPadding">8dp</dimen>
+    <dimen name="columnPadding">8dp</dimen>
+    <dimen name="roundedCornerPadding">8dp</dimen>
+</resources>

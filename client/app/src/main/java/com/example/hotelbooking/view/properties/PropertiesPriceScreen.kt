@@ -1,6 +1,7 @@
 package com.example.hotelbooking.view.properties
 
-import androidx.compose.foundation.border
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -13,10 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.OutlinedCard
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults.shape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,10 +23,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.hotelbooking.ui.utility.AppBar
+import androidx.compose.ui.unit.sp
+import com.example.hotelbooking.R
 import com.example.hotelbooking.navigation.Route
+import com.example.hotelbooking.ui.utility.AppBar
 
 @Composable
 fun PropertiesPriceScreen() {
@@ -37,7 +40,7 @@ fun PropertiesPriceScreen() {
     Scaffold(
         topBar = {
             AppBar(
-                currentScreen = Route.ProfileScreen,
+                currentScreen = Route.PropertiesPriceScreen,
                 currentScreenName = "Giá cả",
                 canNavigateBack = false,
                 navigateUp = { /*TODO*/ })
@@ -45,10 +48,12 @@ fun PropertiesPriceScreen() {
     ) {paddingValues ->
         Column (
             modifier = Modifier
-                .fillMaxSize().padding(paddingValues).padding(8.dp)
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(dimensionResource(R.dimen.screenPadding))
         ){
             Column {
-                CommonText(text = "Giá/đêm( ngày thường)")
+                CommonHeaderText(text = "Giá/đêm( ngày thường)")
                 PriceRow(price = giaNgayThuong,
                     onPriceChange = {giaNgayThuong = it.toLong()},
                     modifier = Modifier
@@ -57,7 +62,7 @@ fun PropertiesPriceScreen() {
                 )
             }
             Column {
-                CommonText(text = "Giá/đêm( cuối tuần)")
+                CommonHeaderText(text = "Giá/đêm( cuối tuần)")
                 PriceRow(price = giaCuoiTuan,
                     onPriceChange = {giaCuoiTuan = it.toLong()},
                     modifier = Modifier
@@ -74,25 +79,40 @@ fun PriceRow(price: Long, onPriceChange: (String) -> (Unit),modifier: Modifier =
     Row(
         modifier = modifier.height(IntrinsicSize.Min),
         verticalAlignment = Alignment.CenterVertically
-    ){
-        OutlinedCard {
-            Text(
-                text = "VNĐ",
-                modifier = Modifier.padding(8.dp)
-            )
+    ) {
+        OutlinedCard(
+            modifier = Modifier
+                .weight(1 / 4f),
+            border = BorderStroke(2.dp, Color.Gray),
+            shape = RoundedCornerShape(dimensionResource(id = R.dimen.roundedCornerPadding))
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+            ) {
+                CommonBodyText(
+                    text = "VNĐ",
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
         }
         Spacer(Modifier.width(8.dp))
         OutlinedCard(
             modifier = Modifier
-                .weight(1f)
+                .weight(1f),
+            border = BorderStroke(2.dp, Color.Gray),
+            shape = RoundedCornerShape(dimensionResource(id = R.dimen.roundedCornerPadding))
         ) {
             BasicTextField(
                 value = price.toString(),
                 onValueChange = onPriceChange,
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier.padding(8.dp).fillMaxWidth(),
+                textStyle = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                ),
             )
         }
-
     }
 }
 @Preview(showBackground = true)

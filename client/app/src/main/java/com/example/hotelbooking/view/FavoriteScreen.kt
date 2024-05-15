@@ -12,10 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.hotelbooking.BottomNavigationBar
-import com.example.hotelbooking.ui.utility.AppBar
 import com.example.hotelbooking.navigation.Route
 import com.example.hotelbooking.ui.model.Hotel
 import com.example.hotelbooking.ui.model.sampleData
+import com.example.hotelbooking.ui.utility.AppBar
 
 @Composable
 fun FavoriteScreen(favoriteHotelList: List<Hotel>){
@@ -35,7 +35,7 @@ fun FavoriteScreen(favoriteHotelList: List<Hotel>){
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(innerpadding)
-                .padding(8.dp),
+                .padding(start = 8.dp, end = 8.dp,top = 8.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(favoriteHotelList) {
