@@ -14,7 +14,7 @@ router.get('/search', verifyToken, async (req: Request, res: Response) => {
     try {
         var { destination, checkIn, checkOut, ...query } = req.query;
         query = constructSearchQuery(req.query);
-        let sortOptions = {};
+        let sortOptions: any = {};
         switch (req.query.sortOption) {
             case 'starRating':
                 sortOptions = { starRating: -1 };
@@ -26,14 +26,11 @@ router.get('/search', verifyToken, async (req: Request, res: Response) => {
                 sortOptions = { pricePerNightWeekdays: -1 };
                 break;
         }
-        query = { ...query, ...sortOptions };
 
         const pageSize = 5;
         const pageNumber = parseInt(req.query.page ? req.query.page.toString() : '1');
         //pages to skip
         const skip = (pageNumber - 1) * pageSize;
-
-        const isHotelsExist = await Hotel.exists(query);
 
         var hotels = [];
         var user = null;
@@ -51,49 +48,70 @@ router.get('/search', verifyToken, async (req: Request, res: Response) => {
 
             console.log(location.data.results);
 
+            const isHotelsExist = await Hotel.exists({ ...query });
+
+            let aggregateQuery: any = [
+                {
+                    $geoNear: {
+                        near: {
+                            type: 'Point',
+                            coordinates: [
+                                location.data.results[0].geometry.location.lng,
+                                location.data.results[0].geometry.location.lat,
+                            ],
+                        },
+                        distanceField: 'dist.calculated',
+                        maxDistance: 60000,
+                        query: isHotelsExist ? query : {},
+                    },
+                },
+            ];
+
+            if (Object.keys(sortOptions).length !== 0) {
+                aggregateQuery.push({ $sort: sortOptions });
+            }
+
             [hotels, user] = await Promise.all([
-                Hotel.aggregate([
+                Hotel.aggregate(aggregateQuery).skip(skip).limit(pageSize),
+                User.updateOne(
                     {
-                        $geoNear: {
-                            near: {
-                                type: 'Point',
-                                coordinates: [
-                                    location.data.results[0].geometry.location.lng,
-                                    location.data.results[0].geometry.location.lat,
-                                ],
-                            },
-                            distanceField: 'dist.calculated',
-                            query: isHotelsExist ? query : {},
+                        _id: req.userId,
+                    },
+                    {
+                        $addToSet: {
+                            search: [
+                                {
+                                    city: location.data.results[0].compound.province,
+                                    checkIn,
+                                    checkOut,
+                                    adultCount: req.query.childCount,
+                                    childCount: req.query.adultCount,
+                                },
+                            ],
                         },
                     },
-                ])
-                    .skip(skip)
-                    .limit(pageSize),
-                User.findByIdAndUpdate(req.userId, {
-                    search: [
-                        {
-                            city: location.data.results[0].compound.province,
-                            checkIn,
-                            checkOut,
-                            adultCount: req.query.childCount,
-                            childCount: req.query.adultCount,
-                        },
-                    ],
-                }),
+                ),
             ]);
         } else {
             [hotels, user] = await Promise.all([
                 Hotel.find(query).skip(skip).limit(pageSize),
-                User.findByIdAndUpdate(req.userId, {
-                    search: [
-                        {
-                            checkIn,
-                            checkOut,
-                            adultCount: req.query.childCount,
-                            childCount: req.query.adultCount,
+                User.updateOne(
+                    {
+                        _id: req.userId,
+                    },
+                    {
+                        $addToSet: {
+                            search: [
+                                {
+                                    checkIn,
+                                    checkOut,
+                                    adultCount: req.query.childCount,
+                                    childCount: req.query.adultCount,
+                                },
+                            ],
                         },
-                    ],
-                }),
+                    },
+                ),
             ]);
         }
 
@@ -126,45 +144,43 @@ router.get('/continue-search', verifyToken, async (req: Request, res: Response) 
     }
 });
 
+router.get('/city/:latlng', async (req: Request, res: Response) => {
+    try {
+        const locationSearchParams = new URLSearchParams({
+            latlng: req.params.latlng,
+            api_key: process.env.GOONG_API_KEY,
+        } as any);
+
+        const location = await axios({
+            method: 'GET',
+            url: `https://rsapi.goong.io/Geocode?${locationSearchParams.toString()}`,
+        });
+
+        var hotels = await Hotel.find({ city: location.data.results[0].compound.province }).limit(10);
+
+        res.json({
+            data: hotels,
+        });
+    } catch (error) {
+        console.log('error', error);
+        res.status(500).json({ message: 'Something went wrong' });
+    }
+});
+
 router.get('/near-here', async (req: Request, res: Response) => {
     try {
-        var { destination, ...query } = req.query;
-
-        const isHotelsExist = await Hotel.exists(query);
-
-        var hotels = [];
-
-        if (destination) {
-            const locationSearchParams = new URLSearchParams({
-                address: destination,
-                api_key: process.env.GOONG_API_KEY,
-            } as any);
-
-            const location = await axios({
-                method: 'GET',
-                url: `https://rsapi.goong.io/Geocode?${locationSearchParams.toString()}`,
-            });
-
-            console.log(location.data.results);
-
-            hotels = await Hotel.aggregate([
-                {
-                    $geoNear: {
-                        near: {
-                            type: 'Point',
-                            coordinates: [
-                                location.data.results[0].geometry.location.lng,
-                                location.data.results[0].geometry.location.lat,
-                            ],
-                        },
-                        distanceField: 'dist.calculated',
-                        query: isHotelsExist ? query : {},
+        var hotels = await Hotel.aggregate([
+            {
+                $geoNear: {
+                    near: {
+                        type: 'Point',
+                        coordinates: [parseInt(req.query.lng as string), parseInt(req.query.lat as string)],
                     },
+                    distanceField: 'dist.calculated',
+                    maxDistance: 60000,
                 },
-            ]).limit(10);
-        } else {
-            hotels = await Hotel.find(query).limit(10);
-        }
+            },
+        ]).limit(10);
 
         res.json({
             data: hotels,
