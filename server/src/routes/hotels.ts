@@ -150,7 +150,7 @@ router.get('/auto-complete', async (req: Request, res: Response) => {
         console.log('error', error);
         res.status(500).json({ message: 'Something went wrong' });
     }
-})
+});
 
 router.get('/continue-search', verifyToken, async (req: Request, res: Response) => {
     try {
@@ -210,6 +210,14 @@ router.get('/near-here', async (req: Request, res: Response) => {
     }
 });
 
+router.get('/owner/:id', async (req: Request, res: Response) => {
+    var hotels = await Hotel.find({ userId: req.params.id }).limit(10);
+
+    res.json({
+        data: hotels,
+    });
+});
+
 router.get(
     '/:id',
     verifyToken,
@@ -248,8 +256,8 @@ router.post('/:hotelId/bookings/payment-intent', verifyToken, async (req: Reques
     const totalCost =
         hotel.pricePerNightWeekdays * numberOfWeekdayNights + hotel.pricePerNightWeekends * numberOfWeekendNights;
     const paymentIntent = await stripe.paymentIntents.create({
-        amount: totalCost * 100,
-        currency: 'usd',
+        amount: totalCost,
+        currency: 'vnd',
         metadata: {
             hotelId,
             userId: req.userId,
@@ -268,6 +276,7 @@ router.post('/:hotelId/bookings/payment-intent', verifyToken, async (req: Reques
 
     res.send(response);
 });
+
 router.post('/:hotelId/bookings', verifyToken, async (req: Request, res: Response) => {
     try {
         const paymentIntentId = req.body.paymentIntentId;
