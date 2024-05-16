@@ -133,6 +133,25 @@ router.get('/search', verifyToken, async (req: Request, res: Response) => {
     }
 });
 
+router.get('/auto-complete', async (req: Request, res: Response) => {
+    try {
+        const locationSearchParams = new URLSearchParams({
+            address: req.query.destination,
+            api_key: process.env.GOONG_API_KEY,
+        } as any);
+
+        const location = await axios({
+            method: 'GET',
+            url: `https://rsapi.goong.io/Geocode?${locationSearchParams.toString()}`,
+        });
+
+        res.json({ data: location });
+    } catch (error) {
+        console.log('error', error);
+        res.status(500).json({ message: 'Something went wrong' });
+    }
+})
+
 router.get('/continue-search', verifyToken, async (req: Request, res: Response) => {
     try {
         const user = await User.findById(req.userId).select('search');
