@@ -49,10 +49,9 @@ const generateHotel = async () => {
       // Read JSON files
       const fileData = fs.readFileSync(path.join(dirPath, file));
       const json = JSON.parse(fileData.toString());
-      const filteredJson = json.filter((item :any) => Object.values(item).some(value => value !== ''));
-      console.log('JSON file:', filteredJson);
+      const filteredJson = json.filter((item :any) => Object.values(item).some(value => value !== ''));//filter data has null string
 
-      for (const element of json) {
+      for (const element of filteredJson) {
         // Pick random user
         const randomIndex = Math.floor(Math.random() * users.length);
         const randomUser = users[randomIndex];
