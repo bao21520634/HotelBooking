@@ -20,9 +20,10 @@ export type HotelType = {
     location: Object;
     description: string;
     type: string;
-    adultCount: number;
-    childCount: number;
+    guestCount: number;
     facilities: string[];
+    bedrooms: Array<Object>;
+    interior: Array<Object>;
     pricePerNightWeekdays: number;
     pricePerNightWeekends: number;
     starRating: number;

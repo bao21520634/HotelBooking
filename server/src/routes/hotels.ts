@@ -245,13 +245,15 @@ router.get(
 );
 
 router.post('/:hotelId/bookings/payment-intent', verifyToken, async (req: Request, res: Response) => {
-    const { numberOfWeekdayNights, numberOfWeekendNights } = req.body;
+    const { checkin, checkout } = req.body;
     const hotelId = req.params.hotelId;
 
     const hotel = await Hotel.findById(hotelId);
     if (!hotel) {
         return res.status(400).json({ message: 'Hotel not found' });
     }
+
+    const { numberOfWeekdayNights, numberOfWeekendNights }: any = datesCount(checkin, checkout);
 
     const totalCost =
         hotel.pricePerNightWeekdays * numberOfWeekdayNights + hotel.pricePerNightWeekends * numberOfWeekendNights;
@@ -364,6 +366,22 @@ const constructSearchQuery = (queryParams: any) => {
     }
 
     return constructedQuery;
+};
+
+const datesCount = (startDate: any, endDate: any) => {
+    var startDate: any = new Date(startDate);
+    var endDate: any = new Date(endDate);
+    let countWeekdays = 0;
+    let countWeekends = 0;
+    const curDate = new Date(startDate.getTime());
+    while (curDate <= endDate) {
+        const dayOfWeek = curDate.getDay();
+        if (dayOfWeek !== 0 && dayOfWeek !== 6) countWeekdays++;
+        else countWeekends++;
+        curDate.setDate(curDate.getDate() + 1);
+    }
+
+    return { countWeekdays, countWeekends };
 };
 
 export default router;
