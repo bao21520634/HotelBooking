@@ -1,32 +1,32 @@
 package com.example.hotelbooking.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navigation
+import com.example.hotelbooking.HomeScreen
+import com.example.hotelbooking.ui.model.sampleData
+import com.example.hotelbooking.view.homepage.HomePageSearchScreen
 
 object EndPoints {
     const val ID = "id"
 }
 
 @Composable
-fun NavGraph() {
-    val navController = rememberNavController()
-
+fun NavGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = Route.OnBoardingScreen.route
+        route = Graph.ROOT,
+        startDestination = Graph.HOME
     ) {
-        navigation(
-            route = Route.HomeScreen.route,
-            startDestination = Route.OnBoardingScreen.route
-        ) {
-            composable(route = Route.OnBoardingScreen.route) {
-//                val viewModel: OnBoardingViewModel = hiltViewModel()
-//                OnBoardingScreen(onEvent = viewModel::onEvent)
-            }
+        composable(route = Graph.HOME){
+            HomeScreen()
         }
     }
+}
 
+object Graph {
+    const val ROOT = "root_graph"
+    const val AUTHENTICATION = "auth_graph"
+    const val HOME = "home_graph"
 }

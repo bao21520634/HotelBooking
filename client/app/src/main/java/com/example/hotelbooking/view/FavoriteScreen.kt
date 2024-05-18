@@ -27,9 +27,6 @@ fun FavoriteScreen(favoriteHotelList: List<Hotel>){
                 canNavigateBack = false,
                 navigateUp = { /*TODO*/ })
         },
-        bottomBar = {
-            BottomNavigationBar()
-        }
     ) {innerpadding ->
         LazyColumn(
             modifier = Modifier

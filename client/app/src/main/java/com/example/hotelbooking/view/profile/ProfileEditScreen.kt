@@ -47,9 +47,6 @@ fun ProfileEditScreen(){
                 canNavigateBack = true,
                 navigateUp = { /*TODO*/ })
         },
-        bottomBar = {
-            BottomNavigationBar()
-        }
     ) {innerpadding ->
         Column(
             modifier = Modifier

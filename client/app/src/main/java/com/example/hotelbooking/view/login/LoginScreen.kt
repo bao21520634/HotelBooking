@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,11 +28,17 @@ import com.example.hotelbooking.ui.utility.ImportantButtonLogin
 import com.example.hotelbooking.ui.utility.InfoTextField
 
 @Composable
-fun LoginScreen(modifier: Modifier = Modifier){
+fun LoginScreen(
+    modifier: Modifier = Modifier,
+    openSignUpScreen: () -> Unit,
+    openHomeScreen: () -> Unit
+){
     var username: String by remember{ mutableStateOf("") };
     var password: String by remember{ mutableStateOf("") };
     Column(
-        modifier = modifier.fillMaxSize().padding(16.dp),
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
     ){
         Text(
@@ -58,7 +65,7 @@ fun LoginScreen(modifier: Modifier = Modifier){
             action = {},
             modifier = Modifier.align(Alignment.End)
         )
-        ImportantButtonLogin(text = "Đăng nhập", onAction = {})
+        ImportantButtonLogin(text = "Đăng nhập", onAction = {openHomeScreen()})
 
         Row(
             modifier = Modifier.align(Alignment.Start),
@@ -68,12 +75,14 @@ fun LoginScreen(modifier: Modifier = Modifier){
                 text= "Bạn chưa có tài khoản?"
             )
             Spacer(Modifier.width(4.dp))
-            ActionText(text = "Đăng ký", action = { /*TODO*/ })
+            TextButton(onClick = { openSignUpScreen() }) {
+                Text(text = "Đăng ký")
+            }
         }
     }
 }
-@Preview(showBackground = true)
-@Composable
-fun LoginScreenPreview(){
-    LoginScreen()
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun LoginScreenPreview(){
+//    LoginScreen()
+//}

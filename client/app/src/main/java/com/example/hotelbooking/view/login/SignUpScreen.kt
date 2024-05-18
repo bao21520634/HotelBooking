@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,7 +28,10 @@ import com.example.hotelbooking.ui.utility.ImportantButtonLogin
 import com.example.hotelbooking.ui.utility.InfoTextField
 
 @Composable
-fun SignUpScreen(modifier: Modifier = Modifier){
+fun SignUpScreen(
+    modifier: Modifier = Modifier,
+    openLogInScreen:() ->Unit
+){
     var email: String by remember{ mutableStateOf("") };
     var username: String by remember{ mutableStateOf("") };
     var password: String by remember{ mutableStateOf("") };
@@ -71,7 +75,7 @@ fun SignUpScreen(modifier: Modifier = Modifier){
             modifier = Modifier.align(Alignment.CenterHorizontally)
         );
 
-        ImportantButtonLogin(text = "Đăng nhập", onAction = {})
+        ImportantButtonLogin(text = "Đăng ký", onAction = {openLogInScreen()})
 
         Row(
             modifier = Modifier.align(Alignment.Start),
@@ -81,12 +85,14 @@ fun SignUpScreen(modifier: Modifier = Modifier){
                 text= "Bạn đã có tài khoản?"
             )
             Spacer(Modifier.width(4.dp))
-            ActionText(text = "Đăng nhập", action = { /*TODO*/ })
+            TextButton(onClick = { openLogInScreen() }) {
+                Text(text = "Đăng nhập")
+            }
         }
     }
 }
-@Preview(showBackground = true)
-@Composable
-fun SignUpScreenPreview(){
-    SignUpScreen()
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun SignUpScreenPreview(){
+//    SignUpScreen()
+//}

@@ -53,9 +53,7 @@ fun HomePageSearchScreen(hotelList: List<Hotel>, modifier: Modifier = Modifier){
                 canNavigateBack = false,
                 navigateUp = { /*TODO*/ })
         },
-        bottomBar = {
-            BottomNavigationBar();
-        }
+
 
     ){ innerPadding->
         Column(

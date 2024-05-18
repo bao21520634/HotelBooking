@@ -25,4 +25,8 @@
     <string name="okRating">Ổn</string>
     <string name="goodRating">Tốt</string>
     <string name="veryGoodRating">Rất tốt</string>
+
+    <string name="login_screen">Đăng nhập</string>
+    <string name="signUp_screen">Đăng ký</string>
+    <string name="forgotPassword_screen">Quên mật khẩu</string>
 </resources>
