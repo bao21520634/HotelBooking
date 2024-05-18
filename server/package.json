@@ -4,11 +4,14 @@
     "description": "",
     "main": "index.ts",
     "scripts": {
-        "start": "nodemon src/index.ts"
+        "start": "nodemon src/index.ts",
+        "seed": "nodemon src/seeders/index.ts",
+        "seed:fresh": "nodemon src/seeders/fresh.ts"
     },
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "@faker-js/faker": "^8.4.1",
         "axios": "^1.6.8",
         "bcryptjs": "^2.4.3",
         "cloudinary": "^2.0.3",
