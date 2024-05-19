@@ -22,7 +22,10 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.hotelbooking.BottomBarScreen
 import com.example.hotelbooking.R
+import com.example.hotelbooking.navigation.Route
 import com.example.hotelbooking.ui.utility.ActionText
 import com.example.hotelbooking.ui.utility.ImportantButtonLogin
 import com.example.hotelbooking.ui.utility.InfoTextField
@@ -30,8 +33,8 @@ import com.example.hotelbooking.ui.utility.InfoTextField
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
-    openSignUpScreen: () -> Unit,
-    openHomeScreen: () -> Unit
+    openSignUpScreen:() -> Unit,
+    openHomeScreen:() ->Unit
 ){
     var username: String by remember{ mutableStateOf("") };
     var password: String by remember{ mutableStateOf("") };
@@ -65,17 +68,21 @@ fun LoginScreen(
             action = {},
             modifier = Modifier.align(Alignment.End)
         )
-        ImportantButtonLogin(text = "Đăng nhập", onAction = {openHomeScreen()})
+        ImportantButtonLogin(text = "Đăng nhập", onAction = {
+            openHomeScreen()
+        })
 
         Row(
             modifier = Modifier.align(Alignment.Start),
             verticalAlignment = Alignment.CenterVertically
         ){
-            Text(
-                text= "Bạn chưa có tài khoản?"
-            )
+//            Text(
+//                text= "Bạn chưa có tài khoản?"
+//            )
             Spacer(Modifier.width(4.dp))
-            TextButton(onClick = { openSignUpScreen() }) {
+            TextButton(onClick = {
+                openSignUpScreen()
+            }) {
                 Text(text = "Đăng ký")
             }
         }

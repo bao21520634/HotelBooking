@@ -29,4 +29,6 @@
     <string name="login_screen">Đăng nhập</string>
     <string name="signUp_screen">Đăng ký</string>
     <string name="forgotPassword_screen">Quên mật khẩu</string>
+    <string name="Auth">Xác thực</string>
+
 </resources>

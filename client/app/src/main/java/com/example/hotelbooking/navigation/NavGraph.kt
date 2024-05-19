@@ -17,8 +17,9 @@ fun NavGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
         route = Graph.ROOT,
-        startDestination = Graph.HOME
+        startDestination = Route.AuthRoute.route
     ) {
+        authNavGraph(navController)
         composable(route = Graph.HOME){
             HomeScreen()
         }
@@ -29,4 +30,5 @@ object Graph {
     const val ROOT = "root_graph"
     const val AUTHENTICATION = "auth_graph"
     const val HOME = "home_graph"
+    const val HOMEPAGE = "homepage_graph"
 }

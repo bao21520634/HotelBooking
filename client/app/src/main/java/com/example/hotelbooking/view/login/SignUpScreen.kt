@@ -22,7 +22,9 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.hotelbooking.R
+import com.example.hotelbooking.navigation.Route
 import com.example.hotelbooking.ui.utility.ActionText
 import com.example.hotelbooking.ui.utility.ImportantButtonLogin
 import com.example.hotelbooking.ui.utility.InfoTextField
@@ -30,7 +32,8 @@ import com.example.hotelbooking.ui.utility.InfoTextField
 @Composable
 fun SignUpScreen(
     modifier: Modifier = Modifier,
-    openLogInScreen:() ->Unit
+    openLoginScreen:() -> Unit
+
 ){
     var email: String by remember{ mutableStateOf("") };
     var username: String by remember{ mutableStateOf("") };
@@ -75,7 +78,9 @@ fun SignUpScreen(
             modifier = Modifier.align(Alignment.CenterHorizontally)
         );
 
-        ImportantButtonLogin(text = "Đăng ký", onAction = {openLogInScreen()})
+        ImportantButtonLogin(text = "Đăng ký", onAction = {
+            openLoginScreen()
+        })
 
         Row(
             modifier = Modifier.align(Alignment.Start),
@@ -85,7 +90,9 @@ fun SignUpScreen(
                 text= "Bạn đã có tài khoản?"
             )
             Spacer(Modifier.width(4.dp))
-            TextButton(onClick = { openLogInScreen() }) {
+            TextButton(onClick = {
+               openLoginScreen()
+            }) {
                 Text(text = "Đăng nhập")
             }
         }

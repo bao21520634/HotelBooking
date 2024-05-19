@@ -1,39 +1,31 @@
 package com.example.hotelbooking.navigation
 
 
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.hotelbooking.view.login.LoginScreen
 import com.example.hotelbooking.view.login.SignUpScreen
 
-fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
+fun NavGraphBuilder.authNavGraph(navController: NavController) {
     navigation(
-        route = Graph.AUTHENTICATION,
-        startDestination = AuthScreen.Login.route
-    ){
-        composable(route = AuthScreen.Login.route){
-            LoginScreen(
-                openSignUpScreen = { navController.navigate(AuthScreen.SignUp.route)},
-                openHomeScreen = {
-                    navController.popBackStack()
-                    navController.navigate(Graph.HOME)})
+        route = Route.AuthRoute.route,
+        startDestination = Route.LogInScreen.route
+    ) {
+        composable(route = Route.LogInScreen.route){
+            LoginScreen(openHomeScreen = {
+                navController.navigate(Route.HomeScreen.route)
+            }, openSignUpScreen = {
+                navController.navigate(Route.SignUpScreen.route)
+            })
+        } 
+        composable(route = Route.SignUpScreen.route){
+            SignUpScreen(openLoginScreen = {
+                navController.navigate(Route.LogInScreen.route)
+            })
         }
-        composable(route = AuthScreen.SignUp.route){
-            SignUpScreen(
-                openLogInScreen = {navController.navigate(AuthScreen.Login.route)}
-            )
-        }
-//        composable(route = AuthScreen.Forgot.route){
-//
-//        }
-
     }
 }
 
-sealed class AuthScreen(val route: String) {
-    object Login : AuthScreen(route = "LOGIN")
-    object SignUp : AuthScreen(route = "SIGN_UP")
-//    object Forgot : AuthScreen(route = "FORGOT")
-}
+

@@ -6,25 +6,26 @@ import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.List
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.hotelbooking.navigation.Route
 
 sealed class BottomBarScreen (
     val route: String,
     val icon: ImageVector
 ){
     data object Home: BottomBarScreen(
-        route = "home",
+        route = Route.HomeScreen.route,
         icon = Icons.Outlined.Home
     )
     data object Favorite: BottomBarScreen(
-        route = "favorite",
+        route = Route.FavoriteScreen.route,
         icon = Icons.Outlined.FavoriteBorder
     )
     data object MyBooking: BottomBarScreen(
-        route = "myBooking",
+        route = Route.MyBookingsScreen.route,
         icon = Icons.Outlined.List
     )
     data object Profile: BottomBarScreen(
-        route = "profile",
+        route = Route.ProfileScreen.route,
         icon = Icons.Outlined.AccountCircle
     )
 }

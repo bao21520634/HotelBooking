@@ -28,6 +28,7 @@ sealed class Route(
     object PropertiesPriceScreen : Route(route = "propertiesPriceScreen", R.string.propertiesPrice_screen)
     object PropertiesSPhotoscreen : Route(route = "propertiesSPhotoscreen", R.string.propertiesPhotos_screen)
 
+    object AuthRoute : Route(route = "Auth", R.string.Auth )
     object LogInScreen: Route(route = "logInScreen", R.string.login_screen)
     object SignUpScreen: Route(route = "signUpScreen", R.string.signUp_screen)
     object ForgotPassword: Route(route = "forgotPasswordScreen", R.string.forgotPassword_screen)

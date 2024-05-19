@@ -14,6 +14,7 @@ import androidx.compose.ui.input.pointer.PointerIcon.Companion.Text
 import androidx.compose.ui.semantics.SemanticsProperties.Text
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,11 +26,14 @@ import com.example.doanmobileui.ui.utility.ImportantButton
 import com.example.doanmobileui.ui.utility.InfoTextField
 
 @Composable
-fun LoginScreen(modifier: Modifier = Modifier){
+fun LoginScreen(modifier: Modifier = Modifier,
+                openSignUpScreen: () -> Unit){
     var username: String by remember{ mutableStateOf("") };
     var password: String by remember{ mutableStateOf("") };
     Column(
-        modifier = modifier.fillMaxSize().padding(16.dp),
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp,Alignment.CenterVertically),
     ){
         Text(
@@ -64,12 +68,15 @@ fun LoginScreen(modifier: Modifier = Modifier){
                 text= "Bạn chưa có tài khoản?"
             )
             Spacer(Modifier.width(4.dp))
-            ActionText(text = "Đăng kí", action = { /*TODO*/ })
+            TextButton(onClick = { openSignUpScreen() }) {
+                Text(text = "Đăng ký")
+
+            }
         }
     }
 }
 @Preview(showBackground = true)
 @Composable
 fun LoginScreenPreview(){
-    LoginScreen()
+    LoginScreen(openSignUpScreen = { })
 }
