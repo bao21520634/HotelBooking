@@ -23,7 +23,8 @@ import com.example.hotelbooking.ui.utility.ImportantButtonLogin
 import com.example.hotelbooking.ui.utility.InfoTextField
 
 @Composable
-fun ForgotPassWordScreen(modifier: Modifier = Modifier){
+fun ForgotPassWordScreen(modifier: Modifier = Modifier,
+                         openResetPasswordScreen:() -> Unit){
     var email: String by remember{ mutableStateOf("") }
 
     Column(
@@ -47,12 +48,12 @@ fun ForgotPassWordScreen(modifier: Modifier = Modifier){
             promptText = "Email của bạn",
             modifier = Modifier.align(Alignment.CenterHorizontally)
         );
-        ImportantButtonLogin(text = "Gửi", onAction = {})
+        ImportantButtonLogin(text = "Gửi", onAction = {openResetPasswordScreen()})
 
     }
 }
 @Preview(showBackground = true)
 @Composable
 fun ForgotPassWordScreenPreview(){
-    ForgotPassWordScreen()
+    ForgotPassWordScreen(openResetPasswordScreen = {})
 }

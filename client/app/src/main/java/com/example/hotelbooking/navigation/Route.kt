@@ -32,6 +32,7 @@ sealed class Route(
     object LogInScreen: Route(route = "logInScreen", R.string.login_screen)
     object SignUpScreen: Route(route = "signUpScreen", R.string.signUp_screen)
     object ForgotPassword: Route(route = "forgotPasswordScreen", R.string.forgotPassword_screen)
+    object ResetPassword: Route(route = "resetPassword", R.string.resetPassword_screen)
 
 
 }

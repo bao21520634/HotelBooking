@@ -20,7 +20,7 @@ fun NavGraph(navController: NavHostController) {
         startDestination = Route.AuthRoute.route
     ) {
         authNavGraph(navController)
-        composable(route = Graph.HOME){
+        composable(route = Route.HomeScreen.route){
             HomeScreen()
         }
     }

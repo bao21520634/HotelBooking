@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -51,7 +53,7 @@ fun SignUpScreen(
             style = MaterialTheme.typography.titleLarge,
             color = colorResource(R.color.dark_blue),
             fontWeight = FontWeight.Bold,
-            fontSize = 24.sp,
+            fontSize = 28.sp,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
 
@@ -87,12 +89,18 @@ fun SignUpScreen(
             verticalAlignment = Alignment.CenterVertically
         ){
             Text(
-                text= "Bạn đã có tài khoản?"
+                text= "Bạn đã có tài khoản?",
+                fontSize = 14.sp
             )
             Spacer(Modifier.width(4.dp))
             TextButton(onClick = {
                openLoginScreen()
-            }) {
+            },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Transparent,
+                    contentColor = colorResource(id = R.color.primary)
+                )
+            ) {
                 Text(text = "Đăng nhập")
             }
         }
