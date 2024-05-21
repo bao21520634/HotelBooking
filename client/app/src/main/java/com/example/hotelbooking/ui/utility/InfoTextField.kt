@@ -44,7 +44,7 @@ fun InfoTextField(value: String, onValueChange: (String) -> (Unit),
         ),
         textStyle = TextStyle(
             textAlign = TextAlign.Left,
-            fontSize = 11.sp
+            fontSize = 13.sp
         )
     )
 }

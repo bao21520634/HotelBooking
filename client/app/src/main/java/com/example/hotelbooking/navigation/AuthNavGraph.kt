@@ -8,6 +8,7 @@ import androidx.navigation.navigation
 import com.example.hotelbooking.BottomBarScreen
 import com.example.hotelbooking.view.login.ForgotPassWordScreen
 import com.example.hotelbooking.view.login.LoginScreen
+import com.example.hotelbooking.view.login.ResetPasswordScreen
 import com.example.hotelbooking.view.login.SignUpScreen
 
 fun NavGraphBuilder.authNavGraph(navController: NavController) {
@@ -37,7 +38,7 @@ fun NavGraphBuilder.authNavGraph(navController: NavController) {
             })
         }
         composable(route = Route.ResetPassword.route){
-            ForgotPassWordScreen (openResetPasswordScreen = {
+            ResetPasswordScreen(openLoginScreen = {
                 navController.navigate(Route.LogInScreen.route)
             })
         }

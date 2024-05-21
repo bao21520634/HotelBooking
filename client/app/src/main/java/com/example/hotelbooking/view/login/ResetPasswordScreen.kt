@@ -69,25 +69,26 @@ fun ResetPasswordScreen(modifier: Modifier = Modifier,
         );
         ImportantButtonLogin(text = "Xác nhận", onAction = {openLoginScreen()})
 
-        Row(
-            modifier = Modifier.align(Alignment.Start),
-            verticalAlignment = Alignment.CenterVertically
-        ){
-            Text(
-                text= "Bạn đã có tài khoản?"
-            )
-            Spacer(Modifier.width(4.dp))
-            TextButton(onClick = {
-                openLoginScreen()
-            },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Transparent,
-                    contentColor = colorResource(id = R.color.primary)
-                )
-            ) {
-                Text(text = "Đăng nhập")
-            }
-        }
+//        Row(
+//            modifier = Modifier.align(Alignment.Start),
+//            verticalAlignment = Alignment.CenterVertically
+//        ){
+//            Text(
+//                text= "Bạn đã có tài khoản?",
+//                fontSize = 14.sp
+//            )
+//            Spacer(Modifier.width(4.dp))
+//            TextButton(onClick = {
+//                openLoginScreen()
+//            },
+//                colors = ButtonDefaults.buttonColors(
+//                    containerColor = Color.Transparent,
+//                    contentColor = colorResource(id = R.color.primary)
+//                )
+//            ) {
+//                Text(text = "Đăng nhập")
+//            }
+//        }
     }
 }
 @Preview(showBackground = true)
