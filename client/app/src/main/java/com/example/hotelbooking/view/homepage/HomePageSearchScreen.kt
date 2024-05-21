@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -44,8 +46,9 @@ fun HomePageSearchScreen(hotelList: List<Hotel>, modifier: Modifier = Modifier){
     var dateOut: String by remember{ mutableStateOf("25/02/2024") }
     var nofRoom: Int by remember{ mutableStateOf(0) }
     var nofGuest: Int by remember{ mutableStateOf(0) }
+
     Scaffold (
-        modifier = modifier,
+        modifier = modifier.fillMaxSize(),
         topBar = {
             AppBar(
                 currentScreen = Route.HomeScreen,

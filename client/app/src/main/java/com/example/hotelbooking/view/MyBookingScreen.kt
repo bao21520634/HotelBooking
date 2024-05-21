@@ -17,6 +17,11 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.structuralEqualityPolicy
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
@@ -35,9 +40,9 @@ import com.example.hotelbooking.ui.theme.PrimaryColor
 fun MyBookingScreen(
     hiredHotelList: List<Hotel>,
     viewedHotelList: List<Hotel>,
+    navController: NavController = rememberNavController()
 ){
-
-
+    var showHiredList by remember { mutableStateOf(true)}
 
     Scaffold(
         topBar = {
@@ -61,8 +66,8 @@ fun MyBookingScreen(
                     .fillMaxWidth()
             ){
                 Button(
-                    onClick = { /*TODO*/ },
-                    colors = ButtonDefaults.buttonColors(PrimaryColor)
+                    onClick = { showHiredList = true },
+                    colors = if (showHiredList) ButtonDefaults.buttonColors(PrimaryColor) else ButtonDefaults.textButtonColors()
                 ) {
                     Text(text = "Đã thuê")
 
@@ -70,8 +75,8 @@ fun MyBookingScreen(
                 Spacer(modifier = Modifier.width(10.dp))
 
                 Button(
-                    onClick = { /*TODO*/ },
-                    colors = ButtonDefaults.buttonColors(PrimaryColor)
+                    onClick = { showHiredList = false },
+                    colors = if (!showHiredList) ButtonDefaults.buttonColors(PrimaryColor) else ButtonDefaults.textButtonColors()
                 ) {
                     Text(text = "Đã xem")
                 }
@@ -83,7 +88,7 @@ fun MyBookingScreen(
                     .padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                items(hiredHotelList) {
+                items(if (showHiredList) hiredHotelList else viewedHotelList) {
                     HotelCard(hotel = it)
                 }
             }

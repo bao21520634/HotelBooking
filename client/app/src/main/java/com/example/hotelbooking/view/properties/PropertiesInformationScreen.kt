@@ -1,5 +1,6 @@
 package com.example.hotelbooking.view.properties
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold

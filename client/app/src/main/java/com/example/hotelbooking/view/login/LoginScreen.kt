@@ -63,15 +63,13 @@ fun LoginScreen(
             value = username,
             onValueChange = {username = it},
             promptText = "Tên đăng nhập",
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            fontSize = 1f
+            modifier = Modifier.align(Alignment.CenterHorizontally)
         );
         InfoTextField(
             value = password,
             onValueChange = {password = it},
             promptText = "Mật khẩu",
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            fontSize = 16f
+            modifier = Modifier.align(Alignment.CenterHorizontally)
         );
         ActionText(
             text = "Quên mật khẩu?",

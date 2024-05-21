@@ -25,7 +25,9 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.hotelbooking.BottomNavigationBar
 import com.example.hotelbooking.R
 import com.example.hotelbooking.navigation.Route
@@ -90,7 +92,7 @@ fun AccountThumbnail(modifier: Modifier = Modifier){
             text = "Tên đăng nhập",
             style = MaterialTheme.typography.titleLarge,
             color = colorResource(R.color.dark_blue),
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.Bold
         )
     }
 }
@@ -111,6 +113,7 @@ fun AccountSetting(@DrawableRes iconSource: Int,
         Spacer(modifier.width(4.dp))
         Text(
             text = textDescription,
+            fontSize = 18.sp
         )
     }
 }
