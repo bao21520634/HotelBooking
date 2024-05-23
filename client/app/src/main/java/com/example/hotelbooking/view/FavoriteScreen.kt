@@ -9,9 +9,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.example.hotelbooking.BottomNavigationBar
+import com.example.hotelbooking.R
 import com.example.hotelbooking.navigation.Route
 import com.example.hotelbooking.ui.model.Hotel
 import com.example.hotelbooking.ui.model.sampleData
@@ -23,7 +24,7 @@ fun FavoriteScreen(favoriteHotelList: List<Hotel>){
         topBar = {
             AppBar(
                 currentScreen = Route.FavoriteScreen,
-                currentScreenName = "Yêu thích",
+                currentScreenName = stringResource(id = R.string.favorite_screen),
                 canNavigateBack = false,
                 navigateUp = { /*TODO*/ })
         },
@@ -32,8 +33,8 @@ fun FavoriteScreen(favoriteHotelList: List<Hotel>){
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(innerpadding)
-                .padding(start = 8.dp, end = 8.dp,top = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(dimensionResource(id = R.dimen.screenPadding)),
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.itemInListPadding))
         ) {
             items(favoriteHotelList) {
                 HotelCard(hotel = it)

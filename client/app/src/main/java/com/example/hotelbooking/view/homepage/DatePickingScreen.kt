@@ -12,9 +12,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.example.datedialogssample.DateUtils
 import com.example.hotelbooking.R
 import com.example.hotelbooking.navigation.Route
@@ -28,7 +28,7 @@ fun DatePickingScreen() {
     Scaffold(
         topBar = {
             AppBar(
-                currentScreen = Route.PropertiesScreen,
+                currentScreen = Route.HomeDateScreen,
                 currentScreenName = stringResource(id = R.string.homepageDate_screen),
                 canNavigateBack = true,
                 navigateUp = { /*TODO*/ })
@@ -44,7 +44,7 @@ fun DatePickingScreen() {
         Column (
             modifier = Modifier
                 .padding(paddingValues)
-                .padding(8.dp)
+                .padding(dimensionResource(id = R.dimen.screenPadding))
         ){
             DatePicker(
                 dateFormatter = DatePickerFormatter(

@@ -5,8 +5,10 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -29,11 +31,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.hotelbooking.BottomNavigationBar
 import com.example.hotelbooking.R
 import com.example.hotelbooking.navigation.Route
 import com.example.hotelbooking.ui.model.Hotel
@@ -61,38 +63,50 @@ fun HomePageResultScreen(hotelList: List<Hotel>, modifier: Modifier = Modifier){
 
 
     ){ innerPadding->
-        Column(
+        LazyColumn(
             modifier = modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp,Alignment.CenterVertically),
+                .padding(dimensionResource(id = R.dimen.screenPadding)),
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.columnPadding),Alignment.CenterVertically),
         ) {
-            FilterBlock(
-                location = location,
-                onLocationAction = { /*TODO*/ },
-                dateIn = dateIn,
-                onDateInAction = { /*TODO*/ },
-                dateOut = dateOut,
-                onDateOutAction = { /*TODO*/ },
-                nofRoom = nofRoom,
-                nofGuest = nofGuest,
-                onBlockAction = { /*TODO*/ },
-                modifier = Modifier.fillMaxWidth())
-            ResultManipulator()
-            Text(
-                text = "Dành cho bạn",
-                style = MaterialTheme.typography.titleLarge,
-                color = colorResource(R.color.dark_blue),
-                fontWeight = FontWeight.Bold,
-            )
+            item{
+                FilterBlock(
+                    location = location,
+                    onLocationAction = { /*TODO*/ },
+                    dateIn = dateIn,
+                    onDateInAction = { /*TODO*/ },
+                    dateOut = dateOut,
+                    onDateOutAction = { /*TODO*/ },
+                    nofRoom = nofRoom,
+                    nofGuest = nofGuest,
+                    onBlockAction = { /*TODO*/ },
+                    modifier = Modifier.fillMaxWidth())
+            }
+            item{
+                ResultManipulator()
+            }
+            item{
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Dành cho bạn",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = colorResource(R.color.dark_blue),
+                    fontWeight = FontWeight.Bold,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+            items(hotelList) {
+                HotelCard(hotel = it)
+            }
+
+        }
+        Column(
+        ) {
             LazyColumn(
                 modifier = modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                items(hotelList) {
-                    HotelCard(hotel = it)
-                }
             }
         }
     }
@@ -143,7 +157,7 @@ fun ResultManipulator(modifier: Modifier = Modifier){
             }
         }
         OutlinedButton(onClick = { /*TODO*/ },
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1.3f),
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.buttonColors(
                 contentColor = PrimaryColor,

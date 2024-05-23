@@ -4,11 +4,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.hotelbooking.view.properties.CommonBodyText
 
 @Composable
 fun EditTextField(value: String, onValueChange: (String) -> (Unit),
@@ -17,10 +16,8 @@ fun EditTextField(value: String, onValueChange: (String) -> (Unit),
     Column(
         modifier = modifier.fillMaxWidth()
     ){
-        Text(
-            text = descriptionText,
-        )
+        CommonBodyText(text = descriptionText)
         Spacer(modifier.width(4.dp))
-        TextField(value = value, onValueChange = onValueChange, modifier = Modifier.fillMaxWidth())
+        InfoTextField(value = value, onValueChange = onValueChange, promptText = "", modifier = Modifier.fillMaxWidth())
     }
 }

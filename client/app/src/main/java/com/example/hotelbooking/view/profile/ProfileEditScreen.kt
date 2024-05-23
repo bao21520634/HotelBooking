@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,14 +24,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.hotelbooking.BottomNavigationBar
 import com.example.hotelbooking.R
 import com.example.hotelbooking.navigation.Route
 import com.example.hotelbooking.ui.model.Gender
+import com.example.hotelbooking.ui.theme.PrimaryColor
 import com.example.hotelbooking.ui.utility.ActionText
 import com.example.hotelbooking.ui.utility.AppBar
 import com.example.hotelbooking.ui.utility.EditTextField
@@ -43,7 +48,7 @@ fun ProfileEditScreen(){
         topBar = {
             AppBar(
                 currentScreen = Route.MyBookingsScreen,
-                currentScreenName = "",
+                currentScreenName = stringResource(id = R.string.profileEdit_screen),
                 canNavigateBack = true,
                 navigateUp = { /*TODO*/ })
         },
@@ -52,6 +57,8 @@ fun ProfileEditScreen(){
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerpadding)
+                .padding(dimensionResource(id = R.dimen.screenPadding)),
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.columnPadding))
 
         ) {
             AccountThumbnailEdit(modifier = Modifier.fillMaxWidth())
@@ -76,11 +83,19 @@ fun ProfileEditScreen(){
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxWidth()
             ){
-                Button(onClick = { /*TODO*/ }) {
-                    Text(text = "Huỷ")
+                OutlinedButton(
+                    onClick = { /*TODO*/ },
+
+                    ) {
+                    Text(text = "Hủy")
                 }
                 Spacer(Modifier.width(16.dp))
-                Button(onClick = { /*TODO*/ }) {
+                Button(onClick = { /*TODO*/ },
+                    colors = ButtonDefaults.buttonColors(
+                        contentColor = Color.White,
+                        containerColor = PrimaryColor
+                    )
+                ) {
                     Text(text = "Lưu")
                 }
             }
@@ -97,7 +112,7 @@ fun AccountThumbnailEdit(modifier: Modifier = Modifier){
     ){
         Image(
             modifier = Modifier
-                .size(64.dp)
+                .size(72.dp)
                 .clip(CircleShape),
             contentScale = ContentScale.Crop,
             painter = painterResource(R.drawable.koda),

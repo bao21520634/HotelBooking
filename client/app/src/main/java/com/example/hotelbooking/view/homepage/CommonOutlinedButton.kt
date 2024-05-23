@@ -41,7 +41,7 @@ fun CommonOutlinedButton(
         colors = CardDefaults.cardColors(
             containerColor = Color.White,
         ),
-        border = BorderStroke(3.dp, Color.Black),
+        border = BorderStroke(1.5.dp, Color.Black),
     ){
         Row(
             modifier = Modifier

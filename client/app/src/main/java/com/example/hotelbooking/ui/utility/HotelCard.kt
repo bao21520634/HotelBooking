@@ -1,3 +1,4 @@
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -10,27 +11,31 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.hotelbooking.ui.model.Hotel
-import com.example.hotelbooking.R
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hotelbooking.R
+import com.example.hotelbooking.ui.model.Hotel
 
 @Composable
 fun HotelCard(hotel: Hotel, modifier: Modifier = Modifier){
     Card(
-        modifier = modifier
+        modifier = modifier,
+        colors = CardDefaults.cardColors(
+            containerColor = Color.Transparent
+        ),
+        border = BorderStroke(1.dp,Color.Gray)
     ){
         Column(
             modifier = modifier.fillMaxWidth()
@@ -150,6 +155,9 @@ fun HotelInfo(
         Spacer(Modifier.weight(1f))
         Card(
             border = BorderStroke(1.dp, colorResource(R.color.primary)),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.Transparent
+            ),
         ){
             Text(
                 modifier = Modifier.padding(24.dp, 6.dp),

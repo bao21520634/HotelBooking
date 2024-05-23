@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,7 +42,7 @@ fun PropertiesPriceScreen() {
         topBar = {
             AppBar(
                 currentScreen = Route.PropertiesPriceScreen,
-                currentScreenName = "Giá cả",
+                currentScreenName = stringResource(id = R.string.propertiesPrice_screen),
                 canNavigateBack = false,
                 navigateUp = { /*TODO*/ })
         }
@@ -82,7 +83,7 @@ fun PriceRow(price: Long, onPriceChange: (String) -> (Unit),modifier: Modifier =
     ) {
         OutlinedCard(
             modifier = Modifier
-                .weight(1 / 4f),
+                .weight(1 / 4f).height(40.dp),
             border = BorderStroke(2.dp, Color.Gray),
             shape = RoundedCornerShape(dimensionResource(id = R.dimen.roundedCornerPadding))
         ) {
@@ -92,7 +93,7 @@ fun PriceRow(price: Long, onPriceChange: (String) -> (Unit),modifier: Modifier =
             ) {
                 CommonBodyText(
                     text = "VNĐ",
-                    modifier = Modifier.padding(8.dp)
+                    modifier = Modifier.padding(8.dp).height(44.dp)
                 )
             }
         }
