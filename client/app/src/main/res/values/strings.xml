@@ -1,14 +1,35 @@
 <resources>
     <string name="app_name">BHotel</string>
     <string name="onboarding_screen">Onboarding</string>
+
     <string name="homepage_screen">Trang chủ</string>
+    <string name="homepageResult_screen">Trang chủ</string>
+    <string name="homepageLocation_screen">Trang chủ</string>
+    <string name="homepageDate_screen">Chọn ngày</string>
+    <string name="homepageRoom_screen">Số phòng và khách</string>
+
     <string name="details_screen">Chi tiết</string>
     <string name="favorite_screen">Yêu thích</string>
     <string name="my_bookings_screen">Danh sách của bạn</string>
     <string name="profile_screen">Thông tin cá nhân</string>
+    <string name="profileEdit_screen">Chỉnh sửa thông tin</string>
+
+    <string name="properties_screen">Sở hữu của bạn</string>
+    <string name="propertiesInformation_screen">Thông tin</string>
+    <string name="propertiesDetails_screen">Chi tiết</string>
+    <string name="propertiesPrice_screen">Giá cả</string>
+    <string name="propertiesPhotos_screen">Hình ảnh</string>
+
     <string name="veryBadRating">Rất tệ</string>
     <string name="badRating">Tệ</string>
     <string name="okRating">Ổn</string>
     <string name="goodRating">Tốt</string>
     <string name="veryGoodRating">Rất tốt</string>
+
+    <string name="login_screen">Đăng nhập</string>
+    <string name="signUp_screen">Đăng ký</string>
+    <string name="forgotPassword_screen">Quên mật khẩu</string>
+    <string name="resetPassword_screen">Đặt lại mật khẩu</string>
+    <string name="Auth">Xác thực</string>
+
 </resources>

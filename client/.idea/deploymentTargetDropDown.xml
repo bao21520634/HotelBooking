@@ -2,31 +2,6 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="ForgotPassWordScreenPreview">
-        <State />
-      </entry>
-      <entry key="LoginScreenPreview">
-        <State />
-      </entry>
-      <entry key="ResetPasswordScreenPreview">
-        <State>
-          <runningDeviceTargetSelectedWithDropDown>
-            <Target>
-              <type value="RUNNING_DEVICE_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="SERIAL_NUMBER" />
-                  <value value="adb-PRUCYHTO4THMDEZ5-vhcy4o._adb-tls-connect._tcp" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </runningDeviceTargetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-05-03T01:50:18.959613900Z" />
-        </State>
-      </entry>
-      <entry key="SplashScreenPreview">
-        <State />
-      </entry>
       <entry key="app">
         <State />
       </entry>
