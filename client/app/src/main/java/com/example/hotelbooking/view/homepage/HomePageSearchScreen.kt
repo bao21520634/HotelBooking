@@ -37,16 +37,21 @@ import com.example.hotelbooking.ui.model.sampleData
 import com.example.hotelbooking.ui.utility.AppBar
 import com.example.hotelbooking.ui.utility.ImportantButtonMain
 
-
 @Composable
-fun HomePageSearchScreen(hotelList: List<Hotel>, modifier: Modifier = Modifier){
-    var location: String by remember{ mutableStateOf("Thủ đức, TPHCM") }
-    var dateIn: String by remember{ mutableStateOf("18/02/2024") }
-    var dateOut: String by remember{ mutableStateOf("25/02/2024") }
-    var nofRoom: Int by remember{ mutableStateOf(0) }
-    var nofGuest: Int by remember{ mutableStateOf(0) }
+fun HomePageSearchScreen(
+    hotelList: List<Hotel>,
+    modifier: Modifier = Modifier,
+    openDateScreen: () -> Unit,
+    openResultScreen: () -> Unit,
+    openRoomScreen: () -> Unit
+) {
+    var location: String by remember { mutableStateOf("Thủ đức, TPHCM") }
+    val dateIn: String by remember { mutableStateOf("18/02/2024") }
+    val dateOut: String by remember { mutableStateOf("25/02/2024") }
+    var nofRoom: Int by remember { mutableStateOf(0) }
+    var nofGuest: Int by remember { mutableStateOf(0) }
 
-    Scaffold (
+    Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
             AppBar(
@@ -55,31 +60,30 @@ fun HomePageSearchScreen(hotelList: List<Hotel>, modifier: Modifier = Modifier){
                 canNavigateBack = false,
                 navigateUp = { /*TODO*/ })
         },
-
-
-    ){ innerPadding->
+    ) { innerPadding ->
         LazyColumn(
             modifier = modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                    .padding(dimensionResource(id = R.dimen.screenPadding)),
-            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.columnPadding),Alignment.CenterVertically),
+                .padding(dimensionResource(id = R.dimen.screenPadding)),
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.columnPadding), Alignment.CenterVertically),
         ) {
-            item{
+            item {
                 FilterBlock(
                     location = location,
                     onLocationAction = { /*TODO*/ },
                     dateIn = dateIn,
-                    onDateInAction = { /*TODO*/ },
+                    onDateInAction = { openDateScreen() },
                     dateOut = dateOut,
-                    onDateOutAction = { /*TODO*/ },
+                    onDateOutAction = { openDateScreen() },
                     nofRoom = nofRoom,
                     nofGuest = nofGuest,
-                    onBlockAction = { /*TODO*/ },
-                    modifier = Modifier.fillMaxWidth())
+                    onBlockAction = { openRoomScreen() },
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
-            item{
-                ImportantButtonMain(text = "Tìm kiếm", onClick = { /*TODO*/ })
+            item {
+                ImportantButtonMain(text = "Tìm kiếm", onClick = { openResultScreen() })
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = "Dành cho bạn",
@@ -94,51 +98,65 @@ fun HomePageSearchScreen(hotelList: List<Hotel>, modifier: Modifier = Modifier){
             }
         }
     }
-
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FilterBlock(location: String, onLocationAction: ()->(Unit),
-                dateIn: String, onDateInAction: ()->(Unit),
-                dateOut: String, onDateOutAction: ()->(Unit),
-                nofRoom: Int,
-                nofGuest: Int, onBlockAction: ()->(Unit),
-                modifier: Modifier = Modifier){
-
+fun FilterBlock(
+    location: String, onLocationAction: () -> Unit,
+    dateIn: String, onDateInAction: () -> Unit,
+    dateOut: String, onDateOutAction: () -> Unit,
+    nofRoom: Int, nofGuest: Int, onBlockAction: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        CommonOutlinedButton(value = location, label = "Điểm đến",
-            onAction = { /*TODO*/ },
-            leadingIconSource = R.drawable.baseline_location_searching_24)
+        CommonOutlinedButton(
+            value = location, label = "Điểm đến",
+            onAction = { onLocationAction() },
+            leadingIconSource = R.drawable.baseline_location_searching_24
+        )
 
-        Row (
+        Row(
             modifier = modifier.height(IntrinsicSize.Min),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
-        ){
-            Column (
-                modifier = modifier.weight(3/5f),
+        ) {
+            Column(
+                modifier = modifier.weight(3 / 5f),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
-            ){
-                CommonOutlinedButton(value = dateIn, label = "Ngày nhận",
-                    onAction = { /*TODO*/ },
-                    leadingIconSource = R.drawable.baseline_date_range_24)
-                CommonOutlinedButton(value = dateOut, label = "Ngày trả",
-                    onAction = { /*TODO*/ },
-                    leadingIconSource = R.drawable.baseline_date_range_24)
+            ) {
+                CommonOutlinedButton(
+                    value = dateIn, label = "Ngày nhận",
+                    onAction = { onDateInAction() },
+                    leadingIconSource = R.drawable.baseline_date_range_24
+                )
+                CommonOutlinedButton(
+                    value = dateOut, label = "Ngày trả",
+                    onAction = { onDateOutAction() },
+                    leadingIconSource = R.drawable.baseline_date_range_24
+                )
             }
-            OutlinedBlock(nofRoom = nofRoom, nofGuest = nofGuest,
-                onAction = { /*TODO*/ },
-                modifier = Modifier.weight(2/5f)
+            OutlinedBlock(
+                nofRoom = nofRoom, nofGuest = nofGuest,
+                onAction = { onBlockAction() },
+                modifier = Modifier
+                    .weight(2 / 5f)
                     .fillMaxHeight()
             )
         }
     }
 }
+
 @Preview(showBackground = true)
 @Composable
-fun HomePageSearchScreenPreview(){
-    HomePageSearchScreen(sampleData)
+fun HomePageSearchScreenPreview() {
+    HomePageSearchScreen(
+        sampleData,
+        openResultScreen = {},
+        openDateScreen = {},
+        openRoomScreen = {}
+    )
 }

@@ -1,5 +1,7 @@
 package com.example.hotelbooking
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalAbsoluteTonalElevation
@@ -15,7 +17,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.contentColorFor
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -23,6 +27,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.hotelbooking.navigation.HomeNavGraph
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(navController: NavHostController = rememberNavController()) {
     Scaffold(
@@ -40,13 +45,13 @@ fun BottomNavigationBar(navController: NavHostController) {
         BottomBarScreen.MyBooking,
         BottomBarScreen.Profile
     )
-    NavigationBar {
+    NavigationBar(containerColor = Color.White) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry?.destination
 
         val bottomBarDestination = screens.any { it.route == currentDestination?.route }
         if (bottomBarDestination) {
-            BottomAppBar {
+            BottomAppBar(containerColor = Color.White) {
                 screens.forEach { screen ->
                     AddItem(
                         screen = screen,

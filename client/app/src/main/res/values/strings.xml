@@ -3,8 +3,10 @@
     <string name="onboarding_screen">Onboarding</string>
 
     <string name="homepage_screen">Trang chủ</string>
+    <string name="homepageSearch_screen">Trang chủ</string>
     <string name="homepageResult_screen">Trang chủ</string>
     <string name="homepageLocation_screen">Trang chủ</string>
+    <string name="Home">Trang chủ</string>
     <string name="homepageDate_screen">Chọn ngày</string>
     <string name="homepageRoom_screen">Số phòng và khách</string>
 

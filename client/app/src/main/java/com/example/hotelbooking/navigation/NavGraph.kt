@@ -1,5 +1,7 @@
 package com.example.hotelbooking.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -12,6 +14,7 @@ object EndPoints {
     const val ID = "id"
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavGraph(navController: NavHostController) {
     NavHost(
@@ -28,7 +31,5 @@ fun NavGraph(navController: NavHostController) {
 
 object Graph {
     const val ROOT = "root_graph"
-    const val AUTHENTICATION = "auth_graph"
     const val HOME = "home_graph"
-    const val HOMEPAGE = "homepage_graph"
 }

@@ -45,7 +45,12 @@ import com.example.hotelbooking.ui.utility.AppBar
 
 
 @Composable
-fun HomePageResultScreen(hotelList: List<Hotel>, modifier: Modifier = Modifier){
+fun HomePageResultScreen(
+    hotelList: List<Hotel>,
+    modifier: Modifier = Modifier,
+    openDateScreen:() ->Unit,
+    openRoomScreen:() ->Unit
+){
     var location: String by remember{ mutableStateOf("Thủ đức, TPHCM") }
     var dateIn: String by remember{ mutableStateOf("18/02/2024") }
     var dateOut: String by remember{ mutableStateOf("25/02/2024") }
@@ -75,16 +80,16 @@ fun HomePageResultScreen(hotelList: List<Hotel>, modifier: Modifier = Modifier){
                     location = location,
                     onLocationAction = { /*TODO*/ },
                     dateIn = dateIn,
-                    onDateInAction = { /*TODO*/ },
+                    onDateInAction = { openDateScreen() },
                     dateOut = dateOut,
-                    onDateOutAction = { /*TODO*/ },
+                    onDateOutAction = { openDateScreen() },
                     nofRoom = nofRoom,
                     nofGuest = nofGuest,
-                    onBlockAction = { /*TODO*/ },
+                    onBlockAction = { openRoomScreen() },
                     modifier = Modifier.fillMaxWidth())
             }
             item{
-                ResultManipulator()
+                ResultManipulator(openSearchScreen = {})
             }
             item{
                 Spacer(modifier = Modifier.height(8.dp))
@@ -113,12 +118,15 @@ fun HomePageResultScreen(hotelList: List<Hotel>, modifier: Modifier = Modifier){
 
 }
 @Composable
-fun ResultManipulator(modifier: Modifier = Modifier){
+fun ResultManipulator(
+    modifier: Modifier = Modifier,
+    openSearchScreen: () -> Unit
+){
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ){
-        OutlinedButton(onClick = { /*TODO*/ },
+        OutlinedButton(onClick = { openSearchScreen() },
             modifier = Modifier.weight(1f),
             shape = RoundedCornerShape(8.dp),
             border = BorderStroke(2.dp, Color.Red),
@@ -180,5 +188,5 @@ fun ResultManipulator(modifier: Modifier = Modifier){
 @Preview(showBackground = true)
 @Composable
 fun HomePageResultScreenPreview(){
-    HomePageResultScreen(sampleData)
+    HomePageResultScreen(sampleData, openDateScreen = {}, openRoomScreen = {})
 }

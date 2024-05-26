@@ -2,6 +2,7 @@ package com.example.hotelbooking.view.profile
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,7 +37,10 @@ import com.example.hotelbooking.navigation.Route
 import com.example.hotelbooking.ui.utility.AppBar
 
 @Composable
-fun ProfileScreen(){
+fun ProfileScreen(openEditProfileScreen:() -> Unit,
+                  openPassWordChangeScreen:() ->Unit,
+                  logOut:() ->Unit,
+                  openOwnerScreen:() -> Unit){
     Scaffold(
         topBar = {
             AppBar(
@@ -61,16 +65,31 @@ fun ProfileScreen(){
             Column (
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ){
-                AccountSetting(iconSource = R.drawable.baseline_supervisor_account_24,
-                    textDescription = "Chỉnh sửa thông tin")
-                AccountSetting(iconSource = R.drawable.baseline_list_alt_24,
-                    textDescription = "Đã đăng tải")
-                AccountSetting(iconSource = R.drawable.baseline_lock_outline_24,
-                    textDescription = "Đổi mật khẩu")
-                AccountSetting(iconSource = R.drawable.baseline_logout_24,
-                    textDescription = "Đăng xuất")
-                AccountSetting(iconSource = R.drawable.baseline_house_24,
-                    textDescription = "Sở hữu")
+                AccountSetting(
+                    iconSource = R.drawable.baseline_supervisor_account_24,
+                    textDescription = "Chỉnh sửa thông tin",
+                    onClick = {openEditProfileScreen()}
+                )
+                AccountSetting(
+                    iconSource = R.drawable.baseline_list_alt_24,
+                    textDescription = "Đã đăng tải",
+                    onClick = {}
+                )
+                AccountSetting(
+                    iconSource = R.drawable.baseline_lock_outline_24,
+                    textDescription = "Đổi mật khẩu",
+                    onClick = {openPassWordChangeScreen()}
+                )
+                AccountSetting(
+                    iconSource = R.drawable.baseline_logout_24,
+                    textDescription = "Đăng xuất",
+                    onClick = {logOut()}
+                )
+                AccountSetting(
+                    iconSource = R.drawable.baseline_house_24,
+                    textDescription = "Sở hữu",
+                    onClick = {openOwnerScreen()}
+                )
             }
     }
 
@@ -80,7 +99,8 @@ fun ProfileScreen(){
 @Composable
 fun AccountThumbnail(@DrawableRes imageSource: Int,
                      accountName: String = "Tên đăng nhập",
-                     modifier: Modifier = Modifier){
+                     modifier: Modifier = Modifier,
+    ){
     Column (
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -109,10 +129,12 @@ fun AccountThumbnail(@DrawableRes imageSource: Int,
 @Composable
 fun AccountSetting(@DrawableRes iconSource: Int,
                    textDescription: String,
-                   action: ()->(Unit) = {},
+                   onClick: ()->(Unit) = {},
                    modifier: Modifier = Modifier){
     Row(
-        modifier = modifier,
+        modifier = modifier.fillMaxWidth()
+            .clickable { onClick() }
+            .padding(vertical = 3.dp),
         verticalAlignment = Alignment.CenterVertically,
 
     ){
@@ -126,8 +148,8 @@ fun AccountSetting(@DrawableRes iconSource: Int,
             style = TextStyle(
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Medium,
-
             )
+
         )
     }
 }
@@ -135,5 +157,5 @@ fun AccountSetting(@DrawableRes iconSource: Int,
 @Preview(showBackground = true)
 @Composable
 fun ProfileScreenPreview(){
-    ProfileScreen();
+    ProfileScreen(openEditProfileScreen = {}, openOwnerScreen =  {}, openPassWordChangeScreen = {}, logOut = {});
 }
