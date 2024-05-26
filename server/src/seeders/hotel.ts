@@ -29,7 +29,7 @@ const createHotel = (userJson: any, hotelJson: any) => {
         pricePerNightWeekdays: pricePerNightWeekdays,
         pricePerNightWeekends: pricePerNightWeekdays + Math.pow(10, pricePerNightWeekdays.toString().length - 1),
         starRating: hotelJson.ratingStars,
-        imageUrls: hotelJson.images,
+        imageUrls: hotelJson.images.filter((image: any) => !image.includes('https://www.booking.com/hotel')),
         lastUpdated: new Date(),
         bookings: [],
     };

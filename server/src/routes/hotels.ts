@@ -10,6 +10,60 @@ import axios from 'axios';
 const stripe = new Stripe(process.env.STRIPE_API_KEY as string);
 const router = express.Router();
 
+router.get('/top-search', async (req: Request, res: Response) => {
+    try {
+        const data = await User.aggregate([
+            {
+                $group: {
+                    _id: '$search.city',
+                    count: { $sum: 1 },
+                },
+            },
+            { $sort: { count: -1 } },
+            {
+                $match: {
+                    '_id.0': {
+                        $exists: true,
+                    },
+                },
+            },
+            {
+                $lookup: {
+                    from: 'hotels',
+                    localField: '_id',
+                    foreignField: 'city',
+                    as: 'hotels',
+                },
+            },
+            { $limit: 10 },
+        ]);
+
+        res.json({ data });
+    } catch (error) {
+        console.log('error', error);
+        res.status(500).json({ message: 'Something went wrong' });
+    }
+});
+
+router.get('/top-bookings', async (req: Request, res: Response) => {
+    try {
+        const data = await Hotel.aggregate([
+            {
+                $addFields: {
+                    length: { $size: '$bookings' },
+                },
+            },
+            { $sort: { length: -1 } },
+            { $limit: 10 },
+        ]);
+
+        res.json(data);
+    } catch (error) {
+        console.log('error', error);
+        res.status(500).json({ message: 'Something went wrong' });
+    }
+});
+
 router.get('/search', verifyToken, async (req: Request, res: Response) => {
     try {
         var { destination, checkIn, checkOut, ...query } = req.query;
@@ -145,7 +199,7 @@ router.get('/auto-complete', async (req: Request, res: Response) => {
             url: `https://rsapi.goong.io/Geocode?${locationSearchParams.toString()}`,
         });
 
-        res.json({ data: location });
+        res.json({ data: location.data.results });
     } catch (error) {
         console.log('error', error);
         res.status(500).json({ message: 'Something went wrong' });
