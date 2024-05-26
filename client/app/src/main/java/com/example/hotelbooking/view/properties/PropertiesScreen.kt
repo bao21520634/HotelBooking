@@ -26,8 +26,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.hotelbooking.R
 import com.example.hotelbooking.navigation.Route
-import com.example.hotelbooking.ui.model.Property
-import com.example.hotelbooking.ui.model.properties
+import com.example.hotelbooking.domain.model.Property
+import com.example.hotelbooking.domain.model.properties
 import com.example.hotelbooking.ui.utility.AppBar
 
 

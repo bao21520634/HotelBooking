@@ -29,8 +29,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.hotelbooking.R
-import com.example.hotelbooking.ui.model.Hotel
+import com.example.hotelbooking.domain.model.Hotel
 
 @Composable
 fun DetailScreen(hotel: Hotel){
@@ -42,9 +43,9 @@ fun DetailScreen(hotel: Hotel){
         ) {
             DetailThumbNail(hotel = hotel)
             Divider()
-            LoaiPhong(hotel = hotel)
-            NoiThat(hotel = hotel)
-            TienIch(hotel = hotel)
+            RoomType(hotel = hotel)
+            Interior(hotel = hotel)
+            Facilities(hotel = hotel)
         }
     }
 }
@@ -53,82 +54,82 @@ fun DetailThumbNail(hotel: Hotel, modifier: Modifier = Modifier){
     Column(
 
     ) {
-        Image(
+        AsyncImage(
+            model = hotel.imageUrls.first(),
+            contentDescription = hotel.name,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(160.dp)
                 .width(320.dp),
-            painter = painterResource(id = hotel.hotelThumbnail),
-            contentDescription = hotel.hotelName,
             contentScale = ContentScale.Crop
         )
         Row(
 
         ){
             Text(
-                text = hotel.hotelName,
+                text = hotel.name,
                 color = Color.Black,
                 fontFamily = FontFamily.SansSerif,
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp
             )
             Spacer(modifier = modifier.width(4.dp))
-            StarRatingBar(rating = hotel.starRating, starsColor = Color(0xFFFFB700));
+            StarRatingBar(stars = hotel.starRating, starsColor = Color(0xFFFFB700));
             Spacer(modifier.weight(1f))
             Text(
                 color = colorResource(R.color.primary),
-                text = "VND " + hotel.hotelPrice,
+                text = "VND " + hotel.pricePerNightWeekdays,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp
             )
         }
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            Card(
-                colors = CardDefaults.cardColors(
-                    containerColor = Color(0xFF0172B2)
-                ),
-            ) {
-                Text(
-                    modifier = Modifier.padding(
-                        top = 4.dp,
-                        bottom = 4.dp,
-                        start = 6.dp,
-                        end = 6.dp
-                    ),
-                    text = hotel.commentRating.toString(),
-                    color = Color.White,
-                    fontSize = 14.sp
-                )
-            }
-
-            val ratingToStringID: Int = if (hotel.commentRating > 9) R.string.veryGoodRating
-            else if (hotel.commentRating > 8) R.string.goodRating
-            else if (hotel.commentRating > 6.5) R.string.okRating
-            else if (hotel.commentRating > 6.5) R.string.badRating
-            else R.string.veryBadRating
-            val ratingToString: String = stringResource(id = ratingToStringID)
-
-            Text(
-                text = ratingToString,
-                fontWeight = FontWeight.Normal,
-                color = Color.Black,
-                fontSize = 14.sp
-            )
-            Spacer(Modifier.width(16.dp))
-            Text(
-                text = hotel.numberOfComment.toString() + " đánh giá",
-                color = Color.Black,
-                fontSize = 14.sp
-            )
-        }
+//        Row(
+//            verticalAlignment = Alignment.CenterVertically,
+//            horizontalArrangement = Arrangement.spacedBy(4.dp)
+//        ) {
+//            Card(
+//                colors = CardDefaults.cardColors(
+//                    containerColor = Color(0xFF0172B2)
+//                ),
+//            ) {
+//                Text(
+//                    modifier = Modifier.padding(
+//                        top = 4.dp,
+//                        bottom = 4.dp,
+//                        start = 6.dp,
+//                        end = 6.dp
+//                    ),
+//                    text = hotel.commentRating.toString(),
+//                    color = Color.White,
+//                    fontSize = 14.sp
+//                )
+//            }
+//
+//            val ratingToStringID: Int = if (hotel.commentRating > 9) R.string.veryGoodRating
+//            else if (hotel.commentRating > 8) R.string.goodRating
+//            else if (hotel.commentRating > 6.5) R.string.okRating
+//            else if (hotel.commentRating > 6.5) R.string.badRating
+//            else R.string.veryBadRating
+//            val ratingToString: String = stringResource(id = ratingToStringID)
+//
+//            Text(
+//                text = ratingToString,
+//                fontWeight = FontWeight.Normal,
+//                color = Color.Black,
+//                fontSize = 14.sp
+//            )
+//            Spacer(Modifier.width(16.dp))
+//            Text(
+//                text = hotel.numberOfComment.toString() + " đánh giá",
+//                color = Color.Black,
+//                fontSize = 14.sp
+//            )
+//        }
     }
 
 }
 @Composable
-fun LoaiPhong(hotel: Hotel, modifier: Modifier  = Modifier){
+fun RoomType(hotel: Hotel, modifier: Modifier  = Modifier){
     Column {
         Text(
             text = "Loại phòng",
@@ -140,7 +141,7 @@ fun LoaiPhong(hotel: Hotel, modifier: Modifier  = Modifier){
 
 }
 @Composable
-fun NoiThat(hotel: Hotel, modifier: Modifier = Modifier){
+fun Interior(hotel: Hotel, modifier: Modifier = Modifier){
     Column {
         Text(
             text = "Nội thất",
@@ -152,7 +153,7 @@ fun NoiThat(hotel: Hotel, modifier: Modifier = Modifier){
 
 }
 @Composable
-fun TienIch(hotel: Hotel, modifier: Modifier = Modifier){
+fun Facilities(hotel: Hotel, modifier: Modifier = Modifier){
     Column {
         Text(
             text = "Tiện ích",
@@ -162,20 +163,4 @@ fun TienIch(hotel: Hotel, modifier: Modifier = Modifier){
         )
     }
 
-}
-@Preview
-@Composable
-fun DetailScreenPreview(){
-    DetailScreen(hotel = Hotel(
-        hotelThumbnail = R.drawable.hotel_thumbnail,
-        hotelName = "Cityscape Suites",
-        starRating = 4.2f,
-        commentRating = 8.5f,
-        numberOfComment = 220,
-        hotelAddress = "789 Downtown Ave, New York, NY",
-        numberOfBed = 1,
-        hotelPrice = 250,
-        isFeatured = true
-        )
-    )
 }

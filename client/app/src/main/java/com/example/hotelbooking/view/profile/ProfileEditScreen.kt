@@ -33,7 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.hotelbooking.R
 import com.example.hotelbooking.navigation.Route
-import com.example.hotelbooking.ui.model.Gender
+import com.example.hotelbooking.domain.model.Gender
 import com.example.hotelbooking.ui.theme.PrimaryColor
 import com.example.hotelbooking.ui.utility.ActionText
 import com.example.hotelbooking.ui.utility.AppBar

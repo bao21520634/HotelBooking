@@ -17,12 +17,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.List
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,19 +35,34 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.hotelbooking.R
 import com.example.hotelbooking.navigation.Route
-import com.example.hotelbooking.ui.model.Hotel
-import com.example.hotelbooking.ui.model.sampleData
 import com.example.hotelbooking.ui.theme.PrimaryColor
 import com.example.hotelbooking.ui.utility.AppBar
-
+import com.example.hotelbooking.view.homepage.components.HotelsViewState
+import com.example.hotelbooking.viewmodel.HotelsViewModel
 
 @Composable
-fun HomePageResultScreen(hotelList: List<Hotel>, modifier: Modifier = Modifier){
+internal fun HomePageResultScreen(
+) {
+    val viewModel: HotelsViewModel = hiltViewModel()
+
+    LaunchedEffect(Unit) {
+        viewModel.getTopBookings()
+    }
+
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    HomePageResultContent(state = state)
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomePageResultContent(state: HotelsViewState, modifier: Modifier = Modifier){
     var location: String by remember{ mutableStateOf("Thủ đức, TPHCM") }
     var dateIn: String by remember{ mutableStateOf("18/02/2024") }
     var dateOut: String by remember{ mutableStateOf("25/02/2024") }
@@ -56,7 +73,7 @@ fun HomePageResultScreen(hotelList: List<Hotel>, modifier: Modifier = Modifier){
         topBar = {
             AppBar(
                 currentScreen = Route.HomeScreen,
-                currentScreenName = "Trang chủ",
+                currentScreenName = stringResource(R.string.homepage_screen),
                 canNavigateBack = false,
                 navigateUp = { /*TODO*/ })
         },
@@ -96,7 +113,7 @@ fun HomePageResultScreen(hotelList: List<Hotel>, modifier: Modifier = Modifier){
                 )
                 Spacer(modifier = Modifier.height(8.dp))
             }
-            items(hotelList) {
+            items(state.hotels) {
                 HotelCard(hotel = it)
             }
 
@@ -176,9 +193,4 @@ fun ResultManipulator(modifier: Modifier = Modifier){
             }
         }
     }
-}
-@Preview(showBackground = true)
-@Composable
-fun HomePageResultScreenPreview(){
-    HomePageResultScreen(sampleData)
 }

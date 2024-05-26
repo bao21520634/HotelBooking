@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,22 +28,34 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.hotelbooking.BottomNavigationBar
 import com.example.hotelbooking.navigation.Route
-import com.example.hotelbooking.ui.model.Hotel
-import com.example.hotelbooking.ui.model.sampleData
+import com.example.hotelbooking.domain.model.Hotel
 import com.example.hotelbooking.ui.utility.AppBar
 import com.example.hotelbooking.ui.theme.PrimaryColor
+import com.example.hotelbooking.view.homepage.HomePageSearchContent
+import com.example.hotelbooking.view.homepage.components.HotelsViewState
+import com.example.hotelbooking.viewmodel.HotelsViewModel
 
 @Composable
-fun MyBookingScreen(
-    hiredHotelList: List<Hotel>,
-    viewedHotelList: List<Hotel>,
+internal fun MyBookingScreen(
+) {
+    val viewModel: HotelsViewModel = hiltViewModel()
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    MyBookingContent(state = state)
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MyBookingContent(
+    state: HotelsViewState,
     navController: NavController = rememberNavController()
-){
-    var showHiredList by remember { mutableStateOf(true)}
+) {
+    var showHiredList by remember { mutableStateOf(true) }
 
     Scaffold(
         topBar = {
@@ -53,7 +66,7 @@ fun MyBookingScreen(
                 navigateUp = { /*TODO*/ })
 
         },
-    ) {innerpadding ->
+    ) { innerpadding ->
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -64,7 +77,7 @@ fun MyBookingScreen(
             Row(
                 Modifier
                     .fillMaxWidth()
-            ){
+            ) {
                 Button(
                     onClick = { showHiredList = true },
                     colors = if (showHiredList) ButtonDefaults.buttonColors(PrimaryColor) else ButtonDefaults.textButtonColors()
@@ -88,17 +101,11 @@ fun MyBookingScreen(
                     .padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                items(if (showHiredList) hiredHotelList else viewedHotelList) {
+                items(state.hotels) {
                     HotelCard(hotel = it)
                 }
             }
         }
 
     }
-}
-
-@Preview
-@Composable
-fun MyBookingScreenPreview(){
-    MyBookingScreen(hiredHotelList = sampleData, viewedHotelList = sampleData)
 }

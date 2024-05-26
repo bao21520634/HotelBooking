@@ -11,32 +11,14 @@ import kotlin.math.floor
 @Composable
 fun StarRatingBar(
     modifier: Modifier = Modifier,
-    rating: Float = 0.0f,
-    stars: Int = 5,
+    stars: Int,
     starsColor: Color = Color.Yellow,
 ) {
-    val filledStars = floor(rating).toInt()
-    val unfilledStars = (stars - ceil(rating)).toInt()
-    val halfStar = (rating.rem(1).equals(0.0))
     Row(modifier = modifier) {
-        repeat(filledStars) {
+        repeat(stars) {
             Icon(
                 painter = painterResource(id = R.drawable.baseline_star_24),
                 contentDescription = null, tint = starsColor
-            )
-        }
-        if (halfStar) {
-            Icon(
-                painter = painterResource(id = R.drawable.baseline_star_half_24),
-                contentDescription = null,
-                tint = starsColor,
-            )
-        }
-        repeat(unfilledStars) {
-            Icon(
-                painter = painterResource(id = R.drawable.baseline_star_outline_24),
-                contentDescription = null,
-                tint = starsColor,
             )
         }
     }
@@ -44,25 +26,25 @@ fun StarRatingBar(
 @Preview
 @Composable
 fun RatingPreview() {
-    StarRatingBar(rating = 4f, stars =  5);
+    StarRatingBar(stars = 4);
 }
 @Preview
 @Composable
 fun TenStarsRatingPreview() {
-    StarRatingBar(stars = 10, rating = 8.5f)
+    StarRatingBar(stars = 10)
 }
 @Preview
 @Composable
 fun RatingPreviewFull() {
-    StarRatingBar(rating = 5.0f)
+    StarRatingBar(stars = 5)
 }
 @Preview
 @Composable
 fun RatingPreviewWorst() {
-    StarRatingBar(rating = 1.0f)
+    StarRatingBar(stars = 1)
 }
 @Preview
 @Composable
 fun RatingPreviewDisabled() {
-    StarRatingBar(rating = 0.0f, starsColor = Color.Gray)
+    StarRatingBar(stars = 0, starsColor = Color.Gray)
 }

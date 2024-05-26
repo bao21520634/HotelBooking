@@ -6,20 +6,34 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.hotelbooking.R
 import com.example.hotelbooking.navigation.Route
-import com.example.hotelbooking.ui.model.Hotel
-import com.example.hotelbooking.ui.model.sampleData
 import com.example.hotelbooking.ui.utility.AppBar
+import com.example.hotelbooking.view.homepage.components.HotelsViewState
+import com.example.hotelbooking.viewmodel.HotelsViewModel
 
 @Composable
-fun FavoriteScreen(favoriteHotelList: List<Hotel>){
+internal fun FavoriteScreen() {
+    val viewModel: HotelsViewModel = hiltViewModel()
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    MyBookingContent(state = state)
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FavoriteContent(
+    state: HotelsViewState
+) {
     Scaffold(
         topBar = {
             AppBar(
@@ -28,7 +42,7 @@ fun FavoriteScreen(favoriteHotelList: List<Hotel>){
                 canNavigateBack = false,
                 navigateUp = { /*TODO*/ })
         },
-    ) {innerpadding ->
+    ) { innerpadding ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
@@ -36,15 +50,9 @@ fun FavoriteScreen(favoriteHotelList: List<Hotel>){
                 .padding(dimensionResource(id = R.dimen.screenPadding)),
             verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.itemInListPadding))
         ) {
-            items(favoriteHotelList) {
+            items(state.hotels) {
                 HotelCard(hotel = it)
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun FavoriteScreenPreview(){
-    FavoriteScreen(favoriteHotelList = sampleData)
 }

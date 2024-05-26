@@ -1,9 +1,9 @@
-package com.example.hotelbooking.view.homepage
+package com.example.hotelbooking.view.homepage.components
 
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,16 +22,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hotelbooking.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CommonOutlinedButton(
-    value: String,
+fun OutlinedBlock(
+    nofRoom: Int,
+    nofGuest: Int,
     onAction: ()->(Unit),
-    label: String = "",
-    @DrawableRes leadingIconSource: Int,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -41,24 +42,22 @@ fun CommonOutlinedButton(
         colors = CardDefaults.cardColors(
             containerColor = Color.White,
         ),
-        border = BorderStroke(1.5.dp, Color.Black),
+        border = BorderStroke(2.dp, Color.Black),
     ){
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically,
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ){
-
-            TextField(value = value,
+            TextField(value = nofRoom.toString(),
                 onValueChange = {},
                 singleLine = true,
                 label = {
-                    Text(label)
+                    Text("Số phòng")
                 },
                 leadingIcon = {
                     Icon(
-                        painter = painterResource(id = leadingIconSource),
+                        painter = painterResource(id = R.drawable.baseline_bed_24),
                         contentDescription = null
                     )
                 },
@@ -67,6 +66,36 @@ fun CommonOutlinedButton(
                     fontWeight = FontWeight.Medium,
                     fontSize = 20.sp,
                     letterSpacing = 0.sp,
+                    textAlign = TextAlign.Center
+                ),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                ),
+                modifier = Modifier
+                    .wrapContentHeight(align = Alignment.CenterVertically),
+                readOnly = true
+            )
+            TextField(value = nofGuest.toString(),
+                onValueChange = {},
+                singleLine = true,
+                label = {
+                    Text("Số khách")
+                },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.baseline_supervisor_account_24),
+                        contentDescription = null
+                    )
+                },
+                textStyle = TextStyle(
+                    fontFamily = FontFamily.Default,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 20.sp,
+                    letterSpacing = 0.sp,
+                    textAlign = TextAlign.Center
                 ),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.Transparent,
@@ -79,6 +108,5 @@ fun CommonOutlinedButton(
                 readOnly = true
             )
         }
-
     }
 }

@@ -5,8 +5,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.hotelbooking.HomeScreen
-import com.example.hotelbooking.ui.model.sampleData
-import com.example.hotelbooking.view.homepage.HomePageSearchScreen
 
 object EndPoints {
     const val ID = "id"
@@ -28,7 +26,5 @@ fun NavGraph(navController: NavHostController) {
 
 object Graph {
     const val ROOT = "root_graph"
-    const val AUTHENTICATION = "auth_graph"
     const val HOME = "home_graph"
-    const val HOMEPAGE = "homepage_graph"
 }

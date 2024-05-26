@@ -1,4 +1,4 @@
-package com.example.hotelbooking.ui.model
+package com.example.hotelbooking.domain.model
 
 enum class Gender {
     MALE,

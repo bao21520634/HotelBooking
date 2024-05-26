@@ -18,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,18 +29,35 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.hotelbooking.R
 import com.example.hotelbooking.navigation.Route
-import com.example.hotelbooking.ui.model.Hotel
-import com.example.hotelbooking.ui.model.sampleData
 import com.example.hotelbooking.ui.utility.AppBar
 import com.example.hotelbooking.ui.utility.ImportantButtonMain
+import com.example.hotelbooking.view.homepage.components.CommonOutlinedButton
+import com.example.hotelbooking.view.homepage.components.HotelsViewState
+import com.example.hotelbooking.view.homepage.components.OutlinedBlock
+import com.example.hotelbooking.viewmodel.HotelsViewModel
 
 
 @Composable
-fun HomePageSearchScreen(hotelList: List<Hotel>, modifier: Modifier = Modifier){
+internal fun HomePageSearchScreen(
+) {
+    val viewModel: HotelsViewModel = hiltViewModel()
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.getTopBookings()
+    }
+
+    HomePageSearchContent(state = state)
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomePageSearchContent(state: HotelsViewState, modifier: Modifier = Modifier){
     var location: String by remember{ mutableStateOf("Thủ đức, TPHCM") }
     var dateIn: String by remember{ mutableStateOf("18/02/2024") }
     var dateOut: String by remember{ mutableStateOf("25/02/2024") }
@@ -62,7 +80,7 @@ fun HomePageSearchScreen(hotelList: List<Hotel>, modifier: Modifier = Modifier){
             modifier = modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                    .padding(dimensionResource(id = R.dimen.screenPadding)),
+                .padding(dimensionResource(id = R.dimen.screenPadding)),
             verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.columnPadding),Alignment.CenterVertically),
         ) {
             item{
@@ -89,7 +107,7 @@ fun HomePageSearchScreen(hotelList: List<Hotel>, modifier: Modifier = Modifier){
                 )
                 Spacer(modifier = Modifier.height(8.dp))
             }
-            items(hotelList) {
+            items(state.hotels) {
                 HotelCard(hotel = it)
             }
         }
@@ -131,14 +149,10 @@ fun FilterBlock(location: String, onLocationAction: ()->(Unit),
             }
             OutlinedBlock(nofRoom = nofRoom, nofGuest = nofGuest,
                 onAction = { /*TODO*/ },
-                modifier = Modifier.weight(2/5f)
+                modifier = Modifier
+                    .weight(2 / 5f)
                     .fillMaxHeight()
             )
         }
     }
-}
-@Preview(showBackground = true)
-@Composable
-fun HomePageSearchScreenPreview(){
-    HomePageSearchScreen(sampleData)
 }

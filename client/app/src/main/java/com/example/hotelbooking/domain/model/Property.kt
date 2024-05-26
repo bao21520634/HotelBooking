@@ -1,4 +1,4 @@
-package com.example.hotelbooking.ui.model
+package com.example.hotelbooking.domain.model
 
 data class Property(
     val name: String,
