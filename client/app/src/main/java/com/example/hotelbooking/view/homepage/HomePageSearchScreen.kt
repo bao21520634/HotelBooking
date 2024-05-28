@@ -1,6 +1,8 @@
 package com.example.hotelbooking.view.homepage
 
 import HotelCard
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -36,20 +38,40 @@ import com.example.hotelbooking.ui.model.Hotel
 import com.example.hotelbooking.ui.model.sampleData
 import com.example.hotelbooking.ui.utility.AppBar
 import com.example.hotelbooking.ui.utility.ImportantButtonMain
+import com.maxkeppeker.sheets.core.models.base.rememberSheetState
+import java.time.format.DateTimeFormatter
 
+@OptIn(ExperimentalMaterial3Api::class)
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomePageSearchScreen(
     hotelList: List<Hotel>,
     modifier: Modifier = Modifier,
-    openDateScreen: () -> Unit,
     openResultScreen: () -> Unit,
-    openRoomScreen: () -> Unit
+    openRoomScreen: () -> Unit,
+    openDetailsScreen: () ->Unit
 ) {
     var location: String by remember { mutableStateOf("Thủ đức, TPHCM") }
-    val dateIn: String by remember { mutableStateOf("18/02/2024") }
-    val dateOut: String by remember { mutableStateOf("25/02/2024") }
+    var dateIn: String by remember { mutableStateOf("18/02/2024") }
+    var dateOut: String by remember { mutableStateOf("25/02/2024") }
     var nofRoom: Int by remember { mutableStateOf(0) }
     var nofGuest: Int by remember { mutableStateOf(0) }
+
+    val calendarState = rememberSheetState()
+    var selectedDateType by remember { mutableStateOf<DateType?>(null) }
+
+    DatePickerDialog(
+        calendarState = calendarState,
+        selectedDateType = selectedDateType,
+        onDateSelected = { selectedDate, dateType ->
+            val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+            val formattedDate = selectedDate.format(formatter)
+            when (dateType) {
+                DateType.IN -> dateIn = formattedDate
+                DateType.OUT -> dateOut = formattedDate
+            }
+        }
+    )
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -73,9 +95,11 @@ fun HomePageSearchScreen(
                     location = location,
                     onLocationAction = { /*TODO*/ },
                     dateIn = dateIn,
-                    onDateInAction = { openDateScreen() },
+                    onDateInAction = { selectedDateType = DateType.IN
+                                        calendarState.show() },
                     dateOut = dateOut,
-                    onDateOutAction = { openDateScreen() },
+                    onDateOutAction = { selectedDateType = DateType.OUT
+                                        calendarState.show() },
                     nofRoom = nofRoom,
                     nofGuest = nofGuest,
                     onBlockAction = { openRoomScreen() },
@@ -94,11 +118,13 @@ fun HomePageSearchScreen(
                 Spacer(modifier = Modifier.height(8.dp))
             }
             items(hotelList) {
-                HotelCard(hotel = it)
+                HotelCard(hotel = it, onClick = {openDetailsScreen()})
             }
         }
     }
 }
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -150,13 +176,14 @@ fun FilterBlock(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun HomePageSearchScreenPreview() {
     HomePageSearchScreen(
         sampleData,
         openResultScreen = {},
-        openDateScreen = {},
-        openRoomScreen = {}
+        openRoomScreen = {},
+        openDetailsScreen = {}
     )
 }

@@ -40,7 +40,8 @@ import com.example.hotelbooking.ui.theme.PrimaryColor
 fun MyBookingScreen(
     hiredHotelList: List<Hotel>,
     viewedHotelList: List<Hotel>,
-    navController: NavController = rememberNavController()
+    navController: NavController = rememberNavController(),
+    openDetailsScreen: () ->Unit
 ){
     var showHiredList by remember { mutableStateOf(true)}
 
@@ -89,7 +90,7 @@ fun MyBookingScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 items(if (showHiredList) hiredHotelList else viewedHotelList) {
-                    HotelCard(hotel = it)
+                    HotelCard(hotel = it, onClick = { openDetailsScreen()})
                 }
             }
         }
@@ -100,5 +101,5 @@ fun MyBookingScreen(
 @Preview
 @Composable
 fun MyBookingScreenPreview(){
-    MyBookingScreen(hiredHotelList = sampleData, viewedHotelList = sampleData)
+    MyBookingScreen(hiredHotelList = sampleData, viewedHotelList = sampleData, openDetailsScreen = {})
 }

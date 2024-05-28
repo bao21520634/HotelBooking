@@ -15,11 +15,19 @@ import com.example.hotelbooking.view.MyBookingScreen
 import com.example.hotelbooking.view.homepage.HomePageSearchScreen
 import com.example.hotelbooking.view.profile.ProfileScreen
 import androidx.compose.ui.Modifier
-import com.example.hotelbooking.view.homepage.DatePickingScreen
+import com.example.hotelbooking.R
+import com.example.hotelbooking.ui.model.Hotel
+import com.example.hotelbooking.view.DetailScreen
 import com.example.hotelbooking.view.homepage.HomePageResultScreen
 import com.example.hotelbooking.view.homepage.RoomPickingScreen
+import com.example.hotelbooking.view.login.LoginScreen
 import com.example.hotelbooking.view.login.ResetPasswordScreen
 import com.example.hotelbooking.view.profile.ProfileEditScreen
+import com.example.hotelbooking.navigation.authNavGraph
+import com.example.hotelbooking.ui.model.properties
+import com.example.hotelbooking.view.properties.ProScreen
+import com.example.hotelbooking.view.properties.PropertiesScreen
+import kotlinx.coroutines.handleCoroutineException
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -33,24 +41,30 @@ fun HomeNavGraph(navController: NavHostController,
         composable(route = BottomBarScreen.Home.route){
             HomePageSearchScreen(
                 hotelList = sampleData,
-                openDateScreen = {
-                    navController.navigate(Route.HomeDateScreen.route)
-                },
+
                 openResultScreen = {
                     navController.navigate(Route.HomeResultScreen.route)
                 },
                 openRoomScreen = {
                     navController.navigate(Route.HomeRoomScreen.route)
+                },
+                openDetailsScreen = {
+                    navController.navigate(Route.DetailsScreen.route)
                 }
             )
         }
 
         composable(route = BottomBarScreen.Favorite.route){
-            FavoriteScreen(favoriteHotelList = sampleData)
+            FavoriteScreen(favoriteHotelList = sampleData, openDetailsScreen = {
+                navController.navigate(Route.DetailsScreen.route)
+            })
         }
 
         composable(route = BottomBarScreen.MyBooking.route){
-            MyBookingScreen(hiredHotelList = sampleData, viewedHotelList = sampleData)
+            MyBookingScreen(hiredHotelList = sampleData, viewedHotelList = sampleData,
+                openDetailsScreen = {
+                    navController.navigate(Route.DetailsScreen.route)
+                })
         }
 
         composable(route = BottomBarScreen.Profile.route){
@@ -58,11 +72,20 @@ fun HomeNavGraph(navController: NavHostController,
                 openEditProfileScreen = {
                     navController.navigate(Route.ProfileEditScreen.route)
                 },
-                openOwnerScreen = {},
+                
+                openPropertiesScreen = {
+                    navController.navigate(Route.PropertiesScreen.route)
+                },
+                
                 openPassWordChangeScreen = {
                     navController.navigate(Route.ResetPassword.route)
                 },
-                logOut = {}
+                
+                logOut = {
+                    navController.navigate(Route.AuthRoute.route){
+                        popUpTo(Graph.ROOT) {inclusive = true}
+                    }
+                }
             )
         }
 
@@ -73,21 +96,31 @@ fun HomeNavGraph(navController: NavHostController,
                     navController.navigate(Route.HomeDateScreen.route)},
                 openRoomScreen = {
                     navController.navigate(Route.HomeRoomScreen.route)
+                },
+                openDetailsScreen = {
+                    navController.navigate(Route.DetailsScreen.route)
+                },
+                backHomeScreen = {
+                    navController.navigate(Route.HomeScreen.route)
                 }
             )
         }
 
-        composable(route = Route.HomeDateScreen.route){
-            DatePickingScreen(onDateInAction = {
-                navController.navigate(Route.HomeDateScreen.route)
-            }, onDateOutAction = {
-                navController.navigate(Route.HomeDateScreen.route)
-            })
-        }
-
         composable(route = Route.HomeRoomScreen.route){
             RoomPickingScreen()
-            navController.popBackStack()
+        }
+        
+        composable(route = Route.DetailsScreen.route){
+            DetailScreen(hotel = Hotel(hotelThumbnail = R.drawable.hotel_thumbnail,
+                hotelName = "Cityscape Suites",
+                starRating = 4.2f,
+                commentRating = 8.5f,
+                numberOfComment = 220,
+                hotelAddress = "789 Downtown Ave, New York, NY",
+                numberOfBed = 1,
+                hotelPrice = 250,
+                isFeatured = true)
+            )
         }
 
         //Profile Nav
@@ -98,6 +131,13 @@ fun HomeNavGraph(navController: NavHostController,
         composable(route = Route.ResetPassword.route){
              ResetPasswordScreen{}
         }
+
+        authNavGraph(navController)
+        
+        composable(route = Route.PropertiesScreen.route){
+            ProScreen()
+        }
     }
+
 }
 

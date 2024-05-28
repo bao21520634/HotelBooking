@@ -1,6 +1,9 @@
 package com.example.hotelbooking.view.homepage
 
 import HotelCard
+import android.net.wifi.hotspot2.pps.HomeSp
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -42,20 +45,42 @@ import com.example.hotelbooking.ui.model.Hotel
 import com.example.hotelbooking.ui.model.sampleData
 import com.example.hotelbooking.ui.theme.PrimaryColor
 import com.example.hotelbooking.ui.utility.AppBar
+import com.maxkeppeker.sheets.core.models.base.rememberSheetState
+import java.time.format.DateTimeFormatter
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomePageResultScreen(
     hotelList: List<Hotel>,
     modifier: Modifier = Modifier,
     openDateScreen:() ->Unit,
-    openRoomScreen:() ->Unit
+    openRoomScreen:() ->Unit,
+    openDetailsScreen: () -> Unit,
+    backHomeScreen: () -> Unit
 ){
     var location: String by remember{ mutableStateOf("Thủ đức, TPHCM") }
     var dateIn: String by remember{ mutableStateOf("18/02/2024") }
     var dateOut: String by remember{ mutableStateOf("25/02/2024") }
     var nofRoom: Int by remember{ mutableStateOf(0) }
     var nofGuest: Int by remember{ mutableStateOf(0) }
+
+    val calendarState = rememberSheetState()
+    var selectedDateType by remember { mutableStateOf<DateType?>(null) }
+
+    DatePickerDialog(
+        calendarState = calendarState,
+        selectedDateType = selectedDateType,
+        onDateSelected = { selectedDate, dateType ->
+            val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+            val formattedDate = selectedDate.format(formatter)
+            when (dateType) {
+                DateType.IN -> dateIn = formattedDate
+                DateType.OUT -> dateOut = formattedDate
+            }
+        }
+    )
+
     Scaffold (
         modifier = modifier,
         topBar = {
@@ -80,16 +105,19 @@ fun HomePageResultScreen(
                     location = location,
                     onLocationAction = { /*TODO*/ },
                     dateIn = dateIn,
-                    onDateInAction = { openDateScreen() },
+                    onDateInAction = { selectedDateType = DateType.IN
+                        calendarState.show() },
                     dateOut = dateOut,
-                    onDateOutAction = { openDateScreen() },
+                    onDateOutAction = { selectedDateType = DateType.OUT
+                        calendarState.show() },
                     nofRoom = nofRoom,
                     nofGuest = nofGuest,
                     onBlockAction = { openRoomScreen() },
-                    modifier = Modifier.fillMaxWidth())
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
             item{
-                ResultManipulator(openSearchScreen = {})
+                ResultManipulator( openSearchScreen = {backHomeScreen()} )
             }
             item{
                 Spacer(modifier = Modifier.height(8.dp))
@@ -102,7 +130,7 @@ fun HomePageResultScreen(
                 Spacer(modifier = Modifier.height(8.dp))
             }
             items(hotelList) {
-                HotelCard(hotel = it)
+                HotelCard(hotel = it, onClick = {openDetailsScreen()})
             }
 
         }
@@ -120,7 +148,7 @@ fun HomePageResultScreen(
 @Composable
 fun ResultManipulator(
     modifier: Modifier = Modifier,
-    openSearchScreen: () -> Unit
+    openSearchScreen: () -> Unit,
 ){
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -185,8 +213,9 @@ fun ResultManipulator(
         }
     }
 }
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun HomePageResultScreenPreview(){
-    HomePageResultScreen(sampleData, openDateScreen = {}, openRoomScreen = {})
+    HomePageResultScreen(sampleData, openDateScreen = {}, openRoomScreen = {}, openDetailsScreen = {}, backHomeScreen = {})
 }

@@ -19,7 +19,7 @@ import com.example.hotelbooking.ui.model.sampleData
 import com.example.hotelbooking.ui.utility.AppBar
 
 @Composable
-fun FavoriteScreen(favoriteHotelList: List<Hotel>){
+fun FavoriteScreen(favoriteHotelList: List<Hotel>, openDetailsScreen: () -> Unit){
     Scaffold(
         topBar = {
             AppBar(
@@ -37,7 +37,7 @@ fun FavoriteScreen(favoriteHotelList: List<Hotel>){
             verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.itemInListPadding))
         ) {
             items(favoriteHotelList) {
-                HotelCard(hotel = it)
+                HotelCard(hotel = it, onClick = {openDetailsScreen()})
             }
         }
     }
@@ -46,5 +46,5 @@ fun FavoriteScreen(favoriteHotelList: List<Hotel>){
 @Preview
 @Composable
 fun FavoriteScreenPreview(){
-    FavoriteScreen(favoriteHotelList = sampleData)
+    FavoriteScreen(favoriteHotelList = sampleData, openDetailsScreen = {})
 }

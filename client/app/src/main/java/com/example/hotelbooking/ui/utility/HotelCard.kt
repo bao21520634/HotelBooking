@@ -1,6 +1,7 @@
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,9 +30,9 @@ import com.example.hotelbooking.R
 import com.example.hotelbooking.ui.model.Hotel
 
 @Composable
-fun HotelCard(hotel: Hotel, modifier: Modifier = Modifier){
+fun HotelCard(hotel: Hotel, modifier: Modifier = Modifier, onClick: () -> Unit){
     Card(
-        modifier = modifier,
+        modifier = modifier.clickable(onClick = onClick),
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent
         ),
@@ -183,5 +184,5 @@ fun HotelCardPreview() {
         numberOfBed = 1,
         hotelPrice = 1234567,
         isFeatured = false
-    ))
+    ), onClick = {})
 }

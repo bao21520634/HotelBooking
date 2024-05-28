@@ -2,7 +2,6 @@ package com.example.hotelbooking.view.homepage
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -84,8 +83,7 @@ fun CommonOutlinedButton(
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .wrapContentHeight(align = Alignment.CenterVertically)
-                    .clickable{onAction()},
+                    .wrapContentHeight(align = Alignment.CenterVertically),
                 readOnly = true,
                 enabled = false
             )

@@ -24,6 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.hotelbooking.R
 import com.example.hotelbooking.navigation.Route
 import com.example.hotelbooking.ui.model.Property
@@ -32,7 +33,8 @@ import com.example.hotelbooking.ui.utility.AppBar
 
 
 @Composable
-fun PropertiesScreen(properties: List<Property>){
+fun PropertiesScreen(properties: List<Property>,
+                     openPropertiesInfo:() ->Unit){
     Scaffold(
         topBar = {
             AppBar(
@@ -59,7 +61,7 @@ fun PropertiesScreen(properties: List<Property>){
                 Spacer(Modifier.height(4.dp))
                 OutlinedButton(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = {},
+                    onClick = { openPropertiesInfo() },
                     shape = RoundedCornerShape(8.dp)
                 )
                 {
@@ -93,10 +95,12 @@ fun PropertyCard(propertyName: String,
             Text(text = propertyName,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
+                fontSize = 15.sp
             )
             Spacer(Modifier.height(8.dp))
             Text(text = propertyDescription,
-                color = Color.DarkGray
+                color = Color.DarkGray,
+                fontSize = 15.sp
             )
         }
 
@@ -106,5 +110,5 @@ fun PropertyCard(propertyName: String,
 @Preview(showBackground = true)
 @Composable
 fun Preview(){
-    PropertiesScreen(properties = properties)
+    PropertiesScreen(properties = properties, openPropertiesInfo = {})
 }

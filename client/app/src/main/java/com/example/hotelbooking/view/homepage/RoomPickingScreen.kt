@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.hotelbooking.R
 import com.example.hotelbooking.navigation.Route
 import com.example.hotelbooking.ui.utility.AppBar
+import com.example.hotelbooking.ui.utility.ImportantButtonMain
 import com.example.hotelbooking.ui.utility.TextFieldWithIncrement
 import com.example.hotelbooking.view.properties.CommonHeaderText
 
@@ -67,6 +70,9 @@ fun RoomPickingScreen() {
                 Spacer(Modifier.weight(1f))
                 TextFieldWithIncrement(value = nofChildern, topBoundary = Int.MAX_VALUE, botBoundary = 0)
             }
+
+            Spacer(modifier = Modifier.weight(1f))
+            ImportantButtonMain(text = "Xác nhận", onClick = { /*TODO*/ })
         }
     }
 

@@ -31,9 +31,25 @@ import com.example.hotelbooking.navigation.HomeNavGraph
 @Composable
 fun HomeScreen(navController: NavHostController = rememberNavController()) {
     Scaffold(
-        bottomBar = { BottomNavigationBar(navController = navController) }
+        bottomBar = {
+            if (shouldShowBottomBar(navController)) {
+                BottomNavigationBar(navController = navController) }
+        }
     ) { innerPadding ->
         HomeNavGraph(navController = navController, modifier = Modifier.padding(innerPadding))
+    }
+}
+
+@Composable
+fun shouldShowBottomBar(navController: NavHostController): Boolean {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+    return when (currentDestination?.route) {
+        BottomBarScreen.Home.route,
+        BottomBarScreen.Favorite.route,
+        BottomBarScreen.MyBooking.route,
+        BottomBarScreen.Profile.route -> true
+        else -> false
     }
 }
 
@@ -48,7 +64,6 @@ fun BottomNavigationBar(navController: NavHostController) {
     NavigationBar(containerColor = Color.White) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry?.destination
-
         val bottomBarDestination = screens.any { it.route == currentDestination?.route }
         if (bottomBarDestination) {
             BottomAppBar(containerColor = Color.White) {

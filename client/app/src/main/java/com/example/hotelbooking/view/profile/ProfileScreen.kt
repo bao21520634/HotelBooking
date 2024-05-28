@@ -40,7 +40,7 @@ import com.example.hotelbooking.ui.utility.AppBar
 fun ProfileScreen(openEditProfileScreen:() -> Unit,
                   openPassWordChangeScreen:() ->Unit,
                   logOut:() ->Unit,
-                  openOwnerScreen:() -> Unit){
+                  openPropertiesScreen:() -> Unit){
     Scaffold(
         topBar = {
             AppBar(
@@ -70,10 +70,15 @@ fun ProfileScreen(openEditProfileScreen:() -> Unit,
                     textDescription = "Chỉnh sửa thông tin",
                     onClick = {openEditProfileScreen()}
                 )
+//                AccountSetting(
+//                    iconSource = R.drawable.baseline_list_alt_24,
+//                    textDescription = "Đã đăng tải",
+//                    onClick = {}
+//                )
                 AccountSetting(
-                    iconSource = R.drawable.baseline_list_alt_24,
-                    textDescription = "Đã đăng tải",
-                    onClick = {}
+                    iconSource = R.drawable.baseline_house_24,
+                    textDescription = "Sở hữu",
+                    onClick = {openPropertiesScreen()}
                 )
                 AccountSetting(
                     iconSource = R.drawable.baseline_lock_outline_24,
@@ -84,11 +89,6 @@ fun ProfileScreen(openEditProfileScreen:() -> Unit,
                     iconSource = R.drawable.baseline_logout_24,
                     textDescription = "Đăng xuất",
                     onClick = {logOut()}
-                )
-                AccountSetting(
-                    iconSource = R.drawable.baseline_house_24,
-                    textDescription = "Sở hữu",
-                    onClick = {openOwnerScreen()}
                 )
             }
     }
@@ -157,5 +157,5 @@ fun AccountSetting(@DrawableRes iconSource: Int,
 @Preview(showBackground = true)
 @Composable
 fun ProfileScreenPreview(){
-    ProfileScreen(openEditProfileScreen = {}, openOwnerScreen =  {}, openPassWordChangeScreen = {}, logOut = {});
+    ProfileScreen(openEditProfileScreen = {}, openPropertiesScreen =  {}, openPassWordChangeScreen = {}, logOut = {});
 }

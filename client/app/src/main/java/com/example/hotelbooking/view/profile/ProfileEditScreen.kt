@@ -31,6 +31,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.hotelbooking.R
 import com.example.hotelbooking.navigation.Route
 import com.example.hotelbooking.ui.model.Gender
@@ -44,13 +45,14 @@ fun ProfileEditScreen(){
     var userName: String by remember{ mutableStateOf("") }
     var gender: Gender by remember{ mutableStateOf(Gender.MALE) }
     var about: String by remember{ mutableStateOf("") }
+
     Scaffold(
         topBar = {
             AppBar(
                 currentScreen = Route.MyBookingsScreen,
                 currentScreenName = stringResource(id = R.string.profileEdit_screen),
                 canNavigateBack = true,
-                navigateUp = { /*TODO*/ })
+                navigateUp = {  })
         },
     ) {innerpadding ->
         Column(

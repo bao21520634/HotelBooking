@@ -32,4 +32,5 @@ fun NavGraph(navController: NavHostController) {
 object Graph {
     const val ROOT = "root_graph"
     const val HOME = "home_graph"
+    const val PROPERTIES = "properties_graph"
 }

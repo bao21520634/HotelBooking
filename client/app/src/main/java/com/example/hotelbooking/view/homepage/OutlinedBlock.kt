@@ -71,12 +71,19 @@ fun OutlinedBlock(
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.Transparent,
                     unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    disabledTextColor = Color.Black,
+                    disabledLabelColor = Color.Black,
+                    disabledPrefixColor = Color.Black,
+                    disabledLeadingIconColor = Color.Black
                 ),
                 modifier = Modifier
                     .wrapContentHeight(align = Alignment.CenterVertically),
-                readOnly = true
+                readOnly = true,
+                enabled = false,
             )
             TextField(value = nofGuest.toString(),
                 onValueChange = {},
@@ -100,12 +107,19 @@ fun OutlinedBlock(
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.Transparent,
                     unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    disabledTextColor = Color.Black,
+                    disabledLabelColor = Color.Black,
+                    disabledPrefixColor = Color.Black,
+                    disabledLeadingIconColor = Color.Black
                 ),
                 modifier = Modifier
                     .wrapContentHeight(align = Alignment.CenterVertically),
-                readOnly = true
+                readOnly = true,
+                enabled = false,
             )
         }
     }
