@@ -6,9 +6,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.navigation.compose.rememberNavController
-import com.example.hotelbooking.navigation.NavGraph
 import com.example.hotelbooking.ui.theme.HotelBookingTheme
+import com.example.hotelbooking.view.properties.PropertiesPhotoScreen
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.R)
@@ -17,7 +16,8 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         setContent {
             HotelBookingTheme {
-                NavGraph(navController = rememberNavController())
+                PropertiesPhotoScreen()
+                //NavGraph(navController = rememberNavController())
             }
         }
     }

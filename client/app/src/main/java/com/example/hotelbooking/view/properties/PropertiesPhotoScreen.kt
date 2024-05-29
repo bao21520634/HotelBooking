@@ -1,5 +1,8 @@
 package com.example.hotelbooking.view.properties
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,6 +19,8 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,6 +37,18 @@ import com.example.hotelbooking.ui.utility.ImageWithDeleteButton
 
 @Composable
 fun PropertiesPhotoScreen() {
+    //image uri
+    var imageUriList = remember {
+        mutableStateListOf<Uri>()
+    }
+    //Log.d("Debug1", imageUriList.size.toString())
+    //2nd requirement
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetMultipleContents(),
+        onResult = { uriList ->
+            imageUriList.addAll(uriList)
+        }
+    )
     Scaffold(
         topBar = {
             AppBar(
@@ -41,42 +58,44 @@ fun PropertiesPhotoScreen() {
                 navigateUp = { /*TODO*/ })
         }
     ) { paddingValues ->
-        Column(
+        LazyColumn(
             modifier = Modifier
+                .fillMaxWidth()
                 .padding(paddingValues)
-                .padding(dimensionResource(id = R.dimen.screenPadding))
+                .padding(dimensionResource(id = R.dimen.screenPadding)),
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.itemInListPadding))
         ){
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.itemInListPadding))
-
-            ) {
-                items(imageList){
-                    ImageWithDeleteButton(imageSource = it, onDeleteButtonPressed = { /*TODO*/ })
-                }
-            }
-            Spacer(Modifier.height(12.dp))
-            OutlinedButton(onClick = { /*TODO*/ },
-                modifier = Modifier
-                    .fillMaxWidth().height(200.dp),
-                shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(
-                    contentColor = Color.Gray,
-                    containerColor = Color.Transparent
+            items(imageUriList) { index  ->
+                ImageWithDeleteButton(
+                    uri = index,
+                    onDeleteButtonPressed = {  imageUriList.remove(index)}
                 )
-            ) {
-                Column (
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ){
-                    Icon(painter = painterResource(id = R.drawable.baseline_upload_24), contentDescription = null)
-                    Text(text = "Thêm ảnh ở đây",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.DarkGray,
+            }
+            item{
+                Spacer(Modifier.height(12.dp))
+                OutlinedButton(onClick = { galleryLauncher.launch("image/*")},
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        contentColor = Color.Gray,
+                        containerColor = Color.Transparent
                     )
+                ) {
+                    Column (
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ){
+                        Icon(painter = painterResource(id = R.drawable.baseline_upload_24), contentDescription = null)
+                        Text(text = "Thêm ảnh ở đây",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.DarkGray,
+                        )
+                    }
                 }
             }
+
         }
     }
 }
