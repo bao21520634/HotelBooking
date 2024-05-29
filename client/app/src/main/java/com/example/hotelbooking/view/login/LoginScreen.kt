@@ -29,6 +29,7 @@ import com.example.hotelbooking.R
 import com.example.hotelbooking.ui.utility.ActionText
 import com.example.hotelbooking.ui.utility.ImportantButtonLogin
 import com.example.hotelbooking.ui.utility.InfoTextField
+import com.example.hotelbooking.ui.utility.PassWordTextField
 
 @Composable
 fun LoginScreen(
@@ -39,6 +40,7 @@ fun LoginScreen(
 ){
     var username: String by remember{ mutableStateOf("") };
     var password: String by remember{ mutableStateOf("") };
+    var passWordVisibility: Boolean by remember{ mutableStateOf(false) };
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -59,9 +61,11 @@ fun LoginScreen(
             promptText = "Tên đăng nhập",
             modifier = Modifier.align(Alignment.CenterHorizontally)
         );
-        InfoTextField(
+        PassWordTextField(
             value = password,
             onValueChange = {password = it},
+            visible = passWordVisibility,
+            onVisibleClicked = {passWordVisibility=!passWordVisibility},
             promptText = "Mật khẩu",
             modifier = Modifier.align(Alignment.CenterHorizontally)
         );

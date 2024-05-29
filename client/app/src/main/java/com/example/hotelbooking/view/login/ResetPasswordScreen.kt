@@ -21,15 +21,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hotelbooking.R
 import com.example.hotelbooking.ui.utility.ImportantButtonLogin
-import com.example.hotelbooking.ui.utility.InfoTextField
+import com.example.hotelbooking.ui.utility.PassWordTextField
 
 @Composable
 fun ResetPasswordScreen(modifier: Modifier = Modifier,
                         openLoginScreen:() ->Unit){
-    var username: String by remember{ mutableStateOf("") };
     var password: String by remember{ mutableStateOf("") };
-    var passwordConfirm: String by remember{ mutableStateOf("") };
+    var password_Confirm: String by remember{ mutableStateOf("") };
 
+    var passWordVisibility: Boolean by remember{ mutableStateOf(false) };
+    var password_ConfirmVisibility: Boolean by remember{ mutableStateOf(false) };
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -45,20 +46,20 @@ fun ResetPasswordScreen(modifier: Modifier = Modifier,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
 
-        InfoTextField(
-            value = username,
-            onValueChange = {username = it},
-            promptText = "Tên đăng nhập",
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        );
-        InfoTextField(value = password,
+        PassWordTextField(
+            value = password,
             onValueChange = {password = it},
+            visible = passWordVisibility,
+            onVisibleClicked = {passWordVisibility=!passWordVisibility},
             promptText = "Mật khẩu",
             modifier = Modifier.align(Alignment.CenterHorizontally)
         );
-        InfoTextField(value = passwordConfirm,
-            onValueChange = {passwordConfirm = it},
-            promptText = "Xác nhận mật khẩu",
+        PassWordTextField(
+            value = password_Confirm,
+            onValueChange = {password_Confirm = it},
+            visible = password_ConfirmVisibility,
+            onVisibleClicked = {password_ConfirmVisibility=!password_ConfirmVisibility},
+            promptText = " Xác nhận mật khẩu",
             modifier = Modifier.align(Alignment.CenterHorizontally)
         );
         ImportantButtonLogin(text = "Xác nhận", onAction = {openLoginScreen()})

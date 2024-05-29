@@ -30,28 +30,34 @@ import com.example.hotelbooking.view.properties.CommonBodyText
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TextFieldWithIncrement(value: Int, topBoundary: Int, botBoundary: Int, preDefindedWidth: Dp = 52.dp, modifier: Modifier = Modifier) {
+fun TextFieldWithIncrement(
+    value: Int,
+    onIncrementClick: ()->(Unit),
+    onDecrementClick: ()->(Unit),
+    isDecDisable: Boolean = false,
+    preDefindedWidth: Dp = 52.dp, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier.height(IntrinsicSize.Min),
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ){
         Card(
-            onClick = { if(value<topBoundary){value.inc() }},
+            onClick = onDecrementClick,
             modifier = Modifier.fillMaxHeight(),
             shape = RoundedCornerShape(8.dp),
             colors = CardDefaults.cardColors(
                 contentColor = PrimaryColor,
                 containerColor = Color.Transparent
             ),
+            enabled = !isDecDisable,
             border = BorderStroke(2.dp,Color.Gray)
         ){
             Column(
                 modifier = Modifier.fillMaxHeight().aspectRatio(1f),
                 verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Icon(
-                    painterResource(id = R.drawable.baseline_add_24),
+                    painterResource(id = R.drawable.baseline_horizontal_rule_24),
                     contentDescription = "add",
                 )
             }
@@ -76,7 +82,7 @@ fun TextFieldWithIncrement(value: Int, topBoundary: Int, botBoundary: Int, preDe
 
         }
         Card(
-            onClick = { if(value<topBoundary){value.inc() }},
+            onClick = onIncrementClick,
             modifier = Modifier.fillMaxHeight(),
             shape = RoundedCornerShape(8.dp),
             colors = CardDefaults.cardColors(
@@ -91,7 +97,7 @@ fun TextFieldWithIncrement(value: Int, topBoundary: Int, botBoundary: Int, preDe
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Icon(
-                    painterResource(id = R.drawable.baseline_horizontal_rule_24),
+                    painterResource(id = R.drawable.baseline_add_24),
                     contentDescription = "sun",
                 )
             }
@@ -101,5 +107,5 @@ fun TextFieldWithIncrement(value: Int, topBoundary: Int, botBoundary: Int, preDe
 @Preview(showBackground = true)
 @Composable
 fun TextFieldWithIncrement(){
-    TextFieldWithIncrement(value = 0, topBoundary = Int.MAX_VALUE, botBoundary = 0)
+    //TextFieldWithIncrement(value = 0, topBoundary = Int.MAX_VALUE, botBoundary = 0)
 }

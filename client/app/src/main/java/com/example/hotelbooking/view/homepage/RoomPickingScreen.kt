@@ -27,8 +27,15 @@ import com.example.hotelbooking.view.properties.CommonHeaderText
 fun RoomPickingScreen() {
     var nofRoom: Int by remember{ mutableStateOf(1) }
     var nofAdult: Int by remember{ mutableStateOf(1) }
-    var nofChildern: Int by remember{ mutableStateOf(1) }
+    var nofChildren: Int by remember{ mutableStateOf(0) }
 
+    val botRoom: Int = 1;
+    val botAdult: Int = 1;
+    val botChildren: Int = 0;
+
+    var roomDisabled: Boolean by remember{ mutableStateOf(true) }
+    var adultDisabled: Boolean by remember{ mutableStateOf(true) }
+    var childrenDisabled: Boolean by remember{ mutableStateOf(true) }
     Scaffold (
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -51,21 +58,66 @@ fun RoomPickingScreen() {
                 ){
                 CommonHeaderText(text = "Số phòng")
                 Spacer(Modifier.weight(1f))
-                TextFieldWithIncrement(value = nofRoom, topBoundary = Int.MAX_VALUE, botBoundary = 0)
+                TextFieldWithIncrement(
+                    value = nofRoom,
+                    onIncrementClick = {
+                        nofRoom+=1
+                        roomDisabled = false
+                                       },
+                    onDecrementClick = {
+                        if(nofRoom>botRoom){
+                            nofRoom -=1;
+                            if(nofRoom==botRoom){
+                                roomDisabled = true;
+                            }
+                        }
+                    },
+                    isDecDisable = roomDisabled
+                )
             }
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ){
                 CommonHeaderText(text = "Số người lớn")
                 Spacer(Modifier.weight(1f))
-                TextFieldWithIncrement(value = nofAdult, topBoundary = Int.MAX_VALUE, botBoundary = 0)
+                TextFieldWithIncrement(
+                    value = nofAdult,
+                    onIncrementClick = {
+                        nofAdult+=1
+                        adultDisabled = false
+                    },
+                    onDecrementClick = {
+                        if(nofAdult>botAdult){
+                            nofAdult -=1;
+                            if(nofAdult==botAdult){
+                                adultDisabled = true;
+                            }
+                        }
+                    },
+                    isDecDisable = adultDisabled
+                )
             }
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ){
                 CommonHeaderText(text = "Số trẻ em")
                 Spacer(Modifier.weight(1f))
-                TextFieldWithIncrement(value = nofChildern, topBoundary = Int.MAX_VALUE, botBoundary = 0)
+                TextFieldWithIncrement(
+                    value = nofChildren,
+                    onIncrementClick = {
+                        nofChildren+=1
+                        childrenDisabled = false
+                    },
+                    onDecrementClick = {
+                        if(nofChildren>botChildren){
+                            nofChildren -=1;
+                            if(nofChildren==botChildren){
+                                childrenDisabled = true;
+                            }
+                        }
+                    },
+                    isDecDisable = childrenDisabled
+                )
             }
         }
     }

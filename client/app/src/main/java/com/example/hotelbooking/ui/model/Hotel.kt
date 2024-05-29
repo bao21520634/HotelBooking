@@ -13,7 +13,7 @@ data class Hotel(
     val hotelAddress: String,
     val numberOfBed: Int,
     val hotelPrice: Int,
-    val isFeatured: Boolean = false
+    var isFeatured: Boolean = false
 )
 val sampleData = listOf(
     Hotel(

@@ -5,6 +5,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -29,33 +30,33 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun CommonOutlinedButton(
     value: String,
-    onAction: ()->(Unit),
+    onAction: () -> Unit,
     label: String = "",
     @DrawableRes leadingIconSource: Int,
     modifier: Modifier = Modifier
 ) {
     Card(
-        onClick = onAction,
-        modifier = modifier.fillMaxWidth(),
+        onClick = { onAction() },
+        modifier = modifier
+            .fillMaxWidth(),
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White,
         ),
         border = BorderStroke(1.5.dp, Color.Black),
-    ){
+    ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(8.dp),
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
-        ){
-
-            TextField(value = value,
+        ) {
+            TextField(
+                value = value,
                 onValueChange = {},
                 singleLine = true,
-                label = {
-                    Text(label)
-                },
+                label = { Text(label) },
                 leadingIcon = {
                     Icon(
                         painter = painterResource(id = leadingIconSource),
@@ -71,14 +72,21 @@ fun CommonOutlinedButton(
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.Transparent,
                     unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    disabledTextColor = Color.Black,
+                    disabledLabelColor = Color.Black,
+                    disabledPrefixColor = Color.Black,
+                    disabledLeadingIconColor = Color.Black
                 ),
                 modifier = Modifier
+                    .fillMaxWidth()
                     .wrapContentHeight(align = Alignment.CenterVertically),
-                readOnly = true
+                readOnly = true,
+                enabled = false
             )
         }
-
     }
 }

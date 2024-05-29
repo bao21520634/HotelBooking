@@ -33,12 +33,29 @@ import com.example.hotelbooking.ui.utility.TextFieldWithIncrement
 
 @Composable
 fun PropertiesDetailScreen(){
-    var nofThisType: Int by remember{ mutableStateOf(1) }
-    var nofAllowedPeople: Int by remember{ mutableStateOf(1) }
+    var nofRoom: Int by remember{ mutableStateOf(1) }
+    var nofAdult: Int by remember{ mutableStateOf(1) }
+    var nofChildren: Int by remember{ mutableStateOf(0) }
 
     var nofSingleBedBedRoom: Int by remember{ mutableStateOf(1) }
     var nofDoubleSingleBedBedRoom: Int by remember{ mutableStateOf(1) }
     var nofDoubleBedBedRoom: Int by remember{ mutableStateOf(1) }
+
+    val botRoom: Int = 1;
+    val botAdult: Int = 1;
+    val botChildren: Int = 0;
+
+    val botSingleBedBedRoom: Int = 0;
+    val botDoubleSingleBedBedRoom: Int = 0;
+    val botDoubleBedBedRoom: Int = 0;
+
+    var roomDisabled: Boolean by remember{ mutableStateOf(true) }
+    var adultDisabled: Boolean by remember{ mutableStateOf(true) }
+    var childrenDisabled: Boolean by remember{ mutableStateOf(true) }
+
+    var SingleBedBedRoomDisabled: Boolean by remember{ mutableStateOf(false) }
+    var DoubleSingleBedBedRoomDisabled: Boolean by remember{ mutableStateOf(false) }
+    var DoubleBedBedRoomDisabled: Boolean by remember{ mutableStateOf(false) }
 
     var airConditioner: Boolean by remember{ mutableStateOf(true) }
     var tv: Boolean by remember{ mutableStateOf(true) }
@@ -65,12 +82,62 @@ fun PropertiesDetailScreen(){
             Column {
                 CommonBodyText(text = "Số lượng của loại hình này")
                 Spacer(Modifier.height(4.dp))
-                TextFieldWithIncrement(value = nofThisType, topBoundary = Int.MAX_VALUE, botBoundary = 0, preDefindedWidth = 80.dp)
+                TextFieldWithIncrement(
+                    value = nofRoom,
+                    onIncrementClick = {
+                        nofRoom+=1
+                        roomDisabled = false
+                    },
+                    onDecrementClick = {
+                        if(nofRoom>botRoom){
+                            nofRoom -=1;
+                            if(nofRoom==botRoom){
+                                roomDisabled = true;
+                            }
+                        }
+                    },
+                    isDecDisable = roomDisabled
+                )
             }
             Column {
-                CommonBodyText(text = "Số người có thể ở")
+                CommonBodyText(text = "Số người lớn có thể ở")
                 Spacer(Modifier.height(4.dp))
-                TextFieldWithIncrement(value = nofAllowedPeople, topBoundary = Int.MAX_VALUE, botBoundary = 0, preDefindedWidth = 80.dp)
+                TextFieldWithIncrement(
+                    value = nofAdult,
+                    onIncrementClick = {
+                        nofAdult+=1
+                        adultDisabled = false
+                    },
+                    onDecrementClick = {
+                        if(nofAdult>botAdult){
+                            nofAdult -=1;
+                            if(nofAdult==botAdult){
+                                adultDisabled = true;
+                            }
+                        }
+                    },
+                    isDecDisable = adultDisabled
+                )
+            }
+            Column {
+                CommonBodyText(text = "Số trẻ em có thể ở")
+                Spacer(Modifier.height(4.dp))
+                TextFieldWithIncrement(
+                    value = nofChildren,
+                    onIncrementClick = {
+                        nofChildren+=1
+                        childrenDisabled = false
+                    },
+                    onDecrementClick = {
+                        if(nofChildren>botChildren){
+                            nofChildren -=1;
+                            if(nofChildren==botChildren){
+                                childrenDisabled = true;
+                            }
+                        }
+                    },
+                    isDecDisable = childrenDisabled
+                )
             }
             Spacer(Modifier.height(4.dp))
             Text(
@@ -88,32 +155,53 @@ fun PropertiesDetailScreen(){
                 CommonRowWithTextField(
                     description = "Phòng ngủ\n( 1 giường đơn) ",
                     value = nofSingleBedBedRoom,
-                    topBoundary = Int.MAX_VALUE,
-                    botBoundary = 0
+                    onIncrementClick = {
+                        nofSingleBedBedRoom+=1
+                        SingleBedBedRoomDisabled = false
+                                       },
+                    onDecrementClick = {
+                        if(nofSingleBedBedRoom>botSingleBedBedRoom){
+                            nofSingleBedBedRoom -=1;
+                            if(nofSingleBedBedRoom==botSingleBedBedRoom){
+                                SingleBedBedRoomDisabled = true;
+                            }
+                        }
+                    },
+                    isDisabled = SingleBedBedRoomDisabled
                 )
                 CommonRowWithTextField(
                     description = "Phòng ngủ\n( 2 giường đơn) ",
                     value = nofDoubleSingleBedBedRoom,
-                    topBoundary = Int.MAX_VALUE,
-                    botBoundary = 0
+                    onIncrementClick = {
+                        nofDoubleSingleBedBedRoom+=1
+                        DoubleSingleBedBedRoomDisabled = false
+                                       },
+                    onDecrementClick = {
+                        if(nofDoubleSingleBedBedRoom>botDoubleSingleBedBedRoom){
+                            nofDoubleSingleBedBedRoom -=1;
+                            if(nofDoubleSingleBedBedRoom==botDoubleSingleBedBedRoom){
+                                DoubleSingleBedBedRoomDisabled = true;
+                            }
+                        }
+                    },
+                    isDisabled = DoubleSingleBedBedRoomDisabled
                 )
                 CommonRowWithTextField(
                     description = "Phòng ngủ\n( 1 giường đôi) ",
                     value = nofDoubleBedBedRoom,
-                    topBoundary = Int.MAX_VALUE,
-                    botBoundary = 0
-                )
-                CommonRowWithTextField(
-                    description = "Phòng khách",
-                    value = nofAllowedPeople,
-                    topBoundary = Int.MAX_VALUE,
-                    botBoundary = 0
-                )
-                CommonRowWithTextField(
-                    description = "Phòng tắm",
-                    value = nofAllowedPeople,
-                    topBoundary = Int.MAX_VALUE,
-                    botBoundary = 0
+                    onIncrementClick = {
+                        nofDoubleBedBedRoom+=1
+                        DoubleBedBedRoomDisabled = false
+                                       },
+                    onDecrementClick = {
+                        if(nofDoubleBedBedRoom>botDoubleBedBedRoom){
+                            nofDoubleBedBedRoom -=1;
+                            if(nofDoubleBedBedRoom==botDoubleBedBedRoom){
+                                DoubleBedBedRoomDisabled = true;
+                            }
+                        }
+                    },
+                    isDisabled = DoubleBedBedRoomDisabled
                 )
             }
 
@@ -180,7 +268,10 @@ fun CommonHeaderText(text: String, modifier: Modifier = Modifier){
 @Composable
 fun CommonRowWithTextField(
     description: String,
-    value: Int, topBoundary: Int, botBoundary: Int,
+    onIncrementClick: ()->(Unit),
+    onDecrementClick: ()->(Unit),
+    isDisabled: Boolean = false,
+    value: Int,
     modifier: Modifier = Modifier){
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -188,7 +279,12 @@ fun CommonRowWithTextField(
     ){
         CommonBodyText(text = description)
         Spacer(Modifier.weight(1f))
-        TextFieldWithIncrement(value = value, topBoundary = topBoundary, botBoundary = botBoundary)
+        TextFieldWithIncrement(
+            value = value,
+            onIncrementClick = onIncrementClick,
+            onDecrementClick = onDecrementClick,
+            isDecDisable = isDisabled
+        )
     }
 }
 @Preview(showBackground = true)
