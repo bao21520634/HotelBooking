@@ -1,6 +1,4 @@
-
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,54 +21,59 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.hotelbooking.R
-import com.example.hotelbooking.ui.model.Hotel
+import com.example.hotelbooking.domain.model.Hotel
 
 @Composable
-fun HotelCard(hotel: Hotel, modifier: Modifier = Modifier, onClick: () -> Unit){
+fun HotelCard(hotel: Hotel, modifier: Modifier = Modifier, onClick: () -> Unit) {
     Card(
         modifier = modifier.clickable(onClick = onClick),
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent
         ),
-        border = BorderStroke(1.dp,Color.Gray)
-    ){
+        border = BorderStroke(1.dp, Color.Gray)
+    ) {
         Column(
             modifier = modifier.fillMaxWidth()
 
-        ){
-            Image(
+        ) {
+            AsyncImage(
+                model = hotel.imageUrls.first(),
+                contentDescription = hotel.name,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(160.dp)
                     .width(320.dp),
-                painter = painterResource(id = hotel.hotelThumbnail),
-                contentDescription = hotel.hotelName,
                 contentScale = ContentScale.Crop
             )
             Column(
                 modifier = modifier.padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
-            ){
-                HotelTitle(hotelName = hotel.hotelName, starRating = hotel.starRating)
-                HotelPreview(commentRating = 8.4f, numberOfComment = 100)
-                HotelInfo(address = hotel.hotelAddress, numberOfBed = 1, price = 1234567)
+            ) {
+                HotelTitle(hotelName = hotel.name, starRating = hotel.starRating)
+//                HotelPreview(commentRating = 8.4f, numberOfComment = 100)
+                HotelInfo(
+                    address = hotel.address,
+                    numberOfBedroom = hotel.bedrooms.size,
+                    price = if (hotel.totalPrice != 0) hotel.totalPrice else hotel.pricePerNightWeekdays
+                )
             }
         }
     }
 }
+
 @Composable
 fun HotelTitle(
     hotelName: String,
-    starRating: Float,
+    starRating: Int,
     modifier: Modifier = Modifier
-){
+) {
     Row(
         modifier = modifier
-    ){
+    ) {
         Text(
             text = hotelName,
             color = Color.Black,
@@ -79,25 +82,27 @@ fun HotelTitle(
             fontSize = 18.sp
         )
         Spacer(modifier = modifier.width(4.dp))
-        StarRatingBar(rating = starRating, starsColor = Color(0xFFFFB700));
     }
+    StarRatingBar(stars = starRating, starsColor = colorResource(id = R.color.yellow));
+
 }
+
 @Composable
 fun HotelPreview(
     commentRating: Float,
     numberOfComment: Int,
     modifier: Modifier = Modifier
-){
+) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp)
-    ){
+    ) {
         Card(
             colors = CardDefaults.cardColors(
                 containerColor = Color(0xFF0172B2)
             ),
-        ){
+        ) {
             Text(
                 modifier = Modifier.padding(top = 4.dp, bottom = 4.dp, start = 6.dp, end = 6.dp),
                 text = commentRating.toString(),
@@ -106,10 +111,10 @@ fun HotelPreview(
             )
         }
 
-        val ratingToStringID: Int = if(commentRating>9) R.string.veryGoodRating
-        else if(commentRating>8) R.string.goodRating
-        else if(commentRating>6.5) R.string.okRating
-        else if(commentRating>6.5) R.string.badRating
+        val ratingToStringID: Int = if (commentRating > 9) R.string.veryGoodRating
+        else if (commentRating > 8) R.string.goodRating
+        else if (commentRating > 6.5) R.string.okRating
+        else if (commentRating > 6.5) R.string.badRating
         else R.string.veryBadRating
         val ratingToString: String = stringResource(id = ratingToStringID)
 
@@ -121,22 +126,23 @@ fun HotelPreview(
         )
         Spacer(Modifier.width(16.dp))
         Text(
-            text = numberOfComment.toString()+" đánh giá",
+            text = numberOfComment.toString() + " đánh giá",
             color = Color.Black,
             fontSize = 14.sp
         )
     }
 }
+
 @Composable
 fun HotelInfo(
     address: String,
-    numberOfBed: Int,
+    numberOfBedroom: Int,
     price: Int,
     modifier: Modifier = Modifier
-){
+) {
     Row(
         modifier = modifier
-    ){
+    ) {
         Text(
             text = address,
             color = Color.Black,
@@ -146,9 +152,9 @@ fun HotelInfo(
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
-    ){
+    ) {
         Text(
-            text = "Phòng " + numberOfBed.toString() + " giường",
+            text = "Phòng ngủ: " + numberOfBedroom.toString(),
             color = Color.Black,
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp
@@ -159,7 +165,7 @@ fun HotelInfo(
             colors = CardDefaults.cardColors(
                 containerColor = Color.Transparent
             ),
-        ){
+        ) {
             Text(
                 modifier = Modifier.padding(24.dp, 6.dp),
                 color = colorResource(R.color.primary),
@@ -170,19 +176,4 @@ fun HotelInfo(
         }
 
     }
-}
-@Preview(showBackground = true)
-@Composable
-fun HotelCardPreview() {
-    HotelCard(Hotel(
-        hotelThumbnail = R.drawable.hotel_thumbnail,
-        hotelName = "Saigon Hotel",
-        starRating = 4f,
-        commentRating = 8.4f,
-        numberOfComment = 100,
-        hotelAddress = "Thủ Đức, Thành phố Hồ Chí Minh",
-        numberOfBed = 1,
-        hotelPrice = 1234567,
-        isFeatured = false
-    ), onClick = {})
 }

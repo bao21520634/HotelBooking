@@ -27,21 +27,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hotelbooking.R
 import com.example.hotelbooking.navigation.Route
-import com.example.hotelbooking.ui.model.Property
-import com.example.hotelbooking.ui.model.properties
+import com.example.hotelbooking.domain.model.Property
+import com.example.hotelbooking.domain.model.properties
 import com.example.hotelbooking.ui.utility.AppBar
 
 
 @Composable
-fun PropertiesScreen(properties: List<Property>,
-                     openPropertiesInfo:() ->Unit){
+fun PropertiesScreen(
+    properties: List<Property>,
+    openPropertiesInfo: () -> Unit
+){
     Scaffold(
         topBar = {
             AppBar(
                 currentScreen = Route.PropertiesScreen,
                 currentScreenName = stringResource(id = R.string.properties_screen),
                 canNavigateBack = false,
-                navigateUp = { /*TODO*/ })
+                navigateUp = {})
         }
     ) {paddingValues ->
         LazyColumn(
@@ -105,10 +107,4 @@ fun PropertyCard(propertyName: String,
         }
 
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun Preview(){
-    PropertiesScreen(properties = properties, openPropertiesInfo = {})
 }

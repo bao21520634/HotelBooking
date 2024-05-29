@@ -1,7 +1,6 @@
 package com.example.hotelbooking.view
 
 import HotelCard
-import android.content.res.Resources
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,38 +11,58 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.structuralEqualityPolicy
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.hotelbooking.BottomNavigationBar
 import com.example.hotelbooking.navigation.Route
-import com.example.hotelbooking.ui.model.Hotel
-import com.example.hotelbooking.ui.model.sampleData
 import com.example.hotelbooking.ui.utility.AppBar
 import com.example.hotelbooking.ui.theme.PrimaryColor
+import com.example.hotelbooking.view.components.HotelsViewState
+import com.example.hotelbooking.viewmodel.HotelsViewModel
 
 @Composable
-fun MyBookingScreen(
-    hiredHotelList: List<Hotel>,
-    viewedHotelList: List<Hotel>,
+internal fun MyBookingScreen(
     navController: NavController = rememberNavController(),
-    openDetailsScreen: () ->Unit
-){
-    var showHiredList by remember { mutableStateOf(true)}
+    openDetailsScreen: (String) -> Unit = { id -> navController.navigate("${Route.DetailsScreen.route}/$id") }
+) {
+    val viewModel: HotelsViewModel = hiltViewModel()
+    val hotelsState by viewModel.hotelsState.collectAsStateWithLifecycle()
+
+    MyBookingContent(navController, hotelsState, viewModel, openDetailsScreen)
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MyBookingContent(
+    navController: NavController = rememberNavController(),
+    hotelsState: HotelsViewState,
+    viewModel: HotelsViewModel = hiltViewModel(),
+    openDetailsScreen: (String) -> Unit = { id -> navController.navigate("${Route.DetailsScreen.route}/$id") },
+) {
+    var showHiredList by remember { mutableStateOf(true) }
+
+    if (showHiredList) {
+        LaunchedEffect(hotelsState) {
+            viewModel.getMyBookings()
+        }
+    } else {
+        LaunchedEffect(hotelsState) {
+            viewModel.getMyHistory()
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -54,7 +73,7 @@ fun MyBookingScreen(
                 navigateUp = { /*TODO*/ })
 
         },
-    ) {innerpadding ->
+    ) { innerpadding ->
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -65,7 +84,7 @@ fun MyBookingScreen(
             Row(
                 Modifier
                     .fillMaxWidth()
-            ){
+            ) {
                 Button(
                     onClick = { showHiredList = true },
                     colors = if (showHiredList) ButtonDefaults.buttonColors(PrimaryColor) else ButtonDefaults.textButtonColors()
@@ -89,17 +108,10 @@ fun MyBookingScreen(
                     .padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                items(if (showHiredList) hiredHotelList else viewedHotelList) {
-                    HotelCard(hotel = it, onClick = { openDetailsScreen()})
+                items(hotelsState.hotels) {
+                    HotelCard(hotel = it, onClick = { openDetailsScreen(it._id)})
                 }
             }
         }
-
     }
-}
-
-@Preview
-@Composable
-fun MyBookingScreenPreview(){
-    MyBookingScreen(hiredHotelList = sampleData, viewedHotelList = sampleData, openDetailsScreen = {})
 }

@@ -6,7 +6,7 @@ import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.hotelbooking.ui.model.properties
+import com.example.hotelbooking.domain.model.properties
 import com.example.hotelbooking.view.properties.PropertiesDetailScreen
 import com.example.hotelbooking.view.properties.PropertiesInformationScreen
 import com.example.hotelbooking.view.properties.PropertiesPhotoScreen
@@ -23,8 +23,8 @@ fun PropertiesNavBar(navController: NavHostController,
         startDestination = Route.PropertiesScreen.route
     ) {
         composable(route = Route.PropertiesScreen.route){
-            PropertiesScreen(properties = properties) {
-            }
+            PropertiesScreen(properties = properties, openPropertiesInfo = {}
+            )
         }
         composable(route = Route.PropertiesInformationScreen.route){
             PropertiesInformationScreen()

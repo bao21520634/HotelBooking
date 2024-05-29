@@ -18,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import com.example.hotelbooking.R
 import com.example.hotelbooking.navigation.Route
 import com.example.hotelbooking.ui.utility.AppBar
@@ -27,7 +26,7 @@ import com.example.hotelbooking.ui.utility.TextFieldWithIncrement
 import com.example.hotelbooking.view.properties.CommonHeaderText
 
 @Composable
-fun RoomPickingScreen() {
+fun RoomPickingScreen(navigateUp: ()  -> Unit) {
     var nofRoom: Int by remember{ mutableStateOf(1) }
     var nofAdult: Int by remember{ mutableStateOf(1) }
     var nofChildern: Int by remember{ mutableStateOf(1) }
@@ -38,8 +37,8 @@ fun RoomPickingScreen() {
             AppBar(
                 currentScreen = Route.HomeRoomScreen,
                 currentScreenName = stringResource(id = R.string.homepageRoom_screen),
-                canNavigateBack = false,
-                navigateUp = { /*TODO*/ })
+                canNavigateBack = true,
+                navigateUp = navigateUp)
         }
     ){paddingValue ->
         Column(
@@ -75,11 +74,4 @@ fun RoomPickingScreen() {
             ImportantButtonMain(text = "Xác nhận", onClick = { /*TODO*/ })
         }
     }
-
-}
-
-@Preview(showBackground = true)
-@Composable
-fun RoomPickingScreenPreview(){
-    RoomPickingScreen()
 }

@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,30 +31,61 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.hotelbooking.R
 import com.example.hotelbooking.navigation.Route
-import com.example.hotelbooking.ui.model.Hotel
-import com.example.hotelbooking.ui.model.sampleData
 import com.example.hotelbooking.ui.utility.AppBar
 import com.example.hotelbooking.ui.utility.ImportantButtonMain
+import com.example.hotelbooking.view.homepage.components.CommonOutlinedButton
+import com.example.hotelbooking.view.components.HotelsViewState
+import com.example.hotelbooking.view.homepage.components.OutlinedBlock
+import com.example.hotelbooking.viewmodel.HotelsViewModel
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun HomePageSearchScreen(
-    hotelList: List<Hotel>,
+internal fun HomePageSearchScreen(
     modifier: Modifier = Modifier,
+    navController: NavController = rememberNavController(),
     openResultScreen: () -> Unit,
     openRoomScreen: () -> Unit,
-    openDetailsScreen: () ->Unit
+    openDetailsScreen: (String) -> Unit = { id -> navController.navigate("${Route.DetailsScreen.route}/$id") }
 ) {
+    val viewModel: HotelsViewModel = hiltViewModel()
+    val hotelsState by viewModel.hotelsState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.getTopBookings()
+    }
+
+    HomePageSearchContent(modifier, navController, hotelsState, openResultScreen, openRoomScreen, openDetailsScreen)
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomePageSearchContent(
+    modifier: Modifier = Modifier,
+    navController: NavController,
+    hotelsState: HotelsViewState,
+    openResultScreen: () -> Unit,
+    openRoomScreen: () -> Unit,
+    openDetailsScreen: (String) -> Unit = { id -> navController.navigate("${Route.DetailsScreen.route}/$id") }
+) {
+    val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+    val current = LocalDateTime.now()
+    val nextDay = current.plusDays(1)
+
     var location: String by remember { mutableStateOf("Thủ đức, TPHCM") }
-    var dateIn: String by remember { mutableStateOf("18/02/2024") }
-    var dateOut: String by remember { mutableStateOf("25/02/2024") }
+    var dateIn: String by remember { mutableStateOf(current.format(formatter)) }
+    var dateOut: String by remember { mutableStateOf(nextDay.format(formatter)) }
     var nofRoom: Int by remember { mutableStateOf(0) }
     var nofGuest: Int by remember { mutableStateOf(0) }
 
@@ -64,7 +96,7 @@ fun HomePageSearchScreen(
         calendarState = calendarState,
         selectedDateType = selectedDateType,
         onDateSelected = { selectedDate, dateType ->
-            val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+            val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
             val formattedDate = selectedDate.format(formatter)
             when (dateType) {
                 DateType.IN -> dateIn = formattedDate
@@ -72,7 +104,6 @@ fun HomePageSearchScreen(
             }
         }
     )
-
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
@@ -82,24 +113,33 @@ fun HomePageSearchScreen(
                 canNavigateBack = false,
                 navigateUp = { /*TODO*/ })
         },
-    ) { innerPadding ->
+
+
+        ) { innerPadding ->
         LazyColumn(
             modifier = modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(dimensionResource(id = R.dimen.screenPadding)),
-            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.columnPadding), Alignment.CenterVertically),
+            verticalArrangement = Arrangement.spacedBy(
+                dimensionResource(id = R.dimen.columnPadding),
+                Alignment.CenterVertically
+            ),
         ) {
             item {
                 FilterBlock(
                     location = location,
                     onLocationAction = { /*TODO*/ },
                     dateIn = dateIn,
-                    onDateInAction = { selectedDateType = DateType.IN
-                                        calendarState.show() },
+                    onDateInAction = {
+                        selectedDateType = DateType.IN
+                        calendarState.show()
+                    },
                     dateOut = dateOut,
-                    onDateOutAction = { selectedDateType = DateType.OUT
-                                        calendarState.show() },
+                    onDateOutAction = {
+                        selectedDateType = DateType.OUT
+                        calendarState.show()
+                    },
                     nofRoom = nofRoom,
                     nofGuest = nofGuest,
                     onBlockAction = { openRoomScreen() },
@@ -117,14 +157,13 @@ fun HomePageSearchScreen(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
             }
-            items(hotelList) {
-                HotelCard(hotel = it, onClick = {openDetailsScreen()})
+            items(hotelsState.hotels) {
+                HotelCard(hotel = it, onClick = {openDetailsScreen(it._id)})
             }
         }
     }
+
 }
-
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -132,9 +171,11 @@ fun FilterBlock(
     location: String, onLocationAction: () -> Unit,
     dateIn: String, onDateInAction: () -> Unit,
     dateOut: String, onDateOutAction: () -> Unit,
-    nofRoom: Int, nofGuest: Int, onBlockAction: () -> Unit,
+    nofRoom: Int,
+    nofGuest: Int, onBlockAction: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -174,16 +215,4 @@ fun FilterBlock(
             )
         }
     }
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview(showBackground = true)
-@Composable
-fun HomePageSearchScreenPreview() {
-    HomePageSearchScreen(
-        sampleData,
-        openResultScreen = {},
-        openRoomScreen = {},
-        openDetailsScreen = {}
-    )
 }

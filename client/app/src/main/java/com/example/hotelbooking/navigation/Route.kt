@@ -14,7 +14,6 @@ sealed class Route(
     object HomeDateScreen : Route(route = "homeDateScreen", R.string.homepageDate_screen)
     object HomeRoomScreen : Route(route = "homeRoomScreen", R.string.homepageRoom_screen)
 
-
     object FavoriteScreen : Route(route = "favoriteScreen", R.string.favorite_screen)
 
     object MyBookingsScreen : Route(route = "myBookingsScreen", R.string.my_bookings_screen)
@@ -23,7 +22,6 @@ sealed class Route(
 
     object ProfileScreen : Route(route = "profileScreen", R.string.profile_screen)
     object ProfileEditScreen : Route(route = "profileEditScreen", R.string.profileEdit_screen)
-
 
     object PropertiesScreen : Route(route = "propertiesScreen", R.string.properties_screen)
     object PropertiesInformationScreen : Route(route = "propertiesInformationScreen", R.string.propertiesInformation_screen)

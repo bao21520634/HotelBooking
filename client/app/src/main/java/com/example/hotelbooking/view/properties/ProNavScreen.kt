@@ -22,7 +22,7 @@ import com.example.hotelbooking.navigation.Route
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ProScreen(navController: NavHostController = rememberNavController()) {
+fun ProNavScreen(navController: NavHostController = rememberNavController()) {
     Scaffold(
         bottomBar = { NavBar(navController = navController) }
     ) { innerPadding ->
@@ -41,7 +41,7 @@ fun NavBar(navController: NavHostController) {
         Route.PropertiesDetailsScreen.route,
         Route.PropertiesPriceScreen.route,
         Route.PropertiesSPhotoscreen.route,
-        )
+    )
     val currentIndex = screens.indexOf(currentDestination?.route)
 
     NavigationBar (containerColor = Color.White) {

@@ -2,35 +2,47 @@ package com.example.hotelbooking
 
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.example.hotelbooking.ui.theme.HotelBookingTheme
 import com.example.hotelbooking.navigation.NavGraph
+import com.example.hotelbooking.util.Event
+import com.example.hotelbooking.util.EventBus
+import com.example.hotelbooking.viewmodel.HotelsViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    val hotelsViewModel: HotelsViewModel by viewModels()
+
     @RequiresApi(Build.VERSION_CODES.R)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
         setContent {
             HotelBookingTheme {
-                // A surface container using the 'background' color from the theme
-//                Surface(
-//                    modifier = Modifier.fillMaxSize(),
-//                    color = MaterialTheme.colorScheme.background
-//                ) {
-                        NavGraph(navController = rememberNavController())
-
+                val lifecycle = LocalLifecycleOwner.current.lifecycle
+                LaunchedEffect(key1 = lifecycle) {
+                    repeatOnLifecycle(state = Lifecycle.State.STARTED) {
+                        EventBus.events.collect { event ->
+                            if (event is Event.Toast) {
+                                Toast.makeText(this@MainActivity, event.message, Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+                        }
+                    }
+                }
+                NavGraph(navController = rememberNavController())
             }
         }
     }

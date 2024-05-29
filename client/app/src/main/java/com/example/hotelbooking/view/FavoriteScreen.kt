@@ -6,20 +6,46 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.hotelbooking.R
 import com.example.hotelbooking.navigation.Route
-import com.example.hotelbooking.ui.model.Hotel
-import com.example.hotelbooking.ui.model.sampleData
 import com.example.hotelbooking.ui.utility.AppBar
+import com.example.hotelbooking.view.components.HotelsViewState
+import com.example.hotelbooking.viewmodel.HotelsViewModel
 
 @Composable
-fun FavoriteScreen(favoriteHotelList: List<Hotel>, openDetailsScreen: () -> Unit){
+internal fun FavoriteScreen(
+    navController: NavController = rememberNavController(),
+    openDetailsScreen: (String) -> Unit = { id -> navController.navigate("${Route.DetailsScreen.route}/$id") }
+) {
+    val viewModel: HotelsViewModel = hiltViewModel()
+    val hotelsState by viewModel.hotelsState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.getMyFavorites()
+    }
+
+    FavoriteContent(navController, hotelsState, openDetailsScreen)
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FavoriteContent(
+    navController: NavController,
+    hotelsState: HotelsViewState,
+    openDetailsScreen: (String) -> Unit = { id -> navController.navigate("${Route.DetailsScreen.route}/$id") }
+) {
     Scaffold(
         topBar = {
             AppBar(
@@ -28,7 +54,7 @@ fun FavoriteScreen(favoriteHotelList: List<Hotel>, openDetailsScreen: () -> Unit
                 canNavigateBack = false,
                 navigateUp = { /*TODO*/ })
         },
-    ) {innerpadding ->
+    ) { innerpadding ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
@@ -36,15 +62,9 @@ fun FavoriteScreen(favoriteHotelList: List<Hotel>, openDetailsScreen: () -> Unit
                 .padding(dimensionResource(id = R.dimen.screenPadding)),
             verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.itemInListPadding))
         ) {
-            items(favoriteHotelList) {
-                HotelCard(hotel = it, onClick = {openDetailsScreen()})
+            items(hotelsState.hotels) {
+                HotelCard(hotel = it, onClick = { openDetailsScreen(it._id) })
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun FavoriteScreenPreview(){
-    FavoriteScreen(favoriteHotelList = sampleData, openDetailsScreen = {})
 }

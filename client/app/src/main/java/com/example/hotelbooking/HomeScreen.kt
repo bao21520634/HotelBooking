@@ -2,6 +2,8 @@ package com.example.hotelbooking
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalAbsoluteTonalElevation
@@ -15,11 +17,13 @@ import androidx.compose.ui.res.colorResource
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.contentColorFor
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -31,25 +35,19 @@ import com.example.hotelbooking.navigation.HomeNavGraph
 @Composable
 fun HomeScreen(navController: NavHostController = rememberNavController()) {
     Scaffold(
+        modifier = Modifier.fillMaxSize(),
         bottomBar = {
             if (shouldShowBottomBar(navController)) {
                 BottomNavigationBar(navController = navController) }
         }
     ) { innerPadding ->
-        HomeNavGraph(navController = navController, modifier = Modifier.padding(innerPadding))
-    }
-}
-
-@Composable
-fun shouldShowBottomBar(navController: NavHostController): Boolean {
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = navBackStackEntry?.destination
-    return when (currentDestination?.route) {
-        BottomBarScreen.Home.route,
-        BottomBarScreen.Favorite.route,
-        BottomBarScreen.MyBooking.route,
-        BottomBarScreen.Profile.route -> true
-        else -> false
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+        ) {
+            HomeNavGraph(navController = navController)
+        }
     }
 }
 
@@ -61,9 +59,13 @@ fun BottomNavigationBar(navController: NavHostController) {
         BottomBarScreen.MyBooking,
         BottomBarScreen.Profile
     )
-    NavigationBar(containerColor = Color.White) {
+    NavigationBar(
+        containerColor = Color.White,
+        modifier = Modifier.height(56.dp)
+    ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry?.destination
+
         val bottomBarDestination = screens.any { it.route == currentDestination?.route }
         if (bottomBarDestination) {
             BottomAppBar(containerColor = Color.White) {
@@ -106,7 +108,22 @@ fun RowScope.AddItem(
         },
         colors = NavigationBarItemDefaults.colors(
             selectedIconColor = colorResource(R.color.primary),
-            indicatorColor = MaterialTheme.colorScheme.surfaceColorAtElevation(LocalAbsoluteTonalElevation.current)
+            indicatorColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
+                LocalAbsoluteTonalElevation.current
+            )
         )
     )
+}
+
+@Composable
+fun shouldShowBottomBar(navController: NavHostController): Boolean {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+    return when (currentDestination?.route) {
+        BottomBarScreen.Home.route,
+        BottomBarScreen.Favorite.route,
+        BottomBarScreen.MyBooking.route,
+        BottomBarScreen.Profile.route -> true
+        else -> false
+    }
 }

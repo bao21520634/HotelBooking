@@ -35,18 +35,19 @@ fun AppBar(
 ) {
     MediumTopAppBar(
         title = {
-            Column (
-                modifier = modifier.padding(top = 16.dp)
-            ){
+            Column(
+                modifier = modifier
+            ) {
                 Text(
                     text = currentScreenName,
                     style = MaterialTheme.typography.titleLarge,
                     color = colorResource(R.color.dark_blue),
                     fontWeight = FontWeight.Bold,
-                    fontSize = 32.sp
+                    fontSize = 24.sp
                 )
                 Divider()
-            } },
+            }
+        },
         modifier = modifier,
         navigationIcon = {
             if (canNavigateBack) {

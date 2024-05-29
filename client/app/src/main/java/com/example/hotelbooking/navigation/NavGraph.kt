@@ -2,13 +2,12 @@ package com.example.hotelbooking.navigation
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.hotelbooking.HomeScreen
-import com.example.hotelbooking.ui.model.sampleData
-import com.example.hotelbooking.view.homepage.HomePageSearchScreen
 
 object EndPoints {
     const val ID = "id"
@@ -24,6 +23,8 @@ fun NavGraph(navController: NavHostController) {
     ) {
         authNavGraph(navController)
         composable(route = Route.HomeScreen.route){
+            BackHandler(true) {}
+
             HomeScreen()
         }
     }
