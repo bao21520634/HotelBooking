@@ -5,6 +5,6 @@ import com.example.hotelbooking.domain.model.User
 
 data class ProfileViewState(
     var isLoading: Boolean = false,
-    var user: User? = null,
+    var user: User = User(),
     var error: String? = null
 )
