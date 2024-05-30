@@ -69,7 +69,7 @@ fun HotelCard(hotel: Hotel, modifier: Modifier = Modifier){
                     isFavored = isFavored,
                     onFavoriteClick = {isFavored = !(isFavored)})
                 HotelPreview(commentRating = 8.4f, numberOfComment = 100)
-                HotelInfo(address = hotel.hotelAddress, numberOfBed = 1, price = 1234567)
+                HotelInfo(address = hotel.hotelAddress, numberOfBed = 1, price = hotel.hotelPrice)
             }
         }
     }
@@ -87,16 +87,21 @@ fun HotelTitle(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ){
-        Text(
-            text = hotelName,
-            color = Color.Black,
-            fontFamily = FontFamily.SansSerif,
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp
-        )
-        Spacer(modifier = Modifier.width(4.dp))
-        StarRatingBar(rating = starRating, starsColor = Color(0xFFFFB700));
-        Spacer(Modifier.weight(1f))
+        Row(
+            modifier = Modifier.weight(1f)
+        ){
+            Text(
+                text = hotelName,
+                color = Color.Black,
+                fontFamily = FontFamily.SansSerif,
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            //StarRatingBar(rating = starRating, starsColor = Color(0xFFFFB700));
+            Spacer(Modifier.weight(1f))
+        }
+
         Card(
             colors = CardDefaults.cardColors(
                 containerColor =  Color.Transparent,

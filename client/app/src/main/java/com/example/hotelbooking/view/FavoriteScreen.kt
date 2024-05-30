@@ -20,6 +20,7 @@ import com.example.hotelbooking.ui.utility.AppBar
 
 @Composable
 fun FavoriteScreen(favoriteHotelList: List<Hotel>){
+
     Scaffold(
         topBar = {
             AppBar(
