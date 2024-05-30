@@ -80,32 +80,40 @@ fun DetailContent(hotelState: HotelViewState, backNav:() ->Unit) {
     Scaffold(
         topBar = {}
     ) {
-        LazyColumn(modifier = Modifier
-            .fillMaxSize()
-            .padding(12.dp)
-            .background(Color.Transparent),
-            verticalArrangement = Arrangement.spacedBy(16.dp))
-        {
-            item {
-                DetailThumbNail(hotelState.hotel, navigateUp = backNav)
-                Divider(color = colorResource(R.color.neutral), thickness = 1.dp)
-            }
-            item {AddressHotel(hotelState.hotel) }
-            item {RoomType(hotelState.hotel) }
-            item {Interior(hotelState.hotel) }
-            item {Facilities(hotelState.hotel) }
-            item {Description(hotelState.hotel)}
-            item {
-                Spacer(modifier = Modifier.fillMaxHeight(1f))
+        Box(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(modifier = Modifier
+                .fillMaxSize()
+                .padding(12.dp)
+                .background(Color.Transparent),
+                verticalArrangement = Arrangement.spacedBy(16.dp))
+            {
+                item {
+                    DetailThumbNail(hotelState.hotel, navigateUp = backNav)
+                    Divider(color = colorResource(R.color.neutral), thickness = 1.dp)
+                }
+                item {AddressHotel(hotelState.hotel) }
+                item {RoomType(hotelState.hotel) }
+                item {Interior(hotelState.hotel) }
+                item {Facilities(hotelState.hotel) }
+                item {Description(hotelState.hotel)}
+                item { Spacer(modifier = Modifier.height(64.dp)) }
+        }
                 // Switch to URL
                 ImportantButtonMain(text = "Đặt ngay", onClick = {
                     val url = "https://www.google.com"
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                     context.startActivity(intent)
-                })}
+                },
+                modifier = Modifier
+                    .align(Alignment.BottomCenter) // Align at the bottom
+                    .padding(12.dp)
+                    .fillMaxWidth()
+                    .height(56.dp)
+                )
         }
     }
 }
+
 
 @Composable
 fun DetailThumbNail(hotel: Hotel, modifier: Modifier = Modifier, navigateUp:() -> Unit) {
@@ -126,7 +134,7 @@ fun DetailThumbNail(hotel: Hotel, modifier: Modifier = Modifier, navigateUp:() -
                         contentDescription = hotel.name,
                         modifier = Modifier
                             .fillMaxHeight()
-                            .width(300.dp),
+                            .width(328.dp),
                         contentScale = ContentScale.Crop
                     )
                 }
@@ -153,7 +161,8 @@ fun DetailThumbNail(hotel: Hotel, modifier: Modifier = Modifier, navigateUp:() -
                 color = Color.Black,
                 fontFamily = FontFamily.SansSerif,
                 fontWeight = FontWeight.Bold,
-                fontSize = 18.sp
+                fontSize = 18.sp,
+                maxLines = 2
             )
             Spacer(modifier = modifier.width(4.dp))
             StarRatingBar(stars = hotel.starRating, starsColor = Color(0xFFFFB700));

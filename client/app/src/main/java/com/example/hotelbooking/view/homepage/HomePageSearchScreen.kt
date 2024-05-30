@@ -13,8 +13,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -27,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -112,9 +117,8 @@ fun HomePageSearchContent(
                 currentScreenName = stringResource(id = R.string.homepage_screen),
                 canNavigateBack = false,
                 navigateUp = { /*TODO*/ })
+
         },
-
-
         ) { innerPadding ->
         LazyColumn(
             modifier = modifier
@@ -157,8 +161,19 @@ fun HomePageSearchContent(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
             }
-            items(hotelsState.hotels) {
-                HotelCard(hotel = it, onClick = {openDetailsScreen(it._id)})
+            item {
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                )
+                {
+                    items(hotelsState.hotels) {
+                        HotelCard(
+                            hotel = it,
+                            onClick = { openDetailsScreen(it._id) },
+                            modifier = Modifier.size(width = 328.dp, height = 370.dp))
+                    }
+                }
             }
         }
     }

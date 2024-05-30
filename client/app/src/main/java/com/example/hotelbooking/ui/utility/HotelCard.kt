@@ -21,6 +21,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -55,6 +56,7 @@ fun HotelCard(hotel: Hotel, modifier: Modifier = Modifier, onClick: () -> Unit) 
             ) {
                 HotelTitle(hotelName = hotel.name, starRating = hotel.starRating)
 //                HotelPreview(commentRating = 8.4f, numberOfComment = 100)
+                Spacer(modifier = Modifier.weight(1f))
                 HotelInfo(
                     address = hotel.address,
                     numberOfBedroom = hotel.bedrooms.size,
@@ -140,40 +142,46 @@ fun HotelInfo(
     price: Int,
     modifier: Modifier = Modifier
 ) {
-    Row(
-        modifier = modifier
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(bottom = 6.dp)
     ) {
-        Text(
-            text = address,
-            color = Color.Black,
-            fontSize = 18.sp
-        )
-    }
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(
-            text = "Phòng ngủ: " + numberOfBedroom.toString(),
-            color = Color.Black,
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp
-        )
-        Spacer(Modifier.weight(1f))
-        Card(
-            border = BorderStroke(1.dp, colorResource(R.color.primary)),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.Transparent
-            ),
+        Row(
+            modifier = modifier
         ) {
             Text(
-                modifier = Modifier.padding(24.dp, 6.dp),
-                color = colorResource(R.color.primary),
-                text = "VND " + price,
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp
+                text = address,
+                color = Color.Black,
+                fontSize = 18.sp,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
             )
         }
+        Row(
+            modifier = modifier,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "Phòng ngủ: " + numberOfBedroom.toString(),
+                color = Color.Black,
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp
+            )
+            Spacer(Modifier.weight(1f))
+            Card(
+                border = BorderStroke(1.dp, colorResource(R.color.primary)),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.Transparent
+                ),
+            ) {
+                Text(
+                    modifier = Modifier.padding(24.dp, 6.dp),
+                    color = colorResource(R.color.primary),
+                    text = "VND " + price,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp
+                )
+            }
 
+        }
     }
 }

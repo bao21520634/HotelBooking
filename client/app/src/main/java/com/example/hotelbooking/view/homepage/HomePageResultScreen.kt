@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -171,10 +173,20 @@ fun HomePageResultContent(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
             }
-            items(hotelsState.hotels) {
-                HotelCard(hotel = it, onClick = { openDetailsScreen(it._id) })
+            item {
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                )
+                {
+                    items(hotelsState.hotels) {
+                        HotelCard(
+                            hotel = it,
+                            onClick = { openDetailsScreen(it._id) },
+                            modifier = Modifier.size(width = 328.dp, height = 370.dp))
+                    }
+                }
             }
-
         }
         Column(
         ) {
