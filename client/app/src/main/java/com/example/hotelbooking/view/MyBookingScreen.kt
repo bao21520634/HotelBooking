@@ -31,36 +31,53 @@ import com.example.hotelbooking.navigation.Route
 import com.example.hotelbooking.ui.utility.AppBar
 import com.example.hotelbooking.ui.theme.PrimaryColor
 import com.example.hotelbooking.view.components.HotelsViewState
+import com.example.hotelbooking.view.components.ProfileViewState
 import com.example.hotelbooking.viewmodel.HotelsViewModel
+import com.example.hotelbooking.viewmodel.UsersViewModel
 
 @Composable
 internal fun MyBookingScreen(
     navController: NavController = rememberNavController(),
-    openDetailsScreen: (String) -> Unit = { id -> navController.navigate("${Route.DetailsScreen.route}/$id") }
-) {
-    val viewModel: HotelsViewModel = hiltViewModel()
-    val hotelsState by viewModel.hotelsState.collectAsStateWithLifecycle()
+    openDetailsScreen: (String) -> Unit = {  },
+    hotelsViewModel: HotelsViewModel = hiltViewModel(),
+    usersViewModel: UsersViewModel = hiltViewModel()
 
-    MyBookingContent(navController, hotelsState, viewModel, openDetailsScreen)
+) {
+    val hotelsState by hotelsViewModel.hotelsState.collectAsStateWithLifecycle()
+
+    val userState by usersViewModel.state.collectAsStateWithLifecycle()
+
+    MyBookingContent(
+        userState,
+        usersViewModel,
+        navController,
+        hotelsState,
+        hotelsViewModel,
+        openDetailsScreen
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyBookingContent(
+    userState: ProfileViewState,
+    usersViewModel: UsersViewModel = hiltViewModel(),
     navController: NavController = rememberNavController(),
     hotelsState: HotelsViewState,
-    viewModel: HotelsViewModel = hiltViewModel(),
+    hotelsViewModel: HotelsViewModel = hiltViewModel(),
     openDetailsScreen: (String) -> Unit = { id -> navController.navigate("${Route.DetailsScreen.route}/$id") },
 ) {
     var showHiredList by remember { mutableStateOf(true) }
 
     if (showHiredList) {
         LaunchedEffect(hotelsState) {
-            viewModel.getMyBookings()
+            hotelsViewModel.getMyBookings()
+            usersViewModel.getUser()
         }
     } else {
         LaunchedEffect(hotelsState) {
-            viewModel.getMyHistory()
+            hotelsViewModel.getMyHistory()
+            usersViewModel.getUser()
         }
     }
 
@@ -104,12 +121,24 @@ fun MyBookingContent(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
-//                    .padding(innerpadding)
                     .padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                items(hotelsState.hotels) {
-                    HotelCard(hotel = it, onClick = { openDetailsScreen(it._id)})
+                items(hotelsState.hotels) {hotel ->
+                    var isFavored = userState.user?.favorites?.contains(hotel._id) ?: false
+                    LaunchedEffect(userState.user) {
+                        isFavored = userState.user?.favorites?.contains(hotel._id) ?: false
+                    }
+
+                    HotelCard(
+                        hotel = hotel,
+                        isFavored = isFavored,
+                        onClick = { openDetailsScreen(hotel._id) },
+                        onFavoriteToggle = {
+                            usersViewModel.favorite(hotel._id)
+                            isFavored = !isFavored
+                        }
+                    )
                 }
             }
         }

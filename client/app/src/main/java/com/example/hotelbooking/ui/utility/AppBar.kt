@@ -36,15 +36,14 @@ fun AppBar(
     TopAppBar(
         title = {
             if (!canNavigateBack) {
-                Column(
-                    modifier = modifier.padding(top = 16.dp)
-                ) {
+                Column {
                     Text(
+                        modifier = modifier.padding(bottom = 4.dp),
                         text = currentScreenName,
                         style = MaterialTheme.typography.titleLarge,
                         color = colorResource(R.color.dark_blue),
                         fontWeight = FontWeight.Bold,
-                        fontSize = 24.sp
+                        fontSize = 32.sp
                     )
                     Divider()
                 }

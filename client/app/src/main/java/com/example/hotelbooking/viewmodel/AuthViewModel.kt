@@ -46,6 +46,30 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+    fun register(email: String, username: String, password: String, confirmPassword: String) {
+        viewModelScope.launch {
+            _state.update {
+                it.copy(isLoading = true)
+            }
+            authRepository.register(email, username, password, confirmPassword)
+                .onRight {message ->
+                    _state.update {
+                        it.copy(message = message.body())
+                    }
+                }
+                .onLeft {error ->
+                    _state.update {
+                        it.copy(error = error.error.message)
+                    }
+                    Log.d("", error.t.toString())
+                    sendEvent(Event.Toast(error.t.toString()))
+                }
+            _state.update {
+                it.copy(isLoading = false)
+            }
+        }
+    }
+
     fun logout() {
         viewModelScope.launch {
             _state.update {

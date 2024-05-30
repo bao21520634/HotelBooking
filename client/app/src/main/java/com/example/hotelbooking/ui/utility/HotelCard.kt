@@ -15,19 +15,15 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -35,11 +31,13 @@ import com.example.hotelbooking.R
 import com.example.hotelbooking.domain.model.Hotel
 
 @Composable
-fun HotelCard(hotel: Hotel, modifier: Modifier = Modifier, onClick: () -> Unit) {
-    var isFavored: Boolean by remember {
-        mutableStateOf(false)
-    }
-
+fun HotelCard(
+    modifier: Modifier = Modifier,
+    isFavored: Boolean,
+    hotel: Hotel,
+    onClick: () -> Unit,
+    onFavoriteToggle: (Boolean) -> Unit
+) {
     Card(
         modifier = modifier.clickable(onClick = onClick),
         colors = CardDefaults.cardColors(
@@ -67,8 +65,11 @@ fun HotelCard(hotel: Hotel, modifier: Modifier = Modifier, onClick: () -> Unit) 
                 HotelTitle(hotelName = hotel.name,
                     starRating = hotel.starRating,
                     isFavored = isFavored,
-                    onFavoriteClick = {isFavored = !(isFavored)})
-//                HotelPreview(commentRating = 8.4f, numberOfComment = 100)
+                    onFavoriteClick = {
+                        onFavoriteToggle(!isFavored)
+                    }
+                )
+                Spacer(modifier = Modifier.weight(1f))
                 HotelInfo(
                     address = hotel.address,
                     numberOfBedroom = hotel.bedrooms.size,
@@ -90,8 +91,8 @@ fun HotelTitle(
 ) {
     Row(
         modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically
     ) {
+
         Text(
             text = hotelName,
             color = Color.Black,
@@ -100,25 +101,26 @@ fun HotelTitle(
             fontSize = 18.sp
         )
         Spacer(modifier = Modifier.width(4.dp))
+
+        StarRatingBar(stars = starRating, starsColor = colorResource(id = R.color.yellow))
     }
-    StarRatingBar(stars = starRating, starsColor = colorResource(id = R.color.yellow));
 
     Card(
+        modifier = Modifier.padding(end = 0.dp),
         colors = CardDefaults.cardColors(
-            containerColor =  Color.Transparent,
-            contentColor = Color.Red
+            containerColor = Color.Transparent,
+            contentColor = colorResource(id = R.color.red)
         ),
         shape = CircleShape,
         onClick = onFavoriteClick
-    ){
-        if(isFavored){
+    ) {
+        if (isFavored) {
             Icon(
                 painter = painterResource(id = R.drawable.baseline_favorite_24),
                 contentDescription = null,
                 modifier = Modifier.padding(4.dp)
             )
-        }
-        else{
+        } else {
             Icon(
                 painter = painterResource(id = R.drawable.baseline_favorite_border_24),
                 contentDescription = null,
@@ -136,40 +138,48 @@ fun HotelInfo(
     price: Int,
     modifier: Modifier = Modifier
 ) {
-    Row(
-        modifier = modifier
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 6.dp)
     ) {
-        Text(
-            text = address,
-            color = Color.Black,
-            fontSize = 18.sp
-        )
-    }
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(
-            text = "Phòng ngủ: " + numberOfBedroom.toString(),
-            color = Color.Black,
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp
-        )
-        Spacer(Modifier.weight(1f))
-        Card(
-            border = BorderStroke(1.dp, colorResource(R.color.primary)),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.Transparent
-            ),
+        Row(
+            modifier = modifier
         ) {
             Text(
-                modifier = Modifier.padding(24.dp, 6.dp),
-                color = colorResource(R.color.primary),
-                text = "VND " + price,
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp
+                text = address,
+                color = Color.Black,
+                fontSize = 18.sp,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
             )
         }
-
+        Row(
+            modifier = modifier,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "Phòng ngủ: $numberOfBedroom",
+                color = Color.Black,
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp
+            )
+            Spacer(Modifier.weight(1f))
+            Card(
+                border = BorderStroke(1.dp, colorResource(R.color.primary)),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.Transparent
+                ),
+            ) {
+                Text(
+                    modifier = Modifier.padding(24.dp, 6.dp),
+                    color = colorResource(R.color.primary),
+                    text = "VND $price",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp
+                )
+            }
+        }
     }
 }
+

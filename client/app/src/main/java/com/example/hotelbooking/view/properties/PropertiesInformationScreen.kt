@@ -86,8 +86,3 @@ fun PropertiesInformationScreen(){
 
     }
 }
-@Preview(showBackground = true)
-@Composable
-fun PropertiesInformationScreenPreview(){
-    PropertiesInformationScreen();
-}

@@ -1,6 +1,6 @@
 package com.example.hotelbooking.ui.utility
 
-import androidx.annotation.DrawableRes
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,17 +19,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import com.example.hotelbooking.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ImageWithDeleteButton(@DrawableRes imageSource: Int, onDeleteButtonPressed: ()-> (Unit), modifier: Modifier = Modifier) {
+fun ImageWithDeleteButton(
+    uri : Uri,
+    onDeleteButtonPressed: ()-> (Unit), modifier: Modifier = Modifier
+) {
     Card(
         modifier = modifier.fillMaxWidth()
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Image(
-                painter = painterResource(id = imageSource),
+                painter = rememberAsyncImagePainter(
+                    model = uri
+                ),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier

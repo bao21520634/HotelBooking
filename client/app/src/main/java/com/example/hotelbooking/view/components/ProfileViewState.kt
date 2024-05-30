@@ -4,7 +4,7 @@ import com.example.hotelbooking.domain.model.Hotel
 import com.example.hotelbooking.domain.model.User
 
 data class ProfileViewState(
-    val isLoading: Boolean = false,
-    val user: User? = null,
-    val error: String? = null
+    var isLoading: Boolean = false,
+    var user: User? = null,
+    var error: String? = null
 )

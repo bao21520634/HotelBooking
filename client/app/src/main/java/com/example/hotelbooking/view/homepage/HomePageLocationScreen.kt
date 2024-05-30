@@ -20,6 +20,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,22 +30,42 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.hotelbooking.R
 import com.example.hotelbooking.navigation.Route
 import com.example.hotelbooking.ui.utility.AppBar
 import com.example.hotelbooking.ui.utility.InfoTextField
+import com.example.hotelbooking.view.homepage.components.PlaceViewState
+import com.example.hotelbooking.viewmodel.HotelsViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 internal fun HomePageLocationScreen(
     modifier: Modifier = Modifier,
     navController: NavController = rememberNavController(),
+    hotelsViewModel: HotelsViewModel = hiltViewModel(),
+    navigateUp: () -> Unit
+) {
+    val placesState by hotelsViewModel.placesState.collectAsStateWithLifecycle()
+
+    HomePageLocationContent(modifier, navController, placesState, hotelsViewModel, navigateUp)
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+internal fun HomePageLocationContent(
+    modifier: Modifier = Modifier,
+    navController: NavController = rememberNavController(),
+    placesState: PlaceViewState,
+    hotelsViewModel: HotelsViewModel = hiltViewModel(),
+    navigateUp: () -> Unit
 ) {
     var location: String by remember { mutableStateOf("") }
 
@@ -55,7 +76,7 @@ internal fun HomePageLocationScreen(
                 currentScreen = Route.HomeRoomScreen,
                 currentScreenName = "",
                 canNavigateBack = true,
-                navigateUp = { /*TODO*/ }
+                navigateUp = navigateUp
             )
         }
     ) { paddingValue ->
@@ -68,21 +89,26 @@ internal fun HomePageLocationScreen(
         ) {
             InfoTextField(
                 value = location,
-                onValueChange = { location = it },
+                onValueChange = {
+                    location = it
+
+                    hotelsViewModel.getLocationPredictions(location)
+                },
                 promptText = "Nơi bạn muốn tìm",
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .height(48.dp),
             )
+
             LazyColumn {
-                items(
-                    listOf(
-                        "Thu Duc, TP Ho Chi Minh",
-                        "Thu Duc, TP Ho Chi Minh",
-                        "Thu Duc, TP Ho Chi Minh"
-                    )
-                ) { item ->
-                    SearchResult(text = item, onClick = { })
+                items(placesState.predictionPlaces) {
+                    SearchResult(text = it.place_name, onClick = {
+                        hotelsViewModel.updateSearchParams(
+                            location = it.place_name,
+                            location_id = it.place_id
+                        )
+
+                        navigateUp()
+                    })
                 }
             }
         }
@@ -116,11 +142,4 @@ fun SearchResult(
             Text(text = text, fontSize = 14.sp)
         }
     }
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-@Preview
-internal fun HomePageLocationScreenPreview() {
-    HomePageLocationScreen()
 }

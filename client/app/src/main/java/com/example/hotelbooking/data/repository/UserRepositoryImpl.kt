@@ -24,4 +24,16 @@ class UserRepositoryImpl @Inject constructor(
             }
         }.mapLeft { it.toNetworkError() }
     }
+
+    override suspend fun favorite(hotelId: String): Either<NetworkError, User> {
+        return Either.catch {
+            val jwt = sharedPreferences.getString("auth_token", null)
+
+            if (jwt != null) {
+                userApi.favorite(cookies = "auth_token=$jwt", hotelId = hotelId)
+            } else {
+                throw Exception("JWT not found")
+            }
+        }.mapLeft { it.toNetworkError() }
+    }
 }

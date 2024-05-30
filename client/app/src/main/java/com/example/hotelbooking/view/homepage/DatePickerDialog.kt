@@ -17,22 +17,37 @@ import com.maxkeppeler.sheets.calendar.models.CalendarStyle
 fun DatePickerDialog(
     calendarState: com.maxkeppeker.sheets.core.models.base.SheetState,
     selectedDateType: DateType?,
-    onDateSelected: (LocalDate, DateType) -> Unit
+    onDateSelected: (LocalDate, DateType) -> Unit,
+    minDate: LocalDate?
 ) {
+    val minSelectableDate = LocalDate.now().plusDays(1)
+    val disabledDates = when (selectedDateType){
+        DateType.IN -> listOf(LocalDate.now().minusDays(1))
+        DateType.OUT -> minDate?.let { listOf(LocalDate.now().minusDays(1), it.plusDays(1)) } ?: listOf()
+        else -> listOf()
+    }
     CalendarDialog(
         state = calendarState,
         config = CalendarConfig(
             monthSelection = true,
             yearSelection = true,
             style = CalendarStyle.MONTH,
-            disabledDates = listOf(LocalDate.now().plusDays(7))
-        ),
+            disabledDates = disabledDates,
+
+            ),
         selection = CalendarSelection.Date { selectedDate ->
-            if (calendarState.visible) {
-                selectedDateType?.let { dateType ->
-                    onDateSelected(selectedDate, dateType)
+            val isValidDate = when(selectedDateType) {
+                DateType.IN -> selectedDate >= LocalDate.now()
+                DateType.OUT -> selectedDate >= minSelectableDate
+                else -> false
+            }
+            if (isValidDate) {
+                if (calendarState.visible) {
+                    selectedDateType?.let { dateType ->
+                        onDateSelected(selectedDate, dateType)
+                    }
+                    calendarState.hide()
                 }
-                calendarState.hide()
             }
         }
     )

@@ -28,7 +28,7 @@ fun InfoTextField(
     OutlinedTextField(
         modifier = modifier
             .fillMaxWidth()
-            .height(48.dp),
+            .height(56.dp),
         shape = RoundedCornerShape(20.dp),
         value = value,
         singleLine = true,

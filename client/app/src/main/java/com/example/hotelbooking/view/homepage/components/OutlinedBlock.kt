@@ -42,7 +42,7 @@ fun OutlinedBlock(
         colors = CardDefaults.cardColors(
             containerColor = Color.White,
         ),
-        border = BorderStroke(2.dp, Color.Black),
+        border = BorderStroke(1.5.dp, Color.Black),
     ){
         Column(
             modifier = Modifier.fillMaxSize(),

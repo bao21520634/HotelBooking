@@ -47,15 +47,15 @@ import com.example.hotelbooking.viewmodel.UsersViewModel
 
 @Composable
 internal fun ProfileScreen(
+    usersViewModel: UsersViewModel = hiltViewModel(),
+    authViewModel: AuthViewModel = hiltViewModel(),
     openEditProfileScreen: () -> Unit,
     openPassWordChangeScreen: () -> Unit,
     logOut: () -> Unit,
     openPropertiesScreen: () -> Unit
 ) {
-    val usersViewModel: UsersViewModel = hiltViewModel()
     val userState by usersViewModel.state.collectAsStateWithLifecycle()
 
-    val authViewModel: AuthViewModel = hiltViewModel()
     val authState by authViewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {

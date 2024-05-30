@@ -2,6 +2,7 @@ package com.example.hotelbooking.view.homepage
 
 import HotelCard
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,8 +14,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -32,6 +37,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -42,9 +48,13 @@ import com.example.hotelbooking.ui.utility.AppBar
 import com.example.hotelbooking.ui.utility.ImportantButtonMain
 import com.example.hotelbooking.view.homepage.components.CommonOutlinedButton
 import com.example.hotelbooking.view.components.HotelsViewState
+import com.example.hotelbooking.view.components.ProfileViewState
 import com.example.hotelbooking.view.homepage.components.OutlinedBlock
+import com.example.hotelbooking.view.homepage.components.SearchViewState
 import com.example.hotelbooking.viewmodel.HotelsViewModel
+import com.example.hotelbooking.viewmodel.UsersViewModel
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -54,22 +64,32 @@ import java.time.format.DateTimeFormatter
 internal fun HomePageSearchScreen(
     modifier: Modifier = Modifier,
     navController: NavController = rememberNavController(),
+    hotelsViewModel: HotelsViewModel = hiltViewModel(),
+    usersViewModel: UsersViewModel = hiltViewModel(),
     openResultScreen: () -> Unit,
     openRoomScreen: () -> Unit,
     openLocationScreen: () -> Unit,
     openDetailsScreen: (String) -> Unit = {}
 ) {
-    val viewModel: HotelsViewModel = hiltViewModel()
-    val hotelsState by viewModel.hotelsState.collectAsStateWithLifecycle()
+    val hotelsState by hotelsViewModel.hotelsState.collectAsStateWithLifecycle()
+
+    val searchState by hotelsViewModel.searchState.collectAsStateWithLifecycle()
+
+    val userState by usersViewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        viewModel.getTopBookings()
+        hotelsViewModel.getTopBookings()
+        usersViewModel.getUser()
     }
 
     HomePageSearchContent(
         modifier,
+        userState,
+        usersViewModel,
         navController,
         hotelsState,
+        searchState,
+        hotelsViewModel,
         openResultScreen,
         openRoomScreen,
         openLocationScreen,
@@ -82,8 +102,12 @@ internal fun HomePageSearchScreen(
 @Composable
 fun HomePageSearchContent(
     modifier: Modifier = Modifier,
+    userState: ProfileViewState,
+    usersViewModel: UsersViewModel = hiltViewModel(),
     navController: NavController,
     hotelsState: HotelsViewState,
+    searchState: SearchViewState,
+    hotelsViewModel: HotelsViewModel = hiltViewModel(),
     openResultScreen: () -> Unit,
     openRoomScreen: () -> Unit,
     openLocationScreen: () -> Unit,
@@ -93,14 +117,45 @@ fun HomePageSearchContent(
     val current = LocalDateTime.now()
     val nextDay = current.plusDays(1)
 
-    var location: String by remember { mutableStateOf("Thủ đức, TPHCM") }
-    var dateIn: String by remember { mutableStateOf(current.format(formatter)) }
-    var dateOut: String by remember { mutableStateOf(nextDay.format(formatter)) }
-    var nofRoom: Int by remember { mutableStateOf(0) }
-    var nofGuest: Int by remember { mutableStateOf(0) }
+    var location: String by remember { mutableStateOf(searchState.location) }
+    var dateIn: String by remember { mutableStateOf(searchState.checkIn) }
+    var dateOut: String by remember { mutableStateOf(searchState.checkOut) }
+    var nofRoom: Int by remember { mutableStateOf(searchState.roomCount) }
+    var nofGuest: Int by remember { mutableStateOf(searchState.adultCount + searchState.childCount) }
 
     val calendarState = rememberSheetState()
     var selectedDateType by remember { mutableStateOf<DateType?>(null) }
+
+    val searchParams: HashMap<String, String> = HashMap()
+
+    LaunchedEffect(searchState) {
+        location = searchState.location
+        dateIn = searchState.checkIn
+        dateOut = searchState.checkOut
+        nofRoom = searchState.roomCount
+        nofGuest = searchState.adultCount + searchState.childCount
+
+        if (dateIn.isNotEmpty()) {
+            val checkIn = LocalDate.parse(dateIn, formatter)
+            searchParams["checkIn"] = checkIn.toString()
+        }
+
+        if (dateOut.isNotEmpty()) {
+            val checkOut = LocalDate.parse(dateOut, formatter)
+            searchParams["checkOut"] = checkOut.toString()
+        }
+
+        searchParams["place_id"] = searchState.location_id
+        searchParams["adultCount"] = searchState.adultCount.toString()
+        searchParams["childCount"] = searchState.childCount.toString()
+        searchParams["roomCount"] = searchState.roomCount.toString()
+        searchParams["sortOption"] = searchState.sortOption
+        searchParams["page"] = "1"
+    }
+
+    LaunchedEffect(dateIn, dateOut) {
+        hotelsViewModel.updateSearchParams(checkIn = dateIn, checkOut = dateOut)
+    }
 
     DatePickerDialog(
         calendarState = calendarState,
@@ -112,8 +167,13 @@ fun HomePageSearchContent(
                 DateType.IN -> dateIn = formattedDate
                 DateType.OUT -> dateOut = formattedDate
             }
-        }
+        },
+        minDate = if (selectedDateType == DateType.IN) LocalDate.parse(
+            dateIn,
+            DateTimeFormatter.ofPattern("dd-MM-yyyy")
+        ) else null
     )
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
@@ -157,18 +217,49 @@ fun HomePageSearchContent(
                 )
             }
             item {
-                ImportantButtonMain(text = "Tìm kiếm", onClick = { openResultScreen() })
+                ImportantButtonMain(text = "Tìm kiếm", onClick = {
+                    hotelsViewModel.search(searchParams)
+
+                    openResultScreen()
+                })
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = "Dành cho bạn",
                     style = MaterialTheme.typography.titleLarge,
                     color = colorResource(R.color.dark_blue),
                     fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp
                 )
                 Spacer(modifier = Modifier.height(8.dp))
             }
-            items(hotelsState.hotels) {
-                HotelCard(hotel = it, onClick = { openDetailsScreen(it._id) })
+            item {
+
+                LazyRow(
+
+                    modifier = Modifier.fillMaxWidth(),
+
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+
+                )
+
+                {
+                    items(hotelsState.hotels) { hotel ->
+                        var isFavored = userState.user?.favorites?.contains(hotel._id) ?: false
+                        LaunchedEffect(userState.user) {
+                            isFavored = userState.user?.favorites?.contains(hotel._id) ?: false
+                        }
+
+                        HotelCard(
+                            hotel = hotel,
+                            isFavored = isFavored,
+                            onClick = { openDetailsScreen(hotel._id) },
+                            onFavoriteToggle = {
+                                usersViewModel.favorite(hotel._id)
+                                isFavored = !isFavored
+                            }
+                        )
+                    }
+                }
             }
         }
     }

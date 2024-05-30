@@ -18,6 +18,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -57,11 +59,11 @@ fun PropertiesDetailScreen() {
     var DoubleSingleBedBedRoomDisabled: Boolean by remember { mutableStateOf(false) }
     var DoubleBedBedRoomDisabled: Boolean by remember { mutableStateOf(false) }
 
-    var airConditioner: Boolean by remember { mutableStateOf(true) }
-    var tv: Boolean by remember { mutableStateOf(true) }
-    var showerChamber: Boolean by remember { mutableStateOf(true) }
-    var senShower: Boolean by remember { mutableStateOf(true) }
-    var mayNongLanh: Boolean by remember { mutableStateOf(true) }
+    var airConditioner: Boolean by remember { mutableStateOf(false) }
+    var tv: Boolean by remember { mutableStateOf(false) }
+    var showerChamber: Boolean by remember { mutableStateOf(false) }
+    var shower: Boolean by remember { mutableStateOf(false) }
+    var hotColdMachine: Boolean by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -233,13 +235,13 @@ fun PropertiesDetailScreen() {
                     description = "Bồn tắm"
                 )
                 CheckboxWithDescription(
-                    checked = senShower,
-                    onCheckedChange = { senShower = it },
+                    checked = shower,
+                    onCheckedChange = { shower = it },
                     description = "Bãi đậu xe miễn phí"
                 )
                 CheckboxWithDescription(
-                    checked = mayNongLanh,
-                    onCheckedChange = { mayNongLanh = it },
+                    checked = hotColdMachine,
+                    onCheckedChange = { hotColdMachine = it },
                     description = "Máy nóng lạnh"
                 )
             }
@@ -249,12 +251,13 @@ fun PropertiesDetailScreen() {
 }
 
 @Composable
-fun CommonBodyText(text: String, modifier: Modifier = Modifier) {
+fun CommonBodyText(text: String, color: Color = colorResource(id = R.color.black), modifier: Modifier = Modifier) {
     Text(
         text = text,
         fontSize = 20.sp,
         fontWeight = FontWeight.Medium,
-        modifier = modifier
+        modifier = modifier,
+        color = color
     )
 }
 

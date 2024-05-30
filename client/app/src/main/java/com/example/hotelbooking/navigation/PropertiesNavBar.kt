@@ -1,11 +1,13 @@
 package com.example.hotelbooking.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.hotelbooking.HomeScreen
 import com.example.hotelbooking.domain.model.properties
 import com.example.hotelbooking.view.properties.PropertiesDetailScreen
 import com.example.hotelbooking.view.properties.PropertiesInformationScreen
@@ -13,6 +15,7 @@ import com.example.hotelbooking.view.properties.PropertiesPhotoScreen
 import com.example.hotelbooking.view.properties.PropertiesPriceScreen
 import com.example.hotelbooking.view.properties.PropertiesScreen
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PropertiesNavBar(navController: NavHostController,
                      modifier: Modifier = Modifier
@@ -40,5 +43,8 @@ fun PropertiesNavBar(navController: NavHostController,
             PropertiesDetailScreen()
         }
 
+        composable(route = Route.HomeScreen.route){
+            HomeScreen()
+        }
     }
 }

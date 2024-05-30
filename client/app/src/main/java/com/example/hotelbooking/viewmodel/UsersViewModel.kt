@@ -16,9 +16,15 @@ import javax.inject.Inject
 @HiltViewModel
 class UsersViewModel @Inject constructor(
     private val userRepository: UserRepository
-): ViewModel() {
+) : ViewModel() {
     private val _state = MutableStateFlow(ProfileViewState())
     val state = _state.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            getUser()
+        }
+    }
 
     fun getUser() {
         viewModelScope.launch {
@@ -26,12 +32,35 @@ class UsersViewModel @Inject constructor(
                 it.copy(isLoading = true)
             }
             userRepository.getUser()
-                .onRight {user ->
+                .onRight { user ->
                     _state.update {
                         it.copy(user = user)
                     }
                 }
-                .onLeft {error ->
+                .onLeft { error ->
+                    _state.update {
+                        it.copy(error = error.error.message)
+                    }
+                    sendEvent(Event.Toast(error.error.message))
+                }
+            _state.update {
+                it.copy(isLoading = false)
+            }
+        }
+    }
+
+    fun favorite(hotelId: String) {
+        viewModelScope.launch {
+            _state.update {
+                it.copy(isLoading = true)
+            }
+            userRepository.favorite(hotelId)
+                .onRight { user ->
+                    _state.update {
+                        it.copy(user = user)
+                    }
+                }
+                .onLeft { error ->
                     _state.update {
                         it.copy(error = error.error.message)
                     }

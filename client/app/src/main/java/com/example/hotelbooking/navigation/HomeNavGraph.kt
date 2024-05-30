@@ -1,9 +1,10 @@
 package com.example.hotelbooking.navigation
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -13,23 +14,26 @@ import com.example.hotelbooking.view.MyBookingScreen
 import com.example.hotelbooking.view.homepage.HomePageSearchScreen
 import com.example.hotelbooking.view.profile.ProfileScreen
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.navArgument
 import com.example.hotelbooking.view.auth.ResetPasswordScreen
-import com.example.hotelbooking.domain.model.Hotel
 import com.example.hotelbooking.view.DetailScreen
 import com.example.hotelbooking.view.homepage.HomePageLocationScreen
 import com.example.hotelbooking.view.homepage.HomePageResultScreen
 import com.example.hotelbooking.view.homepage.RoomPickingScreen
 import com.example.hotelbooking.view.profile.ProfileEditScreen
 import com.example.hotelbooking.view.properties.ProNavScreen
+import com.example.hotelbooking.viewmodel.HotelsViewModel
+import com.example.hotelbooking.viewmodel.UsersViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeNavGraph(
+    modifier: Modifier = Modifier,
     navController: NavHostController,
-    modifier: Modifier = Modifier
+    hotelsViewModel: HotelsViewModel = hiltViewModel(),
+    usersViewModel: UsersViewModel = hiltViewModel(),
 ) {
-
     NavHost(
         navController = navController,
         route = Graph.HOME,
@@ -37,6 +41,7 @@ fun HomeNavGraph(
     ) {
         composable(route = BottomBarScreen.Home.route) {
             HomePageSearchScreen(
+                hotelsViewModel = hotelsViewModel,
                 openResultScreen = {
                     navController.navigate(Route.HomeResultScreen.route)
                 },
@@ -54,6 +59,7 @@ fun HomeNavGraph(
 
         composable(route = BottomBarScreen.Favorite.route) {
             FavoriteScreen(
+                hotelsViewModel = hotelsViewModel,
                 openDetailsScreen = { id: String ->
                     navController.navigate("${Route.DetailsScreen.route}/$id")
                 }
@@ -62,6 +68,7 @@ fun HomeNavGraph(
 
         composable(route = BottomBarScreen.MyBooking.route) {
             MyBookingScreen(
+                hotelsViewModel = hotelsViewModel,
                 openDetailsScreen = { id: String ->
                     navController.navigate("${Route.DetailsScreen.route}/$id")
                 }
@@ -90,9 +97,7 @@ fun HomeNavGraph(
         //Homepage Nav
         composable(route = Route.HomeResultScreen.route) {
             HomePageResultScreen(
-                openDateScreen = {
-                    navController.navigate(Route.HomeDateScreen.route)
-                },
+                hotelsViewModel = hotelsViewModel,
                 openRoomScreen = {
                     navController.navigate(Route.HomeRoomScreen.route)
                 },
@@ -100,17 +105,20 @@ fun HomeNavGraph(
                     navController.navigate("${Route.DetailsScreen.route}/$id")
                 },
                 backHomeScreen = {
-                    navController.navigate(Route.HomeScreen.route)
+                    navController.popBackStack()
                 }
             )
         }
 
         composable(route = Route.HomeRoomScreen.route) {
-            RoomPickingScreen()
+            RoomPickingScreen(
+                hotelsViewModel = hotelsViewModel, navigateUp = { navController.popBackStack() })
         }
 
         composable(route = Route.HomeLocationScreen.route) {
-            HomePageLocationScreen()
+            HomePageLocationScreen(
+                hotelsViewModel = hotelsViewModel, navigateUp = { navController.popBackStack() }
+            )
         }
 
         composable(
@@ -118,12 +126,16 @@ fun HomeNavGraph(
             arguments = listOf(navArgument("id") { defaultValue = "defaultId" })
         ) { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")
-            DetailScreen(id = id ?: "defaultId")
+            DetailScreen(
+                hotelsViewModel = hotelsViewModel,
+                id = id ?: "defaultId", backNav = {
+                    navController.popBackStack()
+                })
         }
 
         //Profile Nav
         composable(route = Route.ProfileEditScreen.route) {
-            ProfileEditScreen()
+            ProfileEditScreen(navigateUp = { navController.popBackStack() })
         }
 
         composable(route = Route.ResetPassword.route) {

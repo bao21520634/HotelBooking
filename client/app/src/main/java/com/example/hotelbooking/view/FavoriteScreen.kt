@@ -11,6 +11,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -22,29 +24,37 @@ import com.example.hotelbooking.R
 import com.example.hotelbooking.navigation.Route
 import com.example.hotelbooking.ui.utility.AppBar
 import com.example.hotelbooking.view.components.HotelsViewState
+import com.example.hotelbooking.view.components.ProfileViewState
 import com.example.hotelbooking.viewmodel.HotelsViewModel
+import com.example.hotelbooking.viewmodel.UsersViewModel
 
 @Composable
 internal fun FavoriteScreen(
     navController: NavController = rememberNavController(),
-    openDetailsScreen: (String) -> Unit = { id -> navController.navigate("${Route.DetailsScreen.route}/$id") }
+    openDetailsScreen: (String) -> Unit = { },
+    hotelsViewModel: HotelsViewModel = hiltViewModel(),
+    usersViewModel: UsersViewModel = hiltViewModel()
 ) {
-    val viewModel: HotelsViewModel = hiltViewModel()
-    val hotelsState by viewModel.hotelsState.collectAsStateWithLifecycle()
+    val hotelsState by hotelsViewModel.hotelsState.collectAsStateWithLifecycle()
+
+    val userState by usersViewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        viewModel.getMyFavorites()
+        hotelsViewModel.getMyFavorites()
+        usersViewModel.getUser()
     }
 
-    FavoriteContent(navController, hotelsState, openDetailsScreen)
+    FavoriteContent(userState, usersViewModel, navController, hotelsState, openDetailsScreen)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoriteContent(
+    userState: ProfileViewState,
+    usersViewModel: UsersViewModel = hiltViewModel(),
     navController: NavController,
     hotelsState: HotelsViewState,
-    openDetailsScreen: (String) -> Unit = { id -> navController.navigate("${Route.DetailsScreen.route}/$id") }
+    openDetailsScreen: (String) -> Unit = { }
 ) {
     Scaffold(
         topBar = {
@@ -62,8 +72,21 @@ fun FavoriteContent(
                 .padding(dimensionResource(id = R.dimen.screenPadding)),
             verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.itemInListPadding))
         ) {
-            items(hotelsState.hotels) {
-                HotelCard(hotel = it, onClick = { openDetailsScreen(it._id) })
+            items(hotelsState.hotels) {hotel ->
+                var isFavored = userState.user?.favorites?.contains(hotel._id) ?: false
+                LaunchedEffect(userState.user) {
+                    isFavored = userState.user?.favorites?.contains(hotel._id) ?: false
+                }
+
+                HotelCard(
+                    hotel = hotel,
+                    isFavored = isFavored,
+                    onClick = { openDetailsScreen(hotel._id) },
+                    onFavoriteToggle = {
+                        usersViewModel.favorite(hotel._id)
+                        isFavored = !isFavored
+                    }
+                )
             }
         }
     }

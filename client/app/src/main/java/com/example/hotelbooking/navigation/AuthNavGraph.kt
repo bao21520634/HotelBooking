@@ -27,9 +27,12 @@ fun NavGraphBuilder.authNavGraph(navController: NavController) {
             )
         }
         composable(route = Route.SignUpScreen.route) {
-            SignUpScreen(openLoginScreen = {
+            SignUpScreen(openHomeScreen = {
+                navController.navigate(Route.HomeScreen.route)
+            }, openLoginScreen = {
                 navController.navigate(Route.LogInScreen.route)
-            })
+            }
+            )
         }
         composable(route = Route.ForgotPassword.route) {
             ForgotPassWordScreen(openResetPasswordScreen = {

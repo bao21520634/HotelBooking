@@ -9,7 +9,7 @@ import retrofit2.Response
 interface AuthRepository {
     suspend fun login(email: String, password: String): Either<NetworkError, Response<Message>>
 
-    suspend fun register(email: String, password: String, confirmPassword: String): Either<NetworkError, Response<Message>>
+    suspend fun register(email: String, username: String, password: String, confirmPassword: String): Either<NetworkError, Response<Message>>
 
     suspend fun logout(): Either<NetworkError, Response<Message>>
 }

@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,16 +25,35 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.hotelbooking.R
 import com.example.hotelbooking.ui.utility.ImportantButtonLogin
 import com.example.hotelbooking.ui.utility.InfoTextField
 import com.example.hotelbooking.ui.utility.PassWordTextField
+import com.example.hotelbooking.view.auth.components.AuthViewState
+import com.example.hotelbooking.viewmodel.AuthViewModel
+
 
 @Composable
-fun SignUpScreen(
+internal fun SignUpScreen(
     modifier: Modifier = Modifier,
-    openLoginScreen: () -> Unit
+    openLoginScreen: () -> Unit,
+    openHomeScreen: () -> Unit,
+) {
+    val viewModel: AuthViewModel = hiltViewModel()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
+    SignUpContent(modifier, state, viewModel, openHomeScreen, openLoginScreen)
+}
+
+@Composable
+fun SignUpContent(
+    modifier: Modifier = Modifier,
+    state: AuthViewState,
+    viewModel: AuthViewModel = hiltViewModel(),
+    openHomeScreen: () -> Unit,
+    openLoginScreen: () -> Unit,
 ) {
     var email: String by remember { mutableStateOf("") };
     var username: String by remember { mutableStateOf("") };
@@ -67,7 +87,7 @@ fun SignUpScreen(
         InfoTextField(
             value = username,
             onValueChange = { username = it },
-            promptText = "Tên đăng nhập",
+            promptText = "Tên của bạn",
             modifier = Modifier.align(Alignment.CenterHorizontally)
         );
         PassWordTextField(
@@ -79,7 +99,7 @@ fun SignUpScreen(
             modifier = Modifier.align(Alignment.CenterHorizontally)
         );
         PassWordTextField(
-            value = password,
+            value = passwordConfirm,
             onValueChange = { passwordConfirm = it },
             promptText = "Xác nhận mật khẩu",
             visible = passwordConfirmVisibility,
@@ -88,7 +108,7 @@ fun SignUpScreen(
         );
 
         ImportantButtonLogin(text = "Đăng ký", onAction = {
-            openLoginScreen()
+            viewModel.register(email, username, password, passwordConfirm)
         })
 
         Row(
@@ -113,9 +133,10 @@ fun SignUpScreen(
             }
         }
     }
+
+    LaunchedEffect(state) {
+        if (state.message != null) {
+            openHomeScreen()
+        }
+    }
 }
-//@Preview(showBackground = true)
-//@Composable
-//fun SignUpScreenPreview(){
-//    SignUpScreen()
-//}

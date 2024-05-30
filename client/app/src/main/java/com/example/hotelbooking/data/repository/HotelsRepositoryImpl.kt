@@ -5,6 +5,7 @@ import arrow.core.Either
 import com.example.hotelbooking.data.mapper.toNetworkError
 import com.example.hotelbooking.data.remote.HotelsApi
 import com.example.hotelbooking.data.remote.dto.HotelsResponse
+import com.example.hotelbooking.data.remote.dto.Place
 import com.example.hotelbooking.domain.model.Hotel
 import com.example.hotelbooking.domain.model.NetworkError
 import com.example.hotelbooking.domain.repository.HotelsRepository
@@ -13,7 +14,7 @@ import javax.inject.Inject
 class HotelsRepositoryImpl @Inject constructor(
     private val hotelsApi: HotelsApi,
     private val sharedPreferences: SharedPreferences
-): HotelsRepository {
+) : HotelsRepository {
     override suspend fun getTopBookings(page: Int): Either<NetworkError, HotelsResponse> {
         return Either.catch {
             hotelsApi.getTopBookings(page)
@@ -62,6 +63,27 @@ class HotelsRepositoryImpl @Inject constructor(
 
             if (jwt != null) {
                 hotelsApi.getHotel(cookies = "auth_token=$jwt", id = id)
+            } else {
+                throw Exception("JWT not found")
+            }
+        }.mapLeft { it.toNetworkError() }
+    }
+
+    override suspend fun getLocationPredictions(destination: String): Either<NetworkError, List<Place>> {
+        return Either.catch {
+            hotelsApi.getLocationPredictions(destination)
+        }.mapLeft { it.toNetworkError() }
+    }
+
+    override suspend fun search(searchParams: Map<String, String>): Either<NetworkError, HotelsResponse> {
+        return Either.catch {
+            val jwt = sharedPreferences.getString("auth_token", null)
+
+            if (jwt != null) {
+                hotelsApi.search(
+                    cookies = "auth_token=$jwt",
+                    searchParams
+                )
             } else {
                 throw Exception("JWT not found")
             }

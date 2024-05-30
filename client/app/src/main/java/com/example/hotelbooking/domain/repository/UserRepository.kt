@@ -6,4 +6,6 @@ import com.example.hotelbooking.domain.model.NetworkError
 
 interface UserRepository {
     suspend fun getUser(): Either<NetworkError, User>
+
+    suspend fun favorite(hotelId: String): Either<NetworkError, User>
 }

@@ -40,22 +40,23 @@ import com.example.hotelbooking.view.components.ProfileViewState
 import com.example.hotelbooking.viewmodel.UsersViewModel
 
 @Composable
-internal fun ProfileEditScreen() {
-    val viewModel: UsersViewModel = hiltViewModel()
-    val state by viewModel.state.collectAsStateWithLifecycle()
+internal fun ProfileEditScreen(usersViewModel: UsersViewModel = hiltViewModel(), navigateUp: () -> Unit) {
+    val state by usersViewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        viewModel.getUser()
+        usersViewModel.getUser()
     }
 
     ProfileEditContent(
-        state = state
+        state = state,
+        navigateUp = navigateUp
     )
 }
 
 @Composable
 fun ProfileEditContent(
-    state: ProfileViewState
+    state: ProfileViewState,
+    navigateUp: () -> Unit
 ) {
     var userName = state.user?.username
     var gender = state.user?.gender
@@ -66,7 +67,8 @@ fun ProfileEditContent(
                 currentScreen = Route.MyBookingsScreen,
                 currentScreenName = stringResource(id = R.string.profileEdit_screen),
                 canNavigateBack = true,
-                navigateUp = { /*TODO*/ })
+                navigateUp = navigateUp
+            )
         },
     ) { innerpadding ->
         Column(
@@ -106,14 +108,14 @@ fun ProfileEditContent(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 OutlinedButton(
-                    onClick = { /*TODO*/ },
+                    onClick = navigateUp,
 
                     ) {
                     Text(text = "Hủy")
                 }
                 Spacer(Modifier.width(16.dp))
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = navigateUp,
                     colors = ButtonDefaults.buttonColors(
                         contentColor = Color.White,
                         containerColor = PrimaryColor
@@ -151,10 +153,4 @@ fun AccountThumbnailEdit(
             action = {}
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ProfileEditScreenPreview() {
-    ProfileEditScreen();
 }

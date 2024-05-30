@@ -31,11 +31,13 @@ class AuthRepositoryImpl @Inject constructor(
             }
         }.mapLeft { it.toNetworkError() }
     }
-    override suspend fun register(email: String, password: String, confirmPassword: String): Either<NetworkError, Response<Message>> {
-        val request = RegisterRequest(email, password, confirmPassword)
+    override suspend fun register(email: String, username: String, password: String, confirmPassword: String): Either<NetworkError, Response<Message>> {
+        val request = RegisterRequest(email, username, password, confirmPassword)
         return Either.catch {
             val call = authApi.register(request)
             if (call.isSuccessful) {
+                val cookies = call.headers().values("Set-Cookie")
+                saveCookies(cookies)
                 call
             } else {
                 throw Exception("Registration failed")
