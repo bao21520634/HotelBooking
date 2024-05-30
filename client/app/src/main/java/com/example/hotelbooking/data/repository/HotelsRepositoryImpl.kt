@@ -1,6 +1,7 @@
 package com.example.hotelbooking.data.repository
 
 import android.content.SharedPreferences
+import android.util.Log
 import arrow.core.Either
 import com.example.hotelbooking.data.mapper.toNetworkError
 import com.example.hotelbooking.data.remote.HotelsApi
@@ -84,6 +85,21 @@ class HotelsRepositoryImpl @Inject constructor(
                     cookies = "auth_token=$jwt",
                     searchParams
                 )
+            } else {
+                throw Exception("JWT not found")
+            }
+        }.mapLeft { it.toNetworkError() }
+    }
+
+    override suspend fun getNearHotels(lng: String, lat: String): Either<NetworkError, HotelsResponse> {
+        Log.d("lng lat",lng)
+        return Either.catch {
+            val jwt = sharedPreferences.getString("auth_token", null)
+
+            if (jwt != null) {
+                Log.d("API Calling....","get near hotels")
+                hotelsApi.getNearHotel(cookies = "auth_token=$jwt", lng = lng, lat = lat)
+
             } else {
                 throw Exception("JWT not found")
             }

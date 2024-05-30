@@ -30,6 +30,9 @@ class HotelsViewModel @Inject constructor(
     private val _hotelState = MutableStateFlow(HotelViewState())
     val hotelState = _hotelState.asStateFlow()
 
+    private val _nearHotelState = MutableStateFlow(HotelsViewState())
+    val nearHotelsState = _nearHotelState.asStateFlow()
+
     private val _placesState = MutableStateFlow(PlaceViewState())
     val placesState = _placesState.asStateFlow()
 
@@ -49,6 +52,7 @@ class HotelsViewModel @Inject constructor(
                     _hotelsState.update {
                         it.copy(hotels = response.data, page = response.pagination.page)
                     }
+                    Log.d("Get top bookings success","")
                 }
                 .onLeft { error ->
                     _hotelsState.update {
@@ -248,5 +252,34 @@ class HotelsViewModel @Inject constructor(
                 it.copy(isLoading = false)
             }
         }
+    }
+
+    fun getNearHotels(lng: String, lat: String)
+    {
+        viewModelScope.launch {
+            _nearHotelState.update {
+                it.copy(isLoading = true)
+            }
+            Log.e("repair calling...","near hotels")
+            hotelsRepository.getNearHotels(lng, lat)
+                .onRight { response ->
+                    Log.d("response", response.toString())
+                    _nearHotelState.update {
+                        it.copy(hotels = response.data, page = response.pagination.page)
+                    }
+                    Log.d("calling success","near hotels")
+                }
+                .onLeft { error ->
+                    _nearHotelState.update {
+                        it.copy(error = error.error.message)
+                    }
+                    Log.e("near hotels fet err", error.toString())
+                    sendEvent(Event.Toast(error.error.message))
+                }
+            _nearHotelState.update {
+                it.copy(isLoading = false)
+            }
+        }
+
     }
 }

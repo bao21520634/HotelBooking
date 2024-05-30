@@ -20,4 +20,6 @@ interface HotelsRepository {
     suspend fun getLocationPredictions(destination: String): Either<NetworkError, List<Place>>
 
     suspend fun search(searchParams: Map<String, String>): Either<NetworkError, HotelsResponse>
+
+    suspend fun getNearHotels(lng: String, lat: String):Either<NetworkError, HotelsResponse>
 }

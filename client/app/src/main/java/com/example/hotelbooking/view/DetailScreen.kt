@@ -57,7 +57,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.hotelbooking.R
 import com.example.hotelbooking.domain.model.Hotel
-import com.example.hotelbooking.domain.model.User
 import com.example.hotelbooking.ui.utility.ImportantButtonMain
 import com.example.hotelbooking.view.components.HotelViewState
 import com.example.hotelbooking.view.components.ProfileViewState
@@ -76,11 +75,14 @@ internal fun DetailScreen(
     val userState by usersViewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        usersViewModel.getUser()
         hotelsViewModel.getHotel(id)
     }
 
+    if (hotelState.hotel != Hotel()) {
         DetailContent(hotelState, userState, backNav = backNav)
+    }
+
+
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -102,7 +104,7 @@ fun DetailContent(hotelState: HotelViewState, userState: ProfileViewState, backN
             )
             {
                 item {
-                    DetailThumbNail(userState.user, hotelState.hotel, navigateUp = backNav)
+                    DetailThumbNail(hotelState.hotel, navigateUp = backNav)
                     Spacer(modifier = Modifier.padding(top = 8.dp))
                     Divider(color = colorResource(R.color.neutral), thickness = 1.dp)
                 }
@@ -133,7 +135,7 @@ fun DetailContent(hotelState: HotelViewState, userState: ProfileViewState, backN
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailThumbNail(user: User, hotel: Hotel, modifier: Modifier = Modifier, navigateUp: () -> Unit) {
+fun DetailThumbNail(hotel: Hotel, modifier: Modifier = Modifier, navigateUp: () -> Unit) {
     Column(
 
     ) {
@@ -373,5 +375,3 @@ fun ImageSlideshow(hotel: Hotel, modifier: Modifier = Modifier) {
         }
     }
 }
-
-

@@ -77,9 +77,12 @@ internal fun HomePageSearchScreen(
 
     val userState by usersViewModel.state.collectAsStateWithLifecycle()
 
+    val nearHotelsState by hotelsViewModel.nearHotelsState.collectAsStateWithLifecycle()
+
     LaunchedEffect(Unit) {
         hotelsViewModel.getTopBookings()
         usersViewModel.getUser()
+        hotelsViewModel.getNearHotels("105.864323", "20.981971")
     }
 
     HomePageSearchContent(
@@ -87,6 +90,7 @@ internal fun HomePageSearchScreen(
         userState,
         usersViewModel,
         navController,
+        nearHotelsState,
         hotelsState,
         searchState,
         hotelsViewModel,
@@ -105,6 +109,7 @@ fun HomePageSearchContent(
     userState: ProfileViewState,
     usersViewModel: UsersViewModel = hiltViewModel(),
     navController: NavController,
+    nearHotelsState: HotelsViewState,
     hotelsState: HotelsViewState,
     searchState: SearchViewState,
     hotelsViewModel: HotelsViewModel = hiltViewModel(),
@@ -127,6 +132,8 @@ fun HomePageSearchContent(
     var selectedDateType by remember { mutableStateOf<DateType?>(null) }
 
     val searchParams: HashMap<String, String> = HashMap()
+
+
 
     LaunchedEffect(searchState) {
         location = searchState.location
@@ -261,9 +268,49 @@ fun HomePageSearchContent(
                     }
                 }
             }
+
+            item{
+                Text(
+                    text = "Xung quanh bạn",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = colorResource(R.color.dark_blue),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
+            item {
+
+                LazyRow(
+
+                    modifier = Modifier.fillMaxWidth(),
+
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+
+                )
+
+                {
+                    items(nearHotelsState.hotels) { hotel ->
+                        var isFavored = userState.user?.favorites?.contains(hotel._id) ?: false
+                        LaunchedEffect(userState.user) {
+                            isFavored = userState.user?.favorites?.contains(hotel._id) ?: false
+                        }
+
+                        HotelCard(
+                            hotel = hotel,
+                            isFavored = isFavored,
+                            onClick = { openDetailsScreen(hotel._id) },
+                            onFavoriteToggle = {
+                                usersViewModel.favorite(hotel._id)
+                                isFavored = !isFavored
+                            }
+                        )
+                    }
+                }
+            }
         }
     }
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -49,4 +49,11 @@ interface HotelsApi {
         @Header("Cookie") cookies: String,
         @QueryMap searchParams: Map<String, String>
     ): HotelsResponse
+
+    @GET("hotels/near-here")
+    suspend fun getNearHotel(
+        @Header("Cookie") cookies: String,
+        @Query("lng") lng: String,
+        @Query("lat") lat: String
+    ): HotelsResponse
 }
