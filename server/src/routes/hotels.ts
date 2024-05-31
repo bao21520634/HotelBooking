@@ -293,6 +293,11 @@ router.get('/continue-search', verifyToken, async (req: Request, res: Response) 
 
 router.get('/city/:latlng', async (req: Request, res: Response) => {
     try {
+        const pageSize = 20;
+        const pageNumber = parseInt(req.query.page ? req.query.page.toString() : '1');
+        //pages to skip
+        const skip = (pageNumber - 1) * pageSize;
+
         const locationSearchParams = new URLSearchParams({
             latlng: req.params.latlng,
             api_key: process.env.GOONG_API_KEY,
@@ -308,6 +313,15 @@ router.get('/city/:latlng', async (req: Request, res: Response) => {
             .ne(0)
             .limit(20);
 
+        const response: HotelSearchResponse = {
+            data: hotels,
+            pagination: {
+                total: 20,
+                page: pageNumber,
+                pages: Math.ceil(20 / pageSize),
+            },
+        };
+
         res.json(hotels);
     } catch (error) {
         console.log('error', error);
@@ -317,6 +331,11 @@ router.get('/city/:latlng', async (req: Request, res: Response) => {
 
 router.get('/near-here', async (req: Request, res: Response) => {
     try {
+        const pageSize = 20;
+        const pageNumber = parseInt(req.query.page ? req.query.page.toString() : '1');
+        //pages to skip
+        const skip = (pageNumber - 1) * pageSize;
+
         var hotels = await Hotel.aggregate([
             {
                 $geoNear: {
@@ -337,7 +356,16 @@ router.get('/near-here', async (req: Request, res: Response) => {
             },
         ]).limit(20);
 
-        res.json(hotels);
+        const response: HotelSearchResponse = {
+            data: hotels,
+            pagination: {
+                total: 20,
+                page: pageNumber,
+                pages: Math.ceil(20 / pageSize),
+            },
+        };
+
+        res.json(response);
     } catch (error) {
         console.log('error', error);
         res.status(500).json({ message: 'Something went wrong' });
@@ -388,7 +416,10 @@ router.post('/:hotelId/bookings/payment', verifyToken, async (req: Request, res:
         return res.status(200).json({ message: 'Hotel not available' });
     }
 
-    const totalCost = parseInt(req.params.totalCost);
+    const totalCost = parseInt(req.query.totalCost as string, 10);
+    if (isNaN(totalCost)) {
+        return res.status(400).json({ message: 'Invalid total cost value' });
+    }
 
     const session = await stripe.checkout.sessions.create({
         line_items: [
@@ -406,12 +437,9 @@ router.post('/:hotelId/bookings/payment', verifyToken, async (req: Request, res:
         ],
         mode: 'payment',
         customer_creation: 'always',
-        success_url: req.params.appUrl,
+        success_url: req.params.appUrl || 'https://www.google.com/',
+        cancel_url: 'https://www.google.com/',
     });
-
-    if (!session.client_secret) {
-        return res.status(500).json({ message: 'Error creating payment intent' });
-    }
 
     const newBooking: BookingType = {
         ...req.body,
