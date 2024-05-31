@@ -49,7 +49,6 @@ fun AppBar(
                 }
             }
         },
-        modifier = modifier.padding(top = 24.dp),
         navigationIcon = {
             if (canNavigateBack) {
                 IconButton(onClick = navigateUp) {

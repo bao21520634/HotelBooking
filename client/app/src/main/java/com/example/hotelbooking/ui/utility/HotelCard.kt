@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
@@ -39,7 +40,7 @@ fun HotelCard(
     onFavoriteToggle: (Boolean) -> Unit
 ) {
     Card(
-        modifier = modifier.clickable(onClick = onClick),
+        modifier = modifier.clickable(onClick = onClick).size(width = 336.dp, height = 380.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent
         ),
@@ -89,10 +90,9 @@ fun HotelTitle(
     onFavoriteClick: () -> (Unit),
     modifier: Modifier = Modifier
 ) {
-    Row(
-        modifier = modifier,
+    Column(
+        modifier = modifier
     ) {
-
         Text(
             text = hotelName,
             color = Color.Black,
@@ -101,31 +101,34 @@ fun HotelTitle(
             fontSize = 18.sp
         )
         Spacer(modifier = Modifier.width(4.dp))
+        Row(modifier = modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically) {
 
-        StarRatingBar(stars = starRating, starsColor = colorResource(id = R.color.yellow))
-    }
-
-    Card(
-        modifier = Modifier.padding(end = 0.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.Transparent,
-            contentColor = colorResource(id = R.color.red)
-        ),
-        shape = CircleShape,
-        onClick = onFavoriteClick
-    ) {
-        if (isFavored) {
-            Icon(
-                painter = painterResource(id = R.drawable.baseline_favorite_24),
-                contentDescription = null,
-                modifier = Modifier.padding(4.dp)
-            )
-        } else {
-            Icon(
-                painter = painterResource(id = R.drawable.baseline_favorite_border_24),
-                contentDescription = null,
-                modifier = Modifier.padding(4.dp)
-            )
+            StarRatingBar(stars = starRating, starsColor = colorResource(id = R.color.yellow))
+            Spacer(modifier = Modifier.weight(1f))
+            Card(
+                modifier = Modifier,
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.Transparent,
+                    contentColor = colorResource(id = R.color.red)
+                ),
+                shape = CircleShape,
+                onClick = onFavoriteClick
+            ) {
+                if (isFavored) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.baseline_favorite_24),
+                        contentDescription = null,
+                        modifier = Modifier.padding(4.dp)
+                    )
+                } else {
+                    Icon(
+                        painter = painterResource(id = R.drawable.baseline_favorite_border_24),
+                        contentDescription = null,
+                        modifier = Modifier.padding(4.dp)
+                    )
+                }
+            }
         }
     }
 }
@@ -159,7 +162,7 @@ fun HotelInfo(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = "Phòng ngủ: $numberOfBedroom",
+                text = "Phòng ngủ: " + numberOfBedroom.toString(),
                 color = Color.Black,
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp
@@ -174,12 +177,12 @@ fun HotelInfo(
                 Text(
                     modifier = Modifier.padding(24.dp, 6.dp),
                     color = colorResource(R.color.primary),
-                    text = "VND $price",
+                    text = "VND " + price,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp
                 )
             }
+
         }
     }
 }
-

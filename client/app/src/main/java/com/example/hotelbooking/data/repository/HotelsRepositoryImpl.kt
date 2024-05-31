@@ -4,6 +4,8 @@ import android.content.SharedPreferences
 import arrow.core.Either
 import com.example.hotelbooking.data.mapper.toNetworkError
 import com.example.hotelbooking.data.remote.HotelsApi
+import com.example.hotelbooking.data.remote.dto.CheckoutRequest
+import com.example.hotelbooking.data.remote.dto.CheckoutResponse
 import com.example.hotelbooking.data.remote.dto.HotelsResponse
 import com.example.hotelbooking.data.remote.dto.Place
 import com.example.hotelbooking.domain.model.Hotel
@@ -84,6 +86,46 @@ class HotelsRepositoryImpl @Inject constructor(
                     cookies = "auth_token=$jwt",
                     searchParams
                 )
+            } else {
+                throw Exception("JWT not found")
+            }
+        }.mapLeft { it.toNetworkError() }
+    }
+
+    override suspend fun getNearHotels(
+        lng: String,
+        lat: String
+    ): Either<NetworkError, HotelsResponse> {
+        return Either.catch {
+            val jwt = sharedPreferences.getString("auth_token", null)
+
+            if (jwt != null) {
+                hotelsApi.getNearHotel(cookies = "auth_token=$jwt", lng = lng, lat = lat)
+
+            } else {
+                throw Exception("JWT not found")
+            }
+        }.mapLeft { it.toNetworkError() }
+    }
+
+    override suspend fun checkout(
+        hotelId: String,
+        totalCost: Int,
+        checkIn: String,
+        checkOut: String,
+        adultCount: Int,
+        childCount: Int
+    ): Either<NetworkError, CheckoutResponse> {
+        return Either.catch {
+            val jwt = sharedPreferences.getString("auth_token", null)
+
+            if (jwt != null) {
+                hotelsApi.checkout(
+                    cookies = "auth_token=$jwt",
+                    hotelId = hotelId,
+                    body = CheckoutRequest(totalCost, checkIn, checkOut, adultCount, childCount)
+                )
+
             } else {
                 throw Exception("JWT not found")
             }

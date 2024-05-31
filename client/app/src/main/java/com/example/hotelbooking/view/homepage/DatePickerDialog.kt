@@ -20,10 +20,9 @@ fun DatePickerDialog(
     onDateSelected: (LocalDate, DateType) -> Unit,
     minDate: LocalDate?
 ) {
-    val minSelectableDate = LocalDate.now().plusDays(1)
     val disabledDates = when (selectedDateType){
         DateType.IN -> listOf(LocalDate.now().minusDays(1))
-        DateType.OUT -> minDate?.let { listOf(LocalDate.now().minusDays(1), it.plusDays(1)) } ?: listOf()
+        DateType.OUT -> listOf(LocalDate.now().minusDays(1))
         else -> listOf()
     }
     CalendarDialog(
@@ -38,7 +37,7 @@ fun DatePickerDialog(
         selection = CalendarSelection.Date { selectedDate ->
             val isValidDate = when(selectedDateType) {
                 DateType.IN -> selectedDate >= LocalDate.now()
-                DateType.OUT -> selectedDate >= minSelectableDate
+                DateType.OUT -> selectedDate >= LocalDate.now()
                 else -> false
             }
             if (isValidDate) {

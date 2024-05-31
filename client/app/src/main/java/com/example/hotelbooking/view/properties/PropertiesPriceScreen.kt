@@ -1,6 +1,7 @@
 package com.example.hotelbooking.view.properties
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -15,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,15 +32,30 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.hotelbooking.R
 import com.example.hotelbooking.navigation.Route
 import com.example.hotelbooking.ui.utility.AppBar
+import com.example.hotelbooking.ui.utility.InfoTextField
+import com.example.hotelbooking.viewmodel.HotelsViewModel
+import com.example.hotelbooking.viewmodel.UsersViewModel
 
 @Composable
-fun PropertiesPriceScreen() {
-    var giaNgayThuong: Long by remember { mutableStateOf(1000000) }
-    var giaCuoiTuan: Long by remember { mutableStateOf(1200000) }
+fun PropertiesPriceScreen(
+    modifier: Modifier = Modifier,
+    navController: NavController = rememberNavController(),
+    hotelsViewModel: HotelsViewModel = hiltViewModel(),
+    usersViewModel: UsersViewModel = hiltViewModel(),
+) {
+    val propertiesState by hotelsViewModel.propertiesState.collectAsStateWithLifecycle()
+
+    var pricePerNightWeekdays: Int by remember { mutableStateOf(propertiesState.pricePerNightWeekdays) }
+    var pricePerNightWeekends: Int by remember { mutableStateOf(propertiesState.pricePerNightWeekends) }
     Scaffold(
+        modifier = Modifier.padding(bottom = 80.dp),
         topBar = {
             AppBar(
                 currentScreen = Route.PropertiesPriceScreen,
@@ -46,17 +63,18 @@ fun PropertiesPriceScreen() {
                 canNavigateBack = false,
                 navigateUp = { /*TODO*/ })
         }
-    ) {paddingValues ->
-        Column (
+    ) { paddingValues ->
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(dimensionResource(R.dimen.screenPadding))
-        ){
+        ) {
             Column {
                 CommonHeaderText(text = "Giá/đêm( ngày thường)")
-                PriceRow(price = giaNgayThuong,
-                    onPriceChange = {giaNgayThuong = it.toLong()},
+                PriceRow(
+                    price = pricePerNightWeekdays,
+                    onPriceChange = { pricePerNightWeekdays = it.toInt() },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp)
@@ -64,8 +82,9 @@ fun PropertiesPriceScreen() {
             }
             Column {
                 CommonHeaderText(text = "Giá/đêm( cuối tuần)")
-                PriceRow(price = giaCuoiTuan,
-                    onPriceChange = {giaCuoiTuan = it.toLong()},
+                PriceRow(
+                    price = pricePerNightWeekends,
+                    onPriceChange = { pricePerNightWeekends = it.toInt() },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp)
@@ -74,50 +93,23 @@ fun PropertiesPriceScreen() {
         }
     }
 
+    hotelsViewModel.updatePropertiesSearchParams(
+        pricePerNightWeekdays = pricePerNightWeekdays,
+        pricePerNightWeekends = pricePerNightWeekends
+    )
 }
+
 @Composable
-fun PriceRow(price: Long, onPriceChange: (String) -> (Unit),modifier: Modifier = Modifier){
+fun PriceRow(price: Int, onPriceChange: (String) -> (Unit), modifier: Modifier = Modifier) {
     Row(
         modifier = modifier.height(IntrinsicSize.Min),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        OutlinedCard(
-            modifier = Modifier
-                .weight(1 / 4f).height(40.dp),
-            border = BorderStroke(2.dp, Color.Gray),
-            shape = RoundedCornerShape(dimensionResource(id = R.dimen.roundedCornerPadding))
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
-            ) {
-                CommonBodyText(
-                    text = "VNĐ",
-                    modifier = Modifier.padding(8.dp).height(44.dp)
-                )
-            }
-        }
         Spacer(Modifier.width(8.dp))
-        OutlinedCard(
-            modifier = Modifier
-                .weight(1f),
-            border = BorderStroke(2.dp, Color.Gray),
-            shape = RoundedCornerShape(dimensionResource(id = R.dimen.roundedCornerPadding))
-        ) {
-            BasicTextField(
-                value = price.toString(),
-                onValueChange = onPriceChange,
-                modifier = Modifier.padding(8.dp).fillMaxWidth(),
-                textStyle = TextStyle(
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                ),
-            )
-        }
+        InfoTextField(
+            value = price.toString(),
+            promptText = "VNĐ",
+            onValueChange = onPriceChange,
+        )
     }
-}
-@Preview(showBackground = true)
-@Composable
-fun PropertiesPriceScreenPreview(){
-    PropertiesPriceScreen()
 }

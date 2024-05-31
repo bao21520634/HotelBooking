@@ -1,6 +1,7 @@
 package com.example.hotelbooking.domain.repository
 
 import arrow.core.Either
+import com.example.hotelbooking.data.remote.dto.CheckoutResponse
 import com.example.hotelbooking.data.remote.dto.HotelsResponse
 import com.example.hotelbooking.data.remote.dto.Place
 import com.example.hotelbooking.domain.model.Hotel
@@ -20,4 +21,8 @@ interface HotelsRepository {
     suspend fun getLocationPredictions(destination: String): Either<NetworkError, List<Place>>
 
     suspend fun search(searchParams: Map<String, String>): Either<NetworkError, HotelsResponse>
+
+    suspend fun getNearHotels(lng: String, lat: String):Either<NetworkError, HotelsResponse>
+
+    suspend fun checkout(hotelId: String, totalCost: Int, checkIn: String, checkOut: String, adultCount: Int, childCount: Int):Either<NetworkError, CheckoutResponse>
 }

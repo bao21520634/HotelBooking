@@ -1,8 +1,11 @@
 package com.example.hotelbooking.data.remote
 
+import com.example.hotelbooking.data.remote.dto.CheckoutRequest
+import com.example.hotelbooking.data.remote.dto.CheckoutResponse
 import com.example.hotelbooking.data.remote.dto.HotelsResponse
 import com.example.hotelbooking.data.remote.dto.Place
 import com.example.hotelbooking.domain.model.Hotel
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
@@ -49,4 +52,18 @@ interface HotelsApi {
         @Header("Cookie") cookies: String,
         @QueryMap searchParams: Map<String, String>
     ): HotelsResponse
+
+    @GET("hotels/near-here")
+    suspend fun getNearHotel(
+        @Header("Cookie") cookies: String,
+        @Query("lng") lng: String,
+        @Query("lat") lat: String
+    ): HotelsResponse
+
+    @POST("hotels/{hotelId}/bookings/payment")
+    suspend fun checkout(
+        @Header("Cookie") cookies: String,
+        @Path("hotelId") hotelId: String,
+        @Body body: CheckoutRequest
+    ): CheckoutResponse
 }

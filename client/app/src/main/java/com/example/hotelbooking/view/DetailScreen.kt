@@ -5,6 +5,10 @@ import android.R.attr.maxLines
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
+import android.util.Log
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -57,14 +61,19 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.hotelbooking.R
 import com.example.hotelbooking.domain.model.Hotel
-import com.example.hotelbooking.domain.model.User
 import com.example.hotelbooking.ui.utility.ImportantButtonMain
+import com.example.hotelbooking.view.components.CheckoutViewState
 import com.example.hotelbooking.view.components.HotelViewState
 import com.example.hotelbooking.view.components.ProfileViewState
+import com.example.hotelbooking.view.homepage.components.SearchViewState
 import com.example.hotelbooking.viewmodel.HotelsViewModel
 import com.example.hotelbooking.viewmodel.UsersViewModel
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 internal fun DetailScreen(
@@ -74,20 +83,71 @@ internal fun DetailScreen(
 ) {
     val hotelState by hotelsViewModel.hotelState.collectAsStateWithLifecycle()
     val userState by usersViewModel.state.collectAsStateWithLifecycle()
+    val searchState by hotelsViewModel.searchState.collectAsStateWithLifecycle()
+    val checkoutState by hotelsViewModel.checkoutState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        usersViewModel.getUser()
         hotelsViewModel.getHotel(id)
     }
 
-        DetailContent(hotelState, userState, backNav = backNav)
+    if (hotelState.hotel != Hotel()) {
+        DetailContent(
+            hotelsViewModel,
+            usersViewModel,
+            checkoutState,
+            searchState,
+            hotelState,
+            userState,
+            backNav = backNav
+        )
+    }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailContent(hotelState: HotelViewState, userState: ProfileViewState, backNav: () -> Unit) {
+fun DetailContent(
+    hotelsViewModel: HotelsViewModel = hiltViewModel(),
+    usersViewModel: UsersViewModel = hiltViewModel(),
+    checkoutState: CheckoutViewState,
+    searchState: SearchViewState,
+    hotelState: HotelViewState,
+    userState: ProfileViewState,
+    backNav: () -> Unit
+) {
     val context = LocalContext.current
+
+    val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+
+    val currentDate = LocalDate.now()
+    val dayOfWeek = currentDate.dayOfWeek.value
+    val isWeekday = dayOfWeek in 1..5
+
+    var totalPrice = hotelState.hotel.totalPrice
+
+    if (totalPrice == 0) {
+        val totalNights = ChronoUnit.DAYS.between(
+            LocalDate.parse(searchState.checkIn, formatter),
+            LocalDate.parse(searchState.checkOut, formatter)
+        ) + 1
+
+        var weekdays = 0
+        var weekends = 0
+
+        for (i in 0 until totalNights) {
+            val date = LocalDate.parse(searchState.checkIn, formatter).plusDays(i)
+            val dayOfWeek = date.dayOfWeek.value
+            if (dayOfWeek in 1..5) {
+                weekdays++
+            } else {
+                weekends++
+            }
+        }
+
+        totalPrice =
+            (weekdays * hotelState.hotel.pricePerNightWeekdays) + (weekends * hotelState.hotel.pricePerNightWeekends)
+    }
 
     Scaffold(
         topBar = {}
@@ -102,7 +162,7 @@ fun DetailContent(hotelState: HotelViewState, userState: ProfileViewState, backN
             )
             {
                 item {
-                    DetailThumbNail(userState.user, hotelState.hotel, navigateUp = backNav)
+                    DetailThumbNail(totalPrice = totalPrice, hotel = hotelState.hotel, navigateUp = backNav)
                     Spacer(modifier = Modifier.padding(top = 8.dp))
                     Divider(color = colorResource(R.color.neutral), thickness = 1.dp)
                 }
@@ -116,9 +176,22 @@ fun DetailContent(hotelState: HotelViewState, userState: ProfileViewState, backN
             // Switch to URL
             ImportantButtonMain(
                 text = "Đặt ngay", onClick = {
-                    val url = "https://www.google.com"
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                    context.startActivity(intent)
+                    hotelsViewModel.checkout(
+                        hotelId = hotelState.hotel._id,
+                        checkIn = LocalDate.parse(searchState.checkIn, formatter).toString(),
+                        checkOut = LocalDate.parse(searchState.checkOut, formatter).toString(),
+                        adultCount = searchState.adultCount,
+                        childCount = searchState.childCount,
+                        totalCost = totalPrice,
+                        onSuccess = {
+                            Log.d("", it)
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(it))
+                            context.startActivity(intent)
+                        },
+                        onFailure = { error ->
+                            Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+                        }
+                    )
                 },
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
@@ -133,7 +206,7 @@ fun DetailContent(hotelState: HotelViewState, userState: ProfileViewState, backN
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailThumbNail(user: User, hotel: Hotel, modifier: Modifier = Modifier, navigateUp: () -> Unit) {
+fun DetailThumbNail(totalPrice: Int, hotel: Hotel, modifier: Modifier = Modifier, navigateUp: () -> Unit) {
     Column(
 
     ) {
@@ -204,7 +277,7 @@ fun DetailThumbNail(user: User, hotel: Hotel, modifier: Modifier = Modifier, nav
             )
             Text(
                 color = colorResource(R.color.primary),
-                text = "VND " + hotel.pricePerNightWeekdays,
+                text = "VND " + totalPrice,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp
             )

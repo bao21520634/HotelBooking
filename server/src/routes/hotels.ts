@@ -416,7 +416,7 @@ router.post('/:hotelId/bookings/payment', verifyToken, async (req: Request, res:
         return res.status(200).json({ message: 'Hotel not available' });
     }
 
-    const totalCost = parseInt(req.query.totalCost as string, 10);
+    const totalCost = parseInt(req.body.totalCost as string, 10);
     if (isNaN(totalCost)) {
         return res.status(400).json({ message: 'Invalid total cost value' });
     }
@@ -437,7 +437,7 @@ router.post('/:hotelId/bookings/payment', verifyToken, async (req: Request, res:
         ],
         mode: 'payment',
         customer_creation: 'always',
-        success_url: req.params.appUrl || 'https://www.google.com/',
+        success_url: req.body.appUrl || 'https://www.google.com/',
         cancel_url: 'https://www.google.com/',
     });
 
@@ -450,7 +450,7 @@ router.post('/:hotelId/bookings/payment', verifyToken, async (req: Request, res:
     hotel.quantity -= 1;
     hotel.save();
 
-    res.status(200).send(session.url);
+    res.status(200).send({ url: session.url });
 });
 
 const constructSearchQuery = (queryParams: any) => {

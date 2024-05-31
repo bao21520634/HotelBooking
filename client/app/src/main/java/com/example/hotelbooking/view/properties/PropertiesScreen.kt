@@ -1,5 +1,7 @@
 package com.example.hotelbooking.view.properties
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,36 +15,77 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.hotelbooking.R
 import com.example.hotelbooking.navigation.Route
 import com.example.hotelbooking.domain.model.Property
-import com.example.hotelbooking.domain.model.properties
 import com.example.hotelbooking.ui.utility.AppBar
+import com.example.hotelbooking.view.components.HotelViewState
+import com.example.hotelbooking.view.components.HotelsViewState
+import com.example.hotelbooking.view.components.ProfileViewState
+import com.example.hotelbooking.viewmodel.HotelsViewModel
+import com.example.hotelbooking.viewmodel.UsersViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+internal fun PropertiesScreen(
+    modifier: Modifier = Modifier,
+    navController: NavController = rememberNavController(),
+    hotelsViewModel: HotelsViewModel = hiltViewModel(),
+    usersViewModel: UsersViewModel = hiltViewModel(),
+    onCreate: () -> Unit
+) {
+    val hotelsState by hotelsViewModel.hotelsState.collectAsStateWithLifecycle()
+
+    val userState by usersViewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        hotelsViewModel.getTopBookings()
+        usersViewModel.getUser()
+    }
+
+    PropertiesContent(hotelsState = hotelsState, userState = userState, onCreate = onCreate)
+}
 
 @Composable
-fun PropertiesScreen(properties: List<Property>, openPropertiesInfo:() ->Unit){
+fun PropertiesContent(
+    modifier: Modifier = Modifier,
+    navController: NavController = rememberNavController(),
+    hotelsState: HotelsViewState,
+    userState: ProfileViewState,
+    hotelsViewModel: HotelsViewModel = hiltViewModel(),
+    usersViewModel: UsersViewModel = hiltViewModel(),
+    onCreate: () -> Unit
+){
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.padding(bottom = 80.dp),
         topBar = {
             AppBar(
                 currentScreen = Route.PropertiesScreen,
                 currentScreenName = stringResource(id = R.string.properties_screen),
                 canNavigateBack = false,
-                navigateUp = { /*TODO*/ })
+                navigateUp = { /*TODO*/ }
+            )
         }
     ) {paddingValues ->
         LazyColumn(
@@ -52,25 +95,27 @@ fun PropertiesScreen(properties: List<Property>, openPropertiesInfo:() ->Unit){
                 .padding(dimensionResource(id = R.dimen.screenPadding)),
             verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.itemInListPadding))
         ) {
-            items(properties) {
-                PropertyCard(propertyName = it.name, propertyDescription = it.description,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                )
-            }
+//            items(properties) {
+//                PropertyCard(propertyName = it.name, propertyDescription = it.description,
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                )
+//            }
 
             item{
                 Spacer(Modifier.height(4.dp))
                 OutlinedButton(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = { openPropertiesInfo() },
+                    onClick = onCreate,
                     shape = RoundedCornerShape(8.dp)
                 )
                 {
-                    Text(text = "Thêm sỡ hữu",
+                    Text(
+                        text = "Thêm sở hữu",
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
-                        color = Color.Gray,
+                        fontSize = 24.sp,
+                        color = colorResource(id = R.color.neutral),
                         modifier = Modifier.padding(16.dp)
                     )
                 }

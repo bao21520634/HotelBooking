@@ -1,11 +1,16 @@
 package com.example.hotelbooking.viewmodel
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hotelbooking.domain.repository.UserRepository
 import com.example.hotelbooking.util.Event
 import com.example.hotelbooking.view.components.ProfileViewState
 import com.example.hotelbooking.view.util.sendEvent
+import com.google.android.gms.location.FusedLocationProviderClient
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

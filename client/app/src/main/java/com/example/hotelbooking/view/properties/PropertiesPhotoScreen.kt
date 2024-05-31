@@ -1,6 +1,7 @@
 package com.example.hotelbooking.view.properties
 
 import android.net.Uri
+import android.provider.MediaStore
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -21,6 +22,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -34,17 +36,34 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.hotelbooking.R
 import com.example.hotelbooking.navigation.Route
 import com.example.hotelbooking.ui.utility.AppBar
 import com.example.hotelbooking.ui.utility.ImageWithDeleteButton
+import com.example.hotelbooking.viewmodel.HotelsViewModel
+import com.example.hotelbooking.viewmodel.UsersViewModel
+import java.io.File
 
 @Composable
-fun PropertiesPhotoScreen() {
+fun PropertiesPhotoScreen(
+    modifier: Modifier = Modifier,
+    navController: NavController = rememberNavController(),
+    hotelsViewModel: HotelsViewModel = hiltViewModel(),
+    usersViewModel: UsersViewModel = hiltViewModel(),
+) {
+    val propertiesState by hotelsViewModel.propertiesState.collectAsStateWithLifecycle()
     //image uri
+
     var imageUriList = remember {
-        mutableStateListOf<Uri>()
+        mutableStateListOf<Uri>(*propertiesState.imageUrls.map {
+            Uri.fromFile(File(it))
+        }.toTypedArray())
     }
+
     //Log.d("Debug1", imageUriList.size.toString())
     //2nd requirement
     val galleryLauncher = rememberLauncherForActivityResult(
@@ -55,6 +74,7 @@ fun PropertiesPhotoScreen() {
     )
 
     Scaffold(
+        modifier = Modifier.padding(bottom = 80.dp),
         topBar = {
             AppBar(
                 currentScreen = Route.PropertiesSPhotoscreen,
@@ -69,16 +89,17 @@ fun PropertiesPhotoScreen() {
                 .padding(paddingValues)
                 .padding(dimensionResource(id = R.dimen.screenPadding)),
             verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.itemInListPadding))
-        ){
-            items(imageUriList) { index  ->
+        ) {
+            items(imageUriList) { index ->
                 ImageWithDeleteButton(
                     uri = index,
-                    onDeleteButtonPressed = {  imageUriList.remove(index)}
+                    onDeleteButtonPressed = { imageUriList.remove(index) }
                 )
             }
-            item{
+            item {
                 Spacer(Modifier.height(12.dp))
-                OutlinedButton(onClick = { galleryLauncher.launch("image/*")},
+                OutlinedButton(
+                    onClick = { galleryLauncher.launch("image/*") },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(200.dp),
@@ -88,10 +109,14 @@ fun PropertiesPhotoScreen() {
                         containerColor = Color.Transparent
                     )
                 ) {
-                    Column (
+                    Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                    ){
-                        Icon(painter = painterResource(id = R.drawable.baseline_upload_24), contentDescription = null, Modifier.size(56.dp))
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.baseline_upload_24),
+                            contentDescription = null,
+                            Modifier.size(56.dp)
+                        )
                         Text(
                             text = "Thêm ảnh ở đây",
                             style = MaterialTheme.typography.titleLarge,
@@ -104,13 +129,19 @@ fun PropertiesPhotoScreen() {
             }
         }
     }
+
+    hotelsViewModel.updatePropertiesSearchParams(
+        imageUrls = imageUriList.map { it.path ?: "" },
+    )
 }
+
 @Preview(showBackground = true)
 @Composable
-fun PropertiesPhotoScreenScreenPreview(){
+fun PropertiesPhotoScreenScreenPreview() {
     PropertiesPhotoScreen()
 }
-val imageList: List< Int> = listOf(
+
+val imageList: List<Int> = listOf(
     R.drawable.hotel_thumbnail,
     R.drawable.koda
 )

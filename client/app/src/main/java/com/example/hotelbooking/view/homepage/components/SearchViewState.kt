@@ -12,7 +12,7 @@ data class SearchViewState (
     val adultCount: Int = 1,
     val roomCount: Int = 1,
     val checkIn: String = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date()),
-    val checkOut: String = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date(System.currentTimeMillis() + 86400000)),
+    val checkOut: String = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date()),
     val sortOption: String = "",
     val page: String = "1"
 )

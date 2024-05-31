@@ -10,8 +10,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -19,23 +21,48 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.hotelbooking.R
 import com.example.hotelbooking.navigation.Route
 import com.example.hotelbooking.ui.utility.AppBar
 import com.example.hotelbooking.ui.utility.CheckboxWithDescription
 import com.example.hotelbooking.ui.utility.EditTextField
+import com.example.hotelbooking.viewmodel.HotelsViewModel
+import com.example.hotelbooking.viewmodel.UsersViewModel
 
 @Composable
-fun PropertiesInformationScreen(){
-    var name: String by remember{ mutableStateOf("") }
-    var location: String by remember{ mutableStateOf("") }
-    var description: String by remember{ mutableStateOf("") }
+fun PropertiesInformationScreen(
+    modifier: Modifier = Modifier,
+    navController: NavController = rememberNavController(),
+    hotelsViewModel: HotelsViewModel = hiltViewModel(),
+    usersViewModel: UsersViewModel = hiltViewModel(),
+) {
+    val propertiesState by hotelsViewModel.propertiesState.collectAsStateWithLifecycle()
 
-    var freeWifi: Boolean by remember{ mutableStateOf(false) }
-    var airConditioner: Boolean by remember{ mutableStateOf(false) }
-    var swimmingPool: Boolean by remember{ mutableStateOf(false) }
-    var freeParkingSlot: Boolean by remember{ mutableStateOf(false) }
+    var name: String by remember { mutableStateOf(propertiesState.name) }
+    var location: String by remember { mutableStateOf(propertiesState.address) }
+    var description: String by remember { mutableStateOf(propertiesState.description) }
+
+
+    var facilities = remember {
+        mutableStateListOf(
+            Facility("Wifi miễn phí"),
+            Facility("Điều hòa"),
+            Facility("Bể bơi"),
+            Facility("Bãi đậu xe miễn phí"),
+        )
+    }
+
+    facilities.forEach { facility ->
+        facility.isSelected = propertiesState.facilities.contains(facility.name)
+    }
+
     Scaffold(
+        modifier = Modifier.padding(bottom = 80.dp),
         topBar = {
             AppBar(
                 currentScreen = Route.PropertiesInformationScreen,
@@ -43,46 +70,61 @@ fun PropertiesInformationScreen(){
                 canNavigateBack = false,
                 navigateUp = { /*TODO*/ })
         }
-    ) {paddingValues ->
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
                 .padding(dimensionResource(id = R.dimen.screenPadding)),
             verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.columnPadding))
         ) {
-            EditTextField(value = name, onValueChange = {name = it}, descriptionText = "Tên")
-            EditTextField(value = location, onValueChange = {location = it}, descriptionText = "Địa chỉ")
-            EditTextField(value = description, onValueChange = {description = it}, descriptionText = "Mô tả")
+            EditTextField(value = name, onValueChange = { name = it }, descriptionText = "Tên")
+            EditTextField(
+                value = location,
+                onValueChange = { location = it },
+                descriptionText = "Địa chỉ"
+            )
+            EditTextField(
+                value = description,
+                onValueChange = { description = it },
+                descriptionText = "Mô tả"
+            )
             Spacer(Modifier.height(4.dp))
             Text(
                 text = "Tiện ích",
                 style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
+                fontSize = 24.sp
             )
             Column(
-            ){
-                CheckboxWithDescription(
-                    checked = freeWifi,
-                    onCheckedChange = { freeWifi = it },
-                    description = "Wifi miễn phí"
-                )
-                CheckboxWithDescription(
-                    checked = airConditioner,
-                    onCheckedChange = { airConditioner = it },
-                    description = "Điều hòa"
-                )
-                CheckboxWithDescription(
-                    checked = swimmingPool,
-                    onCheckedChange = { swimmingPool = it },
-                    description = "Bể bơi"
-                )
-                CheckboxWithDescription(
-                    checked = freeParkingSlot,
-                    onCheckedChange = { freeParkingSlot = it },
-                    description = "Bãi đậu xe miễn phí"
-                )
+            ) {
+                FacilitiesList(facilities = facilities)
             }
         }
+    }
 
+    hotelsViewModel.updatePropertiesSearchParams(
+        name = name,
+        address = location,
+        description = description,
+        facilities = facilities.filter { it.isSelected }.map { it.name },
+    )
+}
+
+data class Facility(val name: String, var isSelected: Boolean = false)
+
+@Composable
+fun FacilitiesList(facilities: MutableList<Facility>) {
+    val updateFacilities = rememberUpdatedState(newValue = facilities)
+
+    Column {
+        updateFacilities.value.forEachIndexed { index, facility ->
+            CheckboxWithDescription(
+                checked = facility.isSelected,
+                onCheckedChange = {
+                    updateFacilities.value[index] = facility.copy(isSelected = it)
+                },
+                description = facility.name
+            )
+        }
     }
 }
