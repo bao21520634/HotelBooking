@@ -260,14 +260,14 @@ class HotelsViewModel @Inject constructor(
             _nearHotelState.update {
                 it.copy(isLoading = true)
             }
-            Log.e("repair calling...","near hotels")
             hotelsRepository.getNearHotels(lng, lat)
                 .onRight { response ->
-                    Log.d("response", response.toString())
+                    Log.d("calling success",lng + lat)
                     _nearHotelState.update {
                         it.copy(hotels = response.data, page = response.pagination.page)
                     }
-                    Log.d("calling success","near hotels")
+                    Log.d("response near hotel",response.toString())
+
                 }
                 .onLeft { error ->
                     _nearHotelState.update {

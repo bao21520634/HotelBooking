@@ -1,8 +1,14 @@
 package com.example.hotelbooking.view.homepage
 
 import HotelCard
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -32,12 +38,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -46,6 +54,7 @@ import com.example.hotelbooking.R
 import com.example.hotelbooking.navigation.Route
 import com.example.hotelbooking.ui.utility.AppBar
 import com.example.hotelbooking.ui.utility.ImportantButtonMain
+import com.example.hotelbooking.ui.utility.LocationUtil
 import com.example.hotelbooking.view.homepage.components.CommonOutlinedButton
 import com.example.hotelbooking.view.components.HotelsViewState
 import com.example.hotelbooking.view.components.ProfileViewState
@@ -53,6 +62,7 @@ import com.example.hotelbooking.view.homepage.components.OutlinedBlock
 import com.example.hotelbooking.view.homepage.components.SearchViewState
 import com.example.hotelbooking.viewmodel.HotelsViewModel
 import com.example.hotelbooking.viewmodel.UsersViewModel
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -79,11 +89,58 @@ internal fun HomePageSearchScreen(
 
     val nearHotelsState by hotelsViewModel.nearHotelsState.collectAsStateWithLifecycle()
 
+
+    val context = LocalContext.current
+    val locationUtil = remember { LocationUtil(context) }
+    var userLocation by remember { mutableStateOf<Pair<Double, Double>?>(null) }
+    var error by remember { mutableStateOf<Exception?>(null) }
+
+    val locationPermissionRequest = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { isGranted: Boolean ->
+            if (isGranted) {
+                locationUtil.getLastUserLocation(
+                    onGetLastLocationSuccess = { lat, lon ->
+                        userLocation = Pair(lat, lon)
+                    },
+                    onGetLastLocationFailed = { exception ->
+                        error = exception
+                    }
+                )
+            } else {
+                Toast.makeText(context, "Location permission denied", Toast.LENGTH_LONG).show()
+            }
+        }
+    )
+
+
+
+
+
+
+
+
     LaunchedEffect(Unit) {
         hotelsViewModel.getTopBookings()
         usersViewModel.getUser()
-        hotelsViewModel.getNearHotels("105.864323", "20.981971")
+        if (locationUtil.areLocationPermissionsGranted()) {
+            locationUtil.getLastUserLocation(
+                onGetLastLocationSuccess = { lat, lon ->
+                    userLocation = Pair(lat, lon)
+                    Log.d("User Location Success", lat.toString())
+                    Log.d("user location varible", userLocation.toString())
+                    hotelsViewModel.getNearHotels(lon.toString(), lat.toString())
+                },
+                onGetLastLocationFailed = { exception ->
+                    error = exception
+                    Log.d("User Location Error", exception.toString())
+                }
+            )
+        } else {
+            locationPermissionRequest.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
     }
+
 
     HomePageSearchContent(
         modifier,
@@ -135,6 +192,7 @@ fun HomePageSearchContent(
 
 
 
+
     LaunchedEffect(searchState) {
         location = searchState.location
         dateIn = searchState.checkIn
@@ -158,6 +216,8 @@ fun HomePageSearchContent(
         searchParams["roomCount"] = searchState.roomCount.toString()
         searchParams["sortOption"] = searchState.sortOption
         searchParams["page"] = "1"
+
+
     }
 
     LaunchedEffect(dateIn, dateOut) {
