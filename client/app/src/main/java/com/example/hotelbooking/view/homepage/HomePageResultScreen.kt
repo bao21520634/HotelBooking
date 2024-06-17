@@ -267,6 +267,7 @@ fun HomePageResultContent(
                 .padding(innerPadding)
                 .padding(dimensionResource(id = R.dimen.screenPadding)),
             verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.columnPadding)),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
                 FilterBlock(
@@ -312,14 +313,6 @@ fun HomePageResultContent(
                 )
             }
 
-        }
-        Column(
-        ) {
-            LazyColumn(
-                modifier = modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-            }
         }
     }
 

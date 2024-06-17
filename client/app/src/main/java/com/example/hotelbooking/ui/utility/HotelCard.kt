@@ -55,8 +55,7 @@ fun HotelCard(
                 contentDescription = hotel.name,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(160.dp)
-                    .width(320.dp),
+                    .height(160.dp),
                 contentScale = ContentScale.Crop
             )
             Column(

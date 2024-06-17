@@ -57,10 +57,6 @@ fun PropertiesInformationScreen(
         )
     }
 
-    facilities.forEach { facility ->
-        facility.isSelected = propertiesState.facilities.contains(facility.name)
-    }
-
     Scaffold(
         modifier = Modifier.padding(bottom = 80.dp),
         topBar = {

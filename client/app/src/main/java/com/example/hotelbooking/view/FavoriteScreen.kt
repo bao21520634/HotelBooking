@@ -13,6 +13,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -70,7 +71,8 @@ fun FavoriteContent(
                 .fillMaxWidth()
                 .padding(innerpadding)
                 .padding(dimensionResource(id = R.dimen.screenPadding)),
-            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.itemInListPadding))
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.itemInListPadding)),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             items(hotelsState.hotels) {hotel ->
                 var isFavored = userState.user?.favorites?.contains(hotel._id) ?: false
